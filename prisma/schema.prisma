@@ -15,23 +15,23 @@ datasource db {
 }
 
 model Users {
-  id             Int     @id
+  id             Int     @id @default(autoincrement())
   name           String
-  email          String
+  email          String  @unique
   employeeNumber String
   phoneNumber    String
-  imgUrl         String
+  imgUrl         String?
   password       String
-  isAdmin        Boolean
+  isAdmin        Boolean @default(false)
 
   company   Companies @relation(fields: [companyId], references: [id])
   companyId Int
 }
 
 model Companies {
-  id   Int     @id
+  id   Int     @id @default(autoincrement())
   name String
-  code String
+  code String  @unique
   user Users[]
 }
 
