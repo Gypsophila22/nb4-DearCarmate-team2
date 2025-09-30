@@ -29,10 +29,11 @@ model Users {
 }
 
 model Companies {
-  id   Int     @id
-  name String
-  code String
-  user Users[]
+  id        Int         @id
+  name      String
+  code      String
+  user      Users[]
+  Customers Customers[]
 }
 
 model Cars {
@@ -52,16 +53,18 @@ model Cars {
 }
 
 model Customers {
-  id          Int    @id @unique
+  id          Int     @id @unique
   name        String
-  gender      String
+  gender      Gender
   phoneNumber String
-  ageGroup    String
-  region      String
-  email       String
-  memo        String
+  ageGroup    String?
+  region      Region?
+  email       String?
+  memo        String?
 
-  contract Contracts?
+  company   Companies  @relation(fields: [companyId], references: [id])
+  companyId Int
+  contract  Contracts?
 }
 
 enum Gender {
