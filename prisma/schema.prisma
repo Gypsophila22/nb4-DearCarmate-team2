@@ -91,6 +91,13 @@ enum Region {
   대전
   전북
   전남
+  광주
+  경북
+  경남
+  대구
+  울산
+  부산
+  제주
 }
 
 model Contracts {
