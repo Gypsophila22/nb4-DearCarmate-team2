@@ -13,3 +13,94 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Users {
+  id             Int     @id
+  name           String
+  email          String
+  employeeNumber String
+  phoneNumber    String
+  imgUrl         String
+  password       String
+  isAdmin        Boolean
+
+  company   Companies @relation(fields: [companyId], references: [id])
+  companyId Int
+}
+
+model Companies {
+  id   Int     @id
+  name String
+  code String
+  user Users[]
+}
+
+model Cars {
+  id                Int    @id @unique
+  number            String
+  manufacturer      String
+  model             String
+  manufacturingYear Int
+  mileage           Int
+  price             Int
+  accidentCount     Int
+  explanation       String
+  accidentDetails   String
+
+  contract Contracts?
+  // contractId Int?
+}
+
+model Customers {
+  id          Int    @id @unique
+  name        String
+  gender      String
+  phoneNumber String
+  ageGroup    String
+  region      String
+  email       String
+  memo        String
+
+  contract Contracts?
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum AgeGroup {
+  GENERATION_10
+  GENERATION_20
+  GENERATION_30
+  GENERATION_40
+  GENERATION_50
+  GENERATION_60
+  GENERATION_70
+  GENERATION_80
+}
+
+enum Region {
+  서울
+  경기
+  인천
+  강원
+  충북
+  충남
+  세종
+  대전
+  전북
+  전남
+}
+
+model Contracts {
+  id     Int        @id @unique
+  date   DateTime //계약 날짜
+  alarms DateTime[] //알람을 원하는 시간
+
+  car   Cars @relation(fields: [carId], references: [id])
+  carId Int  @unique
+
+  custmor   Customers @relation(fields: [custmorId], references: [id])
+  custmorId Int       @unique
+}
