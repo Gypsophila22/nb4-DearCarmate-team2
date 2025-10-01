@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
-import { createCarModelRepository } from '../../repositories/cars/create-car-models.repository.js';
-import { createCarRepository } from '../../repositories/cars/create-cars.repository.js';
-import { findCarModelRepository } from '../../repositories/cars/find-car-model.repository.js';
+import { createCarModelRepository } from '../../repositories/cars/createCarModelsRepository.js';
+import { createCarRepository } from '../../repositories/cars/createCarsRepository.js';
+import { findCarModelRepository } from '../../repositories/cars/findCarModelRepository.js';
 
-import type { CreateCarRequestDto } from '../../dtos/cars/create-cars-request.dto.js';
+import type { CreateCarRequestDto } from '../../dtos/cars/createCarsRequestDto.js';
 
 /**
  * 차량 생성 Service

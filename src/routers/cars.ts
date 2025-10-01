@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { createCarController } from '../controllers/cars/create-cars.controller.js';
+import { createCarController } from '../controllers/cars/createCarsController.js';
 
 const router = express.Router();
 

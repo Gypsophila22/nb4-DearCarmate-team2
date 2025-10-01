@@ -1,6 +1,6 @@
-import { CreateCarRequestDto } from '../../dtos/cars/create-cars-request.dto.js';
-import { createCarSerialize } from '../../serializers/cars/create-cars.serializer.js';
-import { createCarService } from '../../services/cars/create-cars.service.js';
+import { CreateCarRequestDto } from '../../dtos/cars/createCarsRequestDto.js';
+import { createCarSerialize } from '../../serializers/cars/createCarsSerializer.js';
+import { createCarService } from '../../services/cars/createCarsService.js';
 
 import type { Request, Response } from 'express';
 

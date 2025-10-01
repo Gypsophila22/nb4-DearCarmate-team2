@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Car } from './cars.dto.js';
+import { Car } from './carsDto.js';
 
 /**
  * 차량 추가 요청 DTO
