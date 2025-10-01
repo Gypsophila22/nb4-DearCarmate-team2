@@ -1,0 +1,66 @@
+@baseUrl=http://localhost:4000
+@accessTokenName=access-token
+@accessToken=
+@refreshTokenName=refresh-token
+@refreshToken=
+
+### 회원가입
+POST {{baseUrl}}/users/register
+Content-Type: application/json
+
+{
+	"name": "testman",
+	"email": "testman@test.com",
+	"employeeNumber": "100",
+	"phoneNumber": "01021210696",
+	"password": "Test",
+	"passwordConfirmation": "Test",
+	"company": "testCompany",
+	"companyCode": "TSC"
+}
+
+### 토큰 리프레쉬
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": {{refreshToken}}
+}
+
+### 로그인
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "testman@test.com",
+  "password": "Test"
+}
+
+
+# ================================
+# Cars
+# ================================
+
+### 차량 등록
+POST {{baseUrl}}/cars
+Authorization: bearer {{accessToken}}
+Content-Type: application/json
+
+{
+	"carNumber": "12가1234",
+	"manufacturer": "기아",
+	"model": "K3",
+	"manufacturingYear": 2023,
+	"mileage": 30,
+	"price": 1000000,
+	"accidentCount": 1,
+	"explanation": "설명",
+	"accidentDetails": "사고설명"
+}
+
+### 차량 목록 조회
+### 차량 상세 정보 조회
+### 차량 수정
+### 차량 삭제
+### 차량 데이터 대용량 업로드
+### 차량 모델 목록 조회
