@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { postCustomer, getCustomers, updateCustomer, deleteCustomer } from '../controllers/customers/index.js';
+import { postCustomers, getCustomers, updateCustomers/*, deleteCustomer*/ } from '../controllers/customers/index.js';
 import { protect } from '../middlewares/auth.js'; // 인증 미들웨어
 
 const customersRouter = Router();
@@ -8,15 +8,15 @@ const customersRouter = Router();
 customersRouter.use(protect);
 
 // 고객 등록
-customersRouter.post('/', postCustomer);
+customersRouter.post('/', postCustomers);
 
 // 고객 목록 조회
 customersRouter.get('/', getCustomers);
 
 // 고객 수정
-customersRouter.put('/', updateCustomer);
+customersRouter.put('/:id', updateCustomers);
 
 // 고객 삭제
-customersRouter.delete('/', deleteCustomer);
+//customersRouter.delete('/', deleteCustomer);
 
 export default customersRouter;
