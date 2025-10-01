@@ -1,8 +1,10 @@
-import express from "express";
-import login from "../controllers/auth/postLogin.js";
+import express from 'express';
+import PostRefresh from '../controllers/auth/postRefresh.js';
+import PostLogin from '../controllers/auth/postLogin.js';
 
 const router = express.Router();
 
-router.post("/login", login);
+router.post('/login', PostLogin.login);
+router.post('/refresh', PostRefresh.refresh);
 
 export default router;
