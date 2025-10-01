@@ -28,9 +28,13 @@ Content-Type: application/json
 }
 
 ### 로그인
-GET {{baseUrl}}/users/me
+POST {{baseUrl}}/auth/login
 Content-Type: application/json
-Authorization: bearer {{accessToken}}
+
+{
+  "email": "testman@test.com",
+  "password": "Test"
+}
 
 
 # ================================
@@ -39,7 +43,7 @@ Authorization: bearer {{accessToken}}
 
 ### 차량 등록
 POST {{baseUrl}}/cars
-# Authorization: bearer {{accessToken}}
+Authorization: bearer {{accessToken}}
 Content-Type: application/json
 
 {

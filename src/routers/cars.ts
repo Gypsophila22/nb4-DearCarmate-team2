@@ -1,10 +1,13 @@
 import express from 'express';
+import passport from 'passport';
 
 import { createCarController } from '../controllers/cars/createCarsController.js';
 
 const router = express.Router();
 
-router.route('/').post(createCarController); // 차량 등록
+router
+  .route('/')
+  .post(passport.authenticate('jwt', { session: false }), createCarController); // 차량 등록
 // .get(); // 차량 목록 조회
 
 // router
