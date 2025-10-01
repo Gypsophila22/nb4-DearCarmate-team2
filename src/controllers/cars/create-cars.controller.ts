@@ -1,4 +1,4 @@
-import { CreateCarRequestDto } from '../../repositories/dtos/cars/create-cars-request.dto.js';
+import { CreateCarRequestDto } from '../../dtos/cars/create-cars-request.dto.js';
 import { createCarSerialize } from '../../serializers/cars/create-cars.serializer.js';
 import { createCarService } from '../../services/cars/create-cars.service.js';
 

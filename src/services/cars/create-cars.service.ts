@@ -4,7 +4,7 @@ import { createCarModelRepository } from '../../repositories/cars/create-car-mod
 import { createCarRepository } from '../../repositories/cars/create-cars.repository.js';
 import { findCarModelRepository } from '../../repositories/cars/find-car-model.repository.js';
 
-import type { CreateCarRequestDto } from '../../repositories/dtos/cars/create-cars-request.dto.js';
+import type { CreateCarRequestDto } from '../../dtos/cars/create-cars-request.dto.js';
 
 /**
  * 차량 생성 Service

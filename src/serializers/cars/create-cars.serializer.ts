@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import type { Cars } from '../../../generated/prisma/index.js';
-import type { CreateCarResponseDto } from '../../repositories/dtos/cars/create-cars-response.dto.js';
+import type { CreateCarResponseDto } from '../../dtos/cars/create-cars-response.dto.js';
 
 export const createCarSerialize = (
   car: Cars & {
