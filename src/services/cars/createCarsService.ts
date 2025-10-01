@@ -1,16 +1,16 @@
 import { z } from 'zod';
 
-import { createCarModelRepository } from '../../repositories/cars/createCarModelsRepository.js';
-import { createCarRepository } from '../../repositories/cars/createCarsRepository.js';
+import { createCarsModelRepository } from '../../repositories/cars/createCarModelsRepository.js';
+import { createCarsRepository } from '../../repositories/cars/createCarsRepository.js';
 import { findCarModelRepository } from '../../repositories/cars/findCarModelRepository.js';
 
-import type { CreateCarRequestDto } from '../../dtos/cars/createCarsRequestDto.js';
+import type { CreateCarsRequestDto } from '../../dtos/cars/createCarsRequestDto.js';
 
 /**
  * 차량 생성 Service
  */
-export const createCarService = async (
-  data: z.infer<typeof CreateCarRequestDto>,
+export const createCarsService = async (
+  data: z.infer<typeof CreateCarsRequestDto>,
 ) => {
   // 차량 모델 조회
   let carModel = await findCarModelRepository.findByManufacturerAndModel(
@@ -20,7 +20,7 @@ export const createCarService = async (
 
   // 모델이 없으면 생성
   if (!carModel) {
-    carModel = await createCarModelRepository.create({
+    carModel = await createCarsModelRepository.create({
       manufacturer: data.manufacturer, // 제조사
       model: data.model, // 차량 이름
       type: '세단', // 기본값 세단
@@ -28,7 +28,7 @@ export const createCarService = async (
   }
 
   // 모델 id 넣어서 차량 데이터 생성
-  return createCarRepository.create({
+  return createCarsRepository.create({
     carNumber: data.carNumber,
     manufacturingYear: data.manufacturingYear,
     mileage: data.mileage,
@@ -36,7 +36,9 @@ export const createCarService = async (
     accidentCount: data.accidentCount,
     explanation: data.explanation,
     accidentDetails: data.accidentDetails,
-    modelId: carModel.id,
+    carModel: {
+      connect: { id: carModel.id },
+    },
     status: 'possession',
   });
 };
