@@ -18,7 +18,7 @@ class PostRegister {
         companyCode,
       } = req.body;
 
-      // 존재하는 이메일 체크
+      // 이메일 중복 체크
       const exist = await prisma.users.findUnique({
         where: { email },
       });
