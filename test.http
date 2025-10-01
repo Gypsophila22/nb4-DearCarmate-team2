@@ -31,3 +31,32 @@ Content-Type: application/json
 GET {{baseUrl}}/users/me
 Content-Type: application/json
 Authorization: bearer {{accessToken}}
+
+
+# ================================
+# Cars
+# ================================
+
+### 차량 등록
+POST {{baseUrl}}/cars
+# Authorization: bearer {{accessToken}}
+Content-Type: application/json
+
+{
+	"carNumber": "12가1234",
+	"manufacturer": "기아",
+	"model": "K3",
+	"manufacturingYear": 2020,
+	"mileage": 30,
+	"price": 1000000,
+	"accidentCount": 1,
+	"explanation": "설명",
+	"accidentDetails": "사고설명"
+}
+
+### 차량 목록 조회
+### 차량 상레 정보 조회
+### 차량 수정
+### 차량 삭제
+### 차량 데이터 대용량 업로드
+### 차량 모델 목록 조회

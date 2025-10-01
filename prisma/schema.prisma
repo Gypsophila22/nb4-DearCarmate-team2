@@ -36,19 +36,39 @@ model Companies {
 }
 
 model Cars {
-  id                Int    @id @unique
-  number            String
-  manufacturer      String
-  model             String
+  id                Int        @id @unique @default(autoincrement())
+  carNumber         String
   manufacturingYear Int
   mileage           Int
   price             Int
   accidentCount     Int
   explanation       String
   accidentDetails   String
+  status            CarStatus  @default(possession)
+  modelId           Int
+  carModel          CarModel   @relation(fields: [modelId], references: [id])
+  contract          Contracts?
+}
 
-  contract Contracts?
-  // contractId Int?
+// 차종
+model CarModel {
+  id           Int     @id @default(autoincrement())
+  model        String
+  type         CarType
+  manufacturer String
+  cars         Cars[]
+}
+
+enum CarType {
+  SUV
+  세단
+  경차
+}
+
+enum CarStatus {
+  possession // 보유 중
+  contractProceeding // 계약 진행 중
+  contractCompleted // 계약 완료
 }
 
 model Customers {
