@@ -19,7 +19,7 @@ Content-Type: application/json
 	"companyCode": "TSC"
 }
 
-##토큰 리프레쉬
+### 토큰 리프레쉬
 POST {{baseUrl}}/auth/refresh
 Content-Type: application/json
 
@@ -46,7 +46,7 @@ Content-Type: application/json
 	"carNumber": "12가1234",
 	"manufacturer": "기아",
 	"model": "K3",
-	"manufacturingYear": 2020,
+	"manufacturingYear": 2023,
 	"mileage": 30,
 	"price": 1000000,
 	"accidentCount": 1,
@@ -55,7 +55,7 @@ Content-Type: application/json
 }
 
 ### 차량 목록 조회
-### 차량 상레 정보 조회
+### 차량 상세 정보 조회
 ### 차량 수정
 ### 차량 삭제
 ### 차량 데이터 대용량 업로드
