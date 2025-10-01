@@ -17,16 +17,41 @@ export const getCustomers = async (req: AuthRequest, res: Response) => {
         if (!companyId) {
             return res.status(401).json({ message: '인증된 사용자 정보가 없습니다.' });
         }
-        // 해당 회사의 고객 목록을 데이터베이스에서 조회합니다.
+
+        // 페이지네이션
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 10;
+
+        const skip = (page - 1) * limit;
+
         const customers = await prisma.customers.findMany({
             where: {
                 companyId: companyId,
             },
+            take: limit,
+            skip: skip,
         });
-        // 조회된 고객 목록을 응답
-        res.status(200).json(customers);
+        // 전체 데이터를 조회하여 총 페이지 수 계산
+        const totalCustomers = await prisma.customers.count({
+            where: {
+                companyId: companyId,
+            },
+        });
+        const totalPages = Math.ceil(totalCustomers / limit);
+        // 페이지네이션 정보를 포함하여 응답
+        res.status(200).json({
+            customers,
+            pagination: {
+                totalItems: totalCustomers,
+                totalPages,
+                currentPage: page,
+                pageSize: limit,
+            },
+        });
+
     }   catch (error) {
         console.error(error);
         res.status(500).json({ message: '서버 내부 오류가 발생하였습니다.' });
     }
 };
+  
