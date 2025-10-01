@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
-import { Car } from './carsDto.js';
+import { Cars } from './carsDto.js';
 
 /**
  * 차량 추가 요청 DTO
  */
-export const CreateCarRequestDto = Car.omit({
+export const CreateCarsRequestDto = Cars.omit({
   id: true,
   status: true, // 계약 상태
   modelId: true, // 차종 모델 id

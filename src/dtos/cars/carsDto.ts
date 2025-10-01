@@ -1,9 +1,13 @@
 import { z } from 'zod';
 
-export const Car = z.object({
+export const Cars = z.object({
   id: z.number().int().nonnegative(), // 차량 고유 ID
   carNumber: z.string().min(1).max(20), // 차량 번호
-  manufacturingYear: z.number().int().nonnegative().lte(new Date().getFullYear()), // 제조년도
+  manufacturingYear: z
+    .number()
+    .int()
+    .nonnegative()
+    .lte(new Date().getFullYear()), // 제조년도
   mileage: z.number().int().nonnegative(), // 주행거리
   price: z.number().int().nonnegative(), // 가격
   accidentCount: z.number().int().nonnegative(), // 사고 횟수
