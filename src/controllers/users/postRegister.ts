@@ -62,7 +62,9 @@ class PostRegister {
         },
       });
 
-      res.status(201).json(user);
+      // 응답 (비밀번호 제외)
+      const { password: _, ...safeUser } = user;
+      res.status(201).json(safeUser);
     } catch (e) {
       console.error(e);
       res.status(500).json({ message: '서버 에러.' });

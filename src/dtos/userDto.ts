@@ -6,3 +6,17 @@ export interface UpdateUserDTO {
   passwordConfirmation?: string;
   currentPassword: string;
 }
+
+export interface UserResponseDTO {
+  id: number;
+  name: string;
+  email: string;
+  employeeNumber: string;
+  phoneNumber: string;
+  imgUrl: string | null;
+  isAdmin: boolean;
+  company: {
+    name: string;
+    code: string;
+  };
+}
