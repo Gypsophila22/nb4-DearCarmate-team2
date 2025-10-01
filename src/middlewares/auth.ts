@@ -1,18 +1,14 @@
 import jwt from 'jsonwebtoken';
 import type { JwtPayload } from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../../generated/prisma/index.js';
 import type { Request, Response, NextFunction } from 'express';
 
 const prisma = new PrismaClient();
 
-export interface AuthRequest extends Request {
-    user? : {
-        id: number;
-        companyId: number;
-    };
-}
+import { AuthRequest } from '../types.js';
 
-export const protect = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const protect = async (req: Request, res: Response, next: NextFunction) => {
+    const authReq = req as AuthRequest;
     const secret = process.env.JWT_SECRET;
     if (!secret) {
         //JWT_SECRET이 없는 경우 서버 에러 처리
@@ -53,7 +49,7 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
             }
 
             // req 객체에 user 정보 주입
-            req.user = currentUser;
+            authReq.user = currentUser;
             return next();
         }   catch (error) {
             console.error(error);

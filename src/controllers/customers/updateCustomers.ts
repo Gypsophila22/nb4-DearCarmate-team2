@@ -1,32 +1,28 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Gender, Region } from '../../../generated/prisma/index.js';
 import type { Request, Response } from 'express';
 import { z, ZodError } from 'zod';
 
 const prisma = new PrismaClient();
 
-export interface AuthRequest extends Request {
-    user?: {
-        id: number;
-        companyId: number;
-    };
-}
+import { AuthRequest } from '../../types.js';
 
 // zod 를 이용해 유효성 검사
 const updateCustomerSchema = z.object({
     name: z.string().min(1).optional(),
-    gender: z.enum(['MALE', 'FEMALE']).optional(),
+    gender: z.nativeEnum(Gender).optional(),
     phoneNumber: z.string().min(1).optional(),
     ageGroup: z.string().optional(),
-    region: z.string().optional(),
+    region: z.nativeEnum(Region).optional(),
     email: z.string().email().optional(),
     memo: z.string().optional(),
 });
 
-export const updateCustomers = async (req: AuthRequest, res: Response) => {
+export const updateCustomers = async (req: Request, res: Response) => {
+    const authReq = req as AuthRequest;
     try {
         // 파라미터에서 고객 ID를, 유저 정보에서 회사 ID를 가져옵니다.
-        const customerId = parseInt(req.params.id);
-        const companyId = req.user?.companyId;
+        const customerId = parseInt(req.params.id!);
+        const companyId = authReq.user?.companyId;
 
         if (!companyId) {
             return res.status(401).json({ message: '인증된 사용자 정보가 없습니다.' });
@@ -57,7 +53,7 @@ export const updateCustomers = async (req: AuthRequest, res: Response) => {
 
     }   catch (error) {
         if (error instanceof ZodError) {
-            return res.status(400).json({ message: '입력한 데이터가 유효하지 않습니다.' });
+            return res.status(400).json({ message: '입력한 데이터가 유효하지 않습니다.', errors: error.issues });
         }
         console.error(error);
         res.status(500).json({ message: '서버 내부 오류가 발생하였습니다.' });

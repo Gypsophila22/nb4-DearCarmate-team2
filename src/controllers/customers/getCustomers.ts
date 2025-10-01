@@ -1,19 +1,15 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma } from '../../../generated/prisma/index.js';
 import type { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
-export interface AuthRequest extends Request {
-    user?: {
-        id: number;
-        companyId: number;
-    };
-}
+import { AuthRequest } from '../../types.js';
 
-export const getCustomers = async (req: AuthRequest, res: Response) => {
+export const getCustomers = async (req: Request, res: Response) => {
+    const authReq = req as AuthRequest;
     try {
         // 로그인한 유저의 회사 ID를 가져옵니다
-        const companyId = req.user?.companyId;
+        const companyId = authReq.user?.companyId;
         if (!companyId) {
             return res.status(401).json({ message: '인증된 사용자 정보가 없습니다.' });
         }

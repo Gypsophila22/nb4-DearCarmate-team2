@@ -17,6 +17,6 @@ customersRouter.get('/', getCustomers);
 customersRouter.put('/:id', updateCustomers);
 
 // 고객 삭제
-customersRouter.delete('/', deleteCustomers);
+customersRouter.delete('/:id', deleteCustomers);
 
 export default customersRouter;

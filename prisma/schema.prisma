@@ -15,7 +15,7 @@ datasource db {
 }
 
 model Users {
-  id             Int     @id
+  id             Int     @id @default(autoincrement())
   name           String
   email          String
   employeeNumber String
@@ -29,7 +29,7 @@ model Users {
 }
 
 model Companies {
-  id        Int         @id
+  id        Int         @id @default(autoincrement())
   name      String
   code      String
   user      Users[]
@@ -37,7 +37,7 @@ model Companies {
 }
 
 model Cars {
-  id                Int    @id @unique
+  id                Int    @id @default(autoincrement())
   number            String
   manufacturer      String
   model             String
@@ -53,7 +53,7 @@ model Cars {
 }
 
 model Customers {
-  id          Int     @id @unique
+  id          Int     @id @default(autoincrement())
   name        String
   gender      Gender
   phoneNumber String
@@ -104,7 +104,7 @@ enum Region {
 }
 
 model Contracts {
-  id     Int        @id @unique
+  id     Int        @id @default(autoincrement())
   date   DateTime //계약 날짜
   alarms DateTime[] //알람을 원하는 시간
 
