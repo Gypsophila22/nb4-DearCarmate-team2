@@ -1,14 +1,15 @@
 import express from 'express';
 import passport from 'passport';
 
-import { createCarController } from '../controllers/cars/createCarsController.js';
+import { createCarsController } from '../controllers/cars/createCarsController.js';
+import { getCarsListController } from '../controllers/cars/getCarsListController.js';
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(passport.authenticate('jwt', { session: false }), createCarController); // 차량 등록
-// .get(); // 차량 목록 조회
+  .post(passport.authenticate('jwt', { session: false }), createCarsController) // 차량 등록
+  .get(passport.authenticate('jwt', { session: false }), getCarsListController); // 차량 목록 조회
 
 // router
 // .route('/:carId')
