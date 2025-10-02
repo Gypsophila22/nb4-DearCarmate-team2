@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { postCustomers, getCustomers, updateCustomers, deleteCustomers } from '../controllers/customers/index.js';
+import { postCustomers, getCustomers, updateCustomers, deleteCustomers, getCustomerById } from '../controllers/customers/index.js';
 import { protect } from '../middlewares/auth.js'; // 인증 미들웨어
 
 const customersRouter = Router();
@@ -18,5 +18,8 @@ customersRouter.put('/:id', updateCustomers);
 
 // 고객 삭제
 customersRouter.delete('/:id', deleteCustomers);
+
+// 고객 상세 정보 조회
+customersRouter.get('/:id', getCustomerById);
 
 export default customersRouter;
