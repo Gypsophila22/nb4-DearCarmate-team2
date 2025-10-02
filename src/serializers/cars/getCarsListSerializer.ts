@@ -2,8 +2,6 @@ import { z } from 'zod';
 
 import { GetCarsListResponseDto } from '../../dtos/cars/getCarsListResponseDto.js';
 
-import type { Cars } from '../../../generated/prisma/index.js';
-
 export const getCarsListSerializer = (
   // TODO: any 변경
   cars: any[],
