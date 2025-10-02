@@ -11,6 +11,6 @@ export default function errorHandler(
     const errMsg = `서버 에러, 코드 : ${err.status}, 에러명 : ${err.message}`;
 
     console.error(errMsg);
-    return res.send(errMsg);
+    return res.status(err.status).send(errMsg);
   }
 }
