@@ -1,13 +1,14 @@
 import { PrismaClient } from '../../../generated/prisma/index.js';
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
+import createError from 'http-errors';
 
 const prisma = new PrismaClient();
 
 class GetUser {
-  async getMe(req: Request, res: Response) {
+  async getMe(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.user) {
-        return res.status(401).json({ message: '로그인이 필요합니다' });
+        return next(createError(401, '로그인이 필요합니다.'));
       }
 
       const user = await prisma.users.findUnique({
@@ -25,12 +26,13 @@ class GetUser {
       });
 
       if (!user) {
-        return res.status(404).json({ message: '존재하지 않는 유저입니다' });
+        return next(createError(404, '존재하지 않는 유저입니다.'));
       }
 
       return res.json(user);
     } catch (e) {
-      return res.status(400).json({ message: '잘못된 요청입니다' });
+      console.error(e);
+      return next(createError(400, '잘못된 요청입니다.'));
     }
   }
 }

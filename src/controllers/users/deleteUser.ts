@@ -1,12 +1,15 @@
 import { PrismaClient } from '../../../generated/prisma/index.js';
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
+import createError from 'http-errors';
+import { nextTick } from 'process';
+import { ru } from 'zod/locales';
 
 const prisma = new PrismaClient();
 
 class DeleteUser {
-  async deleteMe(req: Request, res: Response) {
+  async deleteMe(req: Request, res: Response, next: NextFunction) {
     if (!req.user) {
-      return res.status(401).json({ message: '로그인이 필요합니다.' });
+      return next(createError(401, '로그인이 필요합니다.'));
     }
 
     await prisma.users.delete({
@@ -16,15 +19,15 @@ class DeleteUser {
     return res.json({ message: '유저 삭제 성공.' });
   }
 
-  async deleteUser(req: Request, res: Response) {
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
     if (!req.user?.isAdmin) {
-      return res.status(403).json({ message: '관리자 권한이 필요합니다.' });
+      return next(createError(403, '관리자 권한이 필요합니다.'));
     }
 
     const userId = Number(req.params.id);
     const user = await prisma.users.findUnique({ where: { id: userId } });
     if (!user) {
-      return res.status(404).json({ message: '존재하지 않는 유저입니다.' });
+      return next(createError(404, '존재하지 않는 유저입니다.'));
     }
 
     await prisma.users.delete({ where: { id: userId } });
