@@ -6,6 +6,7 @@ import { requestLogger } from './src/lib/middlewares/logger.js';
 
 import authRouter from './src/routers/auth.js';
 import userRouter from './src/routers/users.js';
+import companyRouter from './src/routers/companies.js';
 
 dotenv.config(); // .env 파일 환경변수 적재
 
@@ -23,3 +24,6 @@ app.use('/users', userRouter);
 app.listen(PORT, () => {
   console.log(`server running PORT ${PORT}`);
 });
+
+
+app.use('/admin', companyRouter);
