@@ -31,7 +31,7 @@ model Users {
 model Companies {
   id        Int         @id @default(autoincrement())
   name      String
-  code      String
+  code      String      @unique
   user      Users[]
   Customers Customers[]
 }

@@ -4,7 +4,7 @@ import { z, ZodError } from 'zod';
 
 const prisma = new PrismaClient();
 
-import { AuthRequest } from '../../types.js';
+import type { AuthRequest } from '../../types.js';
 
 // zod 를 이용해 유효성 검사
 const updateCustomerSchema = z.object({

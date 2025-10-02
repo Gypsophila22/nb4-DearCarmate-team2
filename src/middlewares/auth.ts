@@ -5,7 +5,7 @@ import type { Request, Response, NextFunction } from 'express';
 
 const prisma = new PrismaClient();
 
-import { AuthRequest } from '../types.js';
+import type { AuthRequest } from '../types.js';
 
 export const protect = async (req: Request, res: Response, next: NextFunction) => {
     const authReq = req as AuthRequest;

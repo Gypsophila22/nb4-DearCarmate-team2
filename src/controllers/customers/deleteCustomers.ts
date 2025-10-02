@@ -3,7 +3,7 @@ import type { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
-import { AuthRequest } from '../../types.js';
+import type { AuthRequest } from '../../types.js';
 
 export const deleteCustomers = async (req: Request, res: Response) => {
     const authReq = req as AuthRequest;
