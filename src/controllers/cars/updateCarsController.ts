@@ -13,7 +13,6 @@ export const updateCarsController = async (req: Request, res: Response) => {
       carNumber,
       manufacturer,
       model,
-      type,
       manufacturingYear,
       mileage,
       price,
@@ -38,14 +37,18 @@ export const updateCarsController = async (req: Request, res: Response) => {
 
     let modelId = car.modelId; // 기본값: 기존 모델 ID
 
-    // 제조사/모델/타입 변경이 있으면 새 CarModel 처리
-    if (manufacturer || model || type) {
-      // 변경된 제조사/모델/타입 조합이 이미 존재하는 CarModel인지 확인
-      const existingCarModel = await prisma.carModel.findFirst({
+    // 제조사/모델 변경이 있으면 모델이 존재하는지 확인 후 없으면 새 CarModel 처리
+    if (
+      (manufacturer && manufacturer !== car.carModel.manufacturer) ||
+      (model && model !== car.carModel.model)
+    ) {
+      // 변경된 제조사/모델 조합이 이미 존재하는 CarModel인지 확인
+      const existingCarModel = await prisma.carModel.findUnique({
         where: {
-          manufacturer: manufacturer ?? car.carModel.manufacturer,
-          model: model ?? car.carModel.model,
-          type: type ?? car.carModel.type,
+          manufacturer_model: {
+            manufacturer: manufacturer ?? car.carModel.manufacturer,
+            model: model ?? car.carModel.model,
+          },
         },
       });
 
@@ -58,7 +61,7 @@ export const updateCarsController = async (req: Request, res: Response) => {
           data: {
             manufacturer: manufacturer ?? car.carModel.manufacturer,
             model: model ?? car.carModel.model,
-            type: type ?? car.carModel.type,
+            type: car.carModel.type, // 기존 차량의 type 유지
           },
         });
         modelId = newCarModel.id;

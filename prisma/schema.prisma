@@ -57,6 +57,8 @@ model CarModel {
   type         CarType
   manufacturer String
   cars         Cars[]
+
+  @@unique([manufacturer, model])
 }
 
 enum CarType {
