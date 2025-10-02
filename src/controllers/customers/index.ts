@@ -2,10 +2,12 @@ import { postCustomers} from './postCustomers.js';
 import { getCustomers } from './getCustomers.js';
 import { updateCustomers } from './updateCustomers.js';
 import { deleteCustomers } from './deleteCustomers.js';
+import { getCustomerById } from './getCustomerById.js';
 
 export {
     postCustomers,
     getCustomers,
     updateCustomers,
-    deleteCustomers
+    deleteCustomers,
+    getCustomerById
 };
