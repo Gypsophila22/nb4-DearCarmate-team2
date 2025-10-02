@@ -24,7 +24,7 @@ POST {{baseUrl}}/auth/refresh
 Content-Type: application/json
 
 {
-    "refreshToken": "{{refreshToken}}"
+    "refreshToken": "{{login.response.body.refreshToken}}"
 }
 
 ### 로그인
@@ -40,15 +40,15 @@ Content-Type: application/json
 ### 내 정보 수정 (비밀번호 변경 + 프로필 수정)
 PATCH {{baseUrl}}/users/me
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{login.response.body.$.accessToken}}
 
 {
   "employeeNumber": "200",
   "phoneNumber": "01099998888",
-  "currentPassword": "Test123!",
+  "currentPassword": "Test",
   "password": "NewPass123!",
   "passwordConfirmation": "NewPass123!",
-  "imageUrl": "https://example.com/profile.png"
+  "imgUrl": "https://example.com/profile.png"
 }
 
 ### 유저 삭제 (회원 탈퇴)
