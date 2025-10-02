@@ -4,6 +4,16 @@
 @refreshTokenName=refresh-token
 @refreshToken=
 
+### 어드민 로그인
+# @name adminLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@codeit.com",
+  "password": "AdminPass123!"
+}
+
 ### 회원가입
 POST {{baseUrl}}/users/register
 Content-Type: application/json
