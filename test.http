@@ -4,30 +4,63 @@
 @refreshTokenName=refresh-token
 @refreshToken=
 
+### 어드민 로그인
+# @name adminLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@codeit.com",
+  "password": "AdminPass123!"
+}
+
 ### 회원가입
 POST {{baseUrl}}/users/register
 Content-Type: application/json
 
 {
 	"name": "testman",
-	"email": "testman@test.com",
+	"email": "testman2@test.com",
 	"employeeNumber": "100",
 	"phoneNumber": "01021210696",
 	"password": "Test",
 	"passwordConfirmation": "Test",
-	"company": "testCompany",
-	"companyCode": "TSC"
+	"company": "Codeit",
+	"companyCode": "CDEIT2025"
 }
 
-##토큰 리프레쉬
+### 토큰 리프레쉬
 POST {{baseUrl}}/auth/refresh
 Content-Type: application/json
 
 {
-    "refreshToken": {{refreshToken}}
+    "refreshToken": "{{login.response.body.refreshToken}}"
 }
 
 ### 로그인
-GET {{baseUrl}}/users/me
+# @name login
+POST {{baseUrl}}/auth/login
 Content-Type: application/json
-Authorization: bearer {{accessToken}}
+
+{
+  "email": "testman2@test.com",
+  "password": "Test"
+}
+
+### 내 정보 수정 (비밀번호 변경 + 프로필 수정)
+PATCH {{baseUrl}}/users/me
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+{
+  "employeeNumber": "200",
+  "phoneNumber": "01099998888",
+  "currentPassword": "Test",
+  "password": "NewPass123!",
+  "passwordConfirmation": "NewPass123!",
+  "imgUrl": "https://example.com/profile.png"
+}
+
+### 유저 삭제 (회원 탈퇴)
+DELETE {{baseUrl}}/users/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
