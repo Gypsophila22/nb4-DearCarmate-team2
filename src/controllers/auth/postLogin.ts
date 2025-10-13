@@ -1,7 +1,8 @@
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { PrismaClient } from '../../../generated/prisma/index.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import createError from 'http-errors';
 
 const prisma = new PrismaClient();
 
@@ -9,13 +10,13 @@ const ACCESS_SECRET = process.env.ACCESS_TOKEN_SECRET || 'dev_access_secret';
 const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET || 'dev_refresh_secret';
 
 class PostLogin {
-  async login(req: Request, res: Response) {
+  async login(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password } = req.body;
 
       // 요청 유효성 검사
       if (!email || !password) {
-        return res.status(400).json({ message: '잘못된 요청입니다' });
+        return next(createError(400, '이메일과 비밀번호를 입력해야 합니다.'));
       }
 
       // 유저 조회
@@ -27,13 +28,13 @@ class PostLogin {
       });
 
       if (!user) {
-        return res.status(400).json({ message: '잘못된 요청입니다' });
+        return next(createError(404, '존재하지 않는 사용자입니다.'));
       }
 
       // 비밀번호 검증
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
-        return res.status(400).json({ message: '잘못된 요청입니다' });
+        return next(createError(401, '비밀번호가 올바르지 않습니다.'));
       }
 
       // 토큰 발급
@@ -57,7 +58,7 @@ class PostLogin {
       });
     } catch (err) {
       console.error(err);
-      return res.status(500).json({ message: '서버 에러' });
+      return next(createError(500, '서버 에러.'));
     }
   }
 }

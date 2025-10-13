@@ -1,11 +1,12 @@
 import { PrismaClient } from '../../../generated/prisma/index.js';
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
+import createError from 'http-errors';
 
 const prisma = new PrismaClient();
 
 class PostRegister {
-  async register(req: Request, res: Response) {
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
       const {
         name,
@@ -24,14 +25,14 @@ class PostRegister {
       });
 
       if (exist) {
-        return res.status(409).json({ message: '이미 존재하는 이메일입니다.' });
+        return next(createError(409, '이미 존재하는 이메일입니다.'));
       }
 
       // 비밀번호 확인 체크
       if (password !== passwordConfirmation) {
-        return res
-          .status(400)
-          .json({ message: '비밀번호와 비밀번호 확인이 일치하지 않습니다.' });
+        return next(
+          createError(400, '비밀번호와 비밀번호 확인이 일치하지 않습니다.')
+        );
       }
 
       // 해쉬화
@@ -43,9 +44,7 @@ class PostRegister {
       });
 
       if (!companyRecord) {
-        return res
-          .status(404)
-          .json({ message: '존재하지 않는 회사 코드입니다.' });
+        return next(createError(404, '존재하지 않는 회사 코드입니다.'));
       }
 
       const user = await prisma.users.create({
@@ -62,10 +61,12 @@ class PostRegister {
         },
       });
 
-      res.status(201).json(user);
+      // 응답 (비밀번호 제외)
+      const { password: _, ...safeUser } = user;
+      res.status(201).json(safeUser);
     } catch (e) {
       console.error(e);
-      res.status(500).json({ message: '서버 에러.' });
+      return next(createError(500, '서버 에러.'));
     }
   }
 }
