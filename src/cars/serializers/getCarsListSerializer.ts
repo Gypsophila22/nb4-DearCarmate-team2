@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { GetCarsListResponseDto } from "../../auth/dtos/cars/getCarsListResponseDto.js";
+import { GetCarsListResponseDto } from "../dtos/getCarsListResponseDto.js";
 
 export const getCarsListSerializer = (
   // TODO: any 변경

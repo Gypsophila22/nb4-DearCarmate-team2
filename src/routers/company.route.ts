@@ -1,11 +1,11 @@
 import express from "express";
 import passport from "passport";
 
-import postCompany from "../controllers/companies/postCompany.js";
-import getCompany from "../controllers/companies/getCompany.js";
-import patchCompany from "../controllers/companies/patchCompany.js";
-import deleteCompany from "../controllers/companies/deleteCompany.js";
-import getCompanyUsers from "../controllers/companies/getCompanyUsers.js";
+import postCompany from "../companies/controllers/postCompany.js";
+import getCompany from "../companies/controllers/getCompany.js";
+import patchCompany from "../companies/controllers/patchCompany.js";
+import deleteCompany from "../companies/controllers/deleteCompany.js";
+import getCompanyUsers from "../companies/controllers/getCompanyUsers.js";
 
 const router = express.Router();
 
@@ -40,6 +40,5 @@ router
     passport.authenticate("jwt", { session: false }),
     deleteCompany.deleteCompany
   );
-
 
 export default router;

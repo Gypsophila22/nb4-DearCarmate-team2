@@ -1,4 +1,4 @@
-import { GetCarsListRequestDto } from "../../auth/dtos/cars/getCarsListRequestDto.js";
+import { GetCarsListRequestDto } from "../dtos/getCarsListRequestDto.js";
 import { getCarsListSerializer } from "../serializers/getCarsListSerializer.js";
 import { getCarsListService } from "../services/getCarsListService.js";
 

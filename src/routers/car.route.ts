@@ -1,14 +1,17 @@
 import express from "express";
 import passport from "passport";
 
-import { createCarsController } from "../controllers/cars/createCar.js";
-import { deleteCarController } from "../controllers/cars/deleteCarsController.js";
-import { getCarByIdController } from "../controllers/cars/getCarByIdController.js";
-import { getCarModelsController } from "../controllers/cars/getCarModelsController.js";
-import { getCarsListController } from "../controllers/cars/getCarsListController.js";
-import { updateCarsController } from "../controllers/cars/updateCarsController.js";
+//import를 index 사용해서 캡슐화 진행해주세요
+import { createCarsController } from "../cars/controllers/createCar.js";
+import { deleteCarController } from "../cars/controllers/deleteCarsController.js";
+import { getCarByIdController } from "../cars/controllers/getCarByIdController.js";
+import { getCarModelsController } from "../cars/controllers/getCarModelsController.js";
+import { getCarsListController } from "../cars/controllers/getCarsListController.js";
+import { updateCarsController } from "../cars/controllers/updateCarsController.js";
 
 const router = express.Router();
+
+//passport를 직접 받아서 쓰지 마시고, user.route.ts의 사례처럼 passports를 받아와서 넣어주세요
 
 router
   .route("/")

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import type { Cars } from "../../../generated/prisma/index.js";
-import type { CreateCarsResponseDto } from "../../auth/dtos/cars/createCarsResponseDto.js";
+import type { CreateCarsResponseDto } from "../dtos/createCarsResponseDto.js";
 
 /**
  * Cars 객체와 관련 carModel(제조사, 모델명, 타입) 정보를 받아

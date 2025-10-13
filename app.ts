@@ -4,6 +4,12 @@ import passport from "passport";
 
 import errorHandler from "./src/middlewares/errorHandler.js";
 import { requestLogger } from "./src/middlewares/logger.js";
+
+// import authRotuer from "./auth.route.js";
+// import carRouter from "./car.route.js";
+// import companyRouter from "./company.route.js";
+// import userRouter from "./user.route.js";
+
 import routers from "./src/routers/index.js";
 
 dotenv.config(); // .env 파일 환경변수 적재
