@@ -10,6 +10,8 @@ import authRouter from './src/routers/auth.js';
 import carsRouter from './src/routers/carsRouter.js';
 import userRouter from './src/routers/users.js';
 
+import errorHandler from './src/middlewares/errorHandler.js';
+
 dotenv.config(); // .env 파일 환경변수 적재
 
 const app = express();
@@ -23,6 +25,8 @@ app.use(requestLogger);
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
 app.use('/cars', carsRouter);
+
+app.use(errorHandler);
 
 app.use(errorHandler);
 

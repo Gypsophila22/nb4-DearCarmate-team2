@@ -1,9 +1,7 @@
+import { PrismaClient } from '../../../generated/prisma/index.js';
+import type { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import createError from 'http-errors';
-
-import { PrismaClient } from '../../../generated/prisma/index.js';
-
-import type { NextFunction, Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
@@ -33,7 +31,7 @@ class PostRegister {
       // 비밀번호 확인 체크
       if (password !== passwordConfirmation) {
         return next(
-          createError(400, '비밀번호와 비밀번호 확인이 일치하지 않습니다.'),
+          createError(400, '비밀번호와 비밀번호 확인이 일치하지 않습니다.')
         );
       }
 

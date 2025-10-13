@@ -1,5 +1,4 @@
-import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
-
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { PrismaClient } from '../../../generated/prisma/index.js';
 
 const prisma = new PrismaClient();
@@ -25,5 +24,5 @@ export const jwtStrategy = new JwtStrategy(
     } catch (err) {
       return done(err, false);
     }
-  },
+  }
 );

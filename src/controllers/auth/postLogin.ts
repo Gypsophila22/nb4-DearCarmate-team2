@@ -1,10 +1,8 @@
-import bcrypt from 'bcrypt';
-import createError from 'http-errors';
-import jwt from 'jsonwebtoken';
-
-import { PrismaClient } from '../../../generated/prisma/index.js';
-
 import type { NextFunction, Request, Response } from 'express';
+import { PrismaClient } from '../../../generated/prisma/index.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import createError from 'http-errors';
 
 const prisma = new PrismaClient();
 
@@ -43,7 +41,7 @@ class PostLogin {
       const accessToken = jwt.sign(
         { id: user.id, email: user.email },
         ACCESS_SECRET,
-        { expiresIn: '1h' },
+        { expiresIn: '1h' }
       );
 
       const refreshToken = jwt.sign({ id: user.id }, REFRESH_SECRET, {
