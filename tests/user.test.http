@@ -1,6 +1,6 @@
 @baseUrl=http://localhost:4000
 @accessTokenName=access-token
-@accessToken=
+@accessToken={{adminLogin.response.body.accessToken}}
 @refreshTokenName=refresh-token
 @refreshToken=
 
