@@ -4,6 +4,9 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import passport from 'passport';
 
+import authRouter from "./src/routers/auth.js";
+import userRouter from './src/routers/users.js';
+import customersRouter from "./src/routers/customers.js";
 import errorHandler from './src/middlewares/errorHandler.js';
 import { requestLogger } from './src/middlewares/logger.js';
 import authRouter from './src/routers/auth.js';
@@ -23,8 +26,9 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(requestLogger);
 
-app.use('/auth', authRouter);
+app.use("/auth", authRouter);
 app.use('/users', userRouter);
+app.use("/api/customers", customersRouter);
 app.use('/cars', carsRouter);
 
 app.use(errorHandler);
