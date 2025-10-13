@@ -1,11 +1,16 @@
-import passport from 'passport';
-import { localStrategy } from './localStrategy.js';
-import { jwtStrategy } from './jwtStrategy.js';
+import passport from "passport";
+import { localStrategy } from "./localStrategy.js";
+import { jwtStrategy } from "./jwtStrategy.js";
 
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
-export const localAuth = passport.authenticate('local', { session: false });
-export const jwtAuth = passport.authenticate('jwt', { session: false });
+const localAuth = passport.authenticate("local", { session: false });
+const jwtAuth = passport.authenticate("jwt", { session: false });
 
-export default passport;
+const passports = {
+  localAuth: localAuth,
+  jwtAuth: jwtAuth,
+};
+
+export default passports;
