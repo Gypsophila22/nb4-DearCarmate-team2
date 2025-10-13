@@ -4,13 +4,9 @@ import passport from "passport";
 
 import errorHandler from "./src/middlewares/errorHandler.js";
 import { requestLogger } from "./src/middlewares/logger.js";
-
-// import authRotuer from "./auth.route.js";
-// import carRouter from "./car.route.js";
-// import companyRouter from "./company.route.js";
-// import userRouter from "./user.route.js";
-
-import routers from "./src/routers/index.js";
+import authRouter from "./src/routers/auth.js";
+import userRouter from './src/routers/users.js';
+import customersRouter from "./src/routers/customers.js";
 
 dotenv.config(); // .env 파일 환경변수 적재
 
@@ -22,12 +18,10 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(requestLogger);
 
-app.use("/auth", routers.authRotuer);
-app.use("/users", routers.userRouter);
-app.use("/cars", routers.carRouter);
+app.use("/auth", authRouter);
+app.use('/users', userRouter);
 app.use("/admin", routers.companyRouter);
-
-app.use(errorHandler);
+app.use("/api/customers", customersRouter);
 
 app.use(errorHandler);
 
