@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -29,39 +28,64 @@ model Users {
 }
 
 model Companies {
-  id   Int     @id @default(autoincrement())
-  name String
-  code String  @unique
-  user Users[]
+  id        Int         @id @default(autoincrement())
+  name      String
+  code      String      @unique
+  user      Users[]
+  Customers Customers[]
 }
 
 model Cars {
-  id                Int    @id @unique
-  number            String
-  manufacturer      String
-  model             String
+  id                Int        @id @unique @default(autoincrement())
+  carNumber         String
   manufacturingYear Int
   mileage           Int
   price             Int
   accidentCount     Int
   explanation       String
   accidentDetails   String
+  status            CarStatus  @default(possession)
+  modelId           Int
+  carModel          CarModel   @relation(fields: [modelId], references: [id])
+  contract          Contracts?
+}
 
-  contract Contracts?
-  // contractId Int?
+// 차종
+model CarModel {
+  id           Int     @id @default(autoincrement())
+  model        String
+  type         CarType
+  manufacturer String
+  cars         Cars[]
+
+  @@unique([manufacturer, model])
+}
+
+enum CarType {
+  SUV
+  세단
+  경차
+}
+
+enum CarStatus {
+  possession // 보유 중
+  contractProceeding // 계약 진행 중
+  contractCompleted // 계약 완료
 }
 
 model Customers {
-  id          Int    @id @unique
+  id          Int     @id @default(autoincrement())
   name        String
-  gender      String
+  gender      Gender
   phoneNumber String
-  ageGroup    String
-  region      String
-  email       String
-  memo        String
+  ageGroup    String?
+  region      Region?
+  email       String?
+  memo        String?
 
-  contract Contracts?
+  company   Companies  @relation(fields: [companyId], references: [id])
+  companyId Int
+  contract  Contracts?
 }
 
 enum Gender {
@@ -101,7 +125,7 @@ enum Region {
 }
 
 model Contracts {
-  id     Int        @id @unique
+  id     Int        @id @default(autoincrement())
   date   DateTime //계약 날짜
   alarms DateTime[] //알람을 원하는 시간
 

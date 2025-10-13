@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { upload } from '../lib/images.js';
-import { postUpload } from '../controllers/images/postUpload.js';
+import { postUpload } from '../controllers/images/image.upload.js';
 
 const router = Router();
 
