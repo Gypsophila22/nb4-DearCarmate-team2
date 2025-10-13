@@ -1,5 +1,3 @@
-import "./src/lib/passport/jwtStrategy.js";
-
 import * as dotenv from "dotenv";
 import express from "express";
 import passport from "passport";

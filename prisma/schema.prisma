@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -29,13 +28,18 @@ model Users {
 }
 
 model Companies {
-  id   Int     @id @default(autoincrement())
-  name String
-  code String  @unique
-  user Users[]
+  id        Int         @id @default(autoincrement())
+  name      String
+  code      String      @unique
+  user      Users[]
+  Customers Customers[]
 }
 
 model Cars {
+  id                Int    @id @default(autoincrement())
+  number            String
+  manufacturer      String
+  model             String
   id                Int        @id @unique @default(autoincrement())
   carNumber         String
   manufacturingYear Int
@@ -74,16 +78,18 @@ enum CarStatus {
 }
 
 model Customers {
-  id          Int    @id @unique
+  id          Int     @id @default(autoincrement())
   name        String
-  gender      String
+  gender      Gender
   phoneNumber String
-  ageGroup    String
-  region      String
-  email       String
-  memo        String
+  ageGroup    String?
+  region      Region?
+  email       String?
+  memo        String?
 
-  contract Contracts?
+  company   Companies  @relation(fields: [companyId], references: [id])
+  companyId Int
+  contract  Contracts?
 }
 
 enum Gender {
@@ -123,7 +129,7 @@ enum Region {
 }
 
 model Contracts {
-  id     Int        @id @unique
+  id     Int        @id @default(autoincrement())
   date   DateTime //계약 날짜
   alarms DateTime[] //알람을 원하는 시간
 
