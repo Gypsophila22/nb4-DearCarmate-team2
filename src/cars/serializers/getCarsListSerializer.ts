@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { GetCarsListResponseDto } from '../../dtos/cars/getCarsListResponseDto.js';
+import { GetCarsListResponseDto } from "../../auth/dtos/cars/getCarsListResponseDto.js";
 
 export const getCarsListSerializer = (
   // TODO: any 변경
   cars: any[],
   currentPage: number,
   pageSize: number,
-  totalItemCount: number,
+  totalItemCount: number
 ) => {
   return GetCarsListResponseDto.parse({
     currentPage: currentPage,

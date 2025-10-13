@@ -1,6 +1,6 @@
-import prisma from '../../config/prisma.js';
+import prisma from "../../config/prisma.js";
 
-import type { CarFilter } from '../../services/cars/getCarsListService.js';
+import type { CarFilter } from "../services/getCarsListService.js";
 
 /**
  * 차량 목록 조회 Repository

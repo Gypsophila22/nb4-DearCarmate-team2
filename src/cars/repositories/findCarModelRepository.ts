@@ -1,4 +1,4 @@
-import prisma from '../../config/prisma.js';
+import prisma from "../../config/prisma.js";
 
 /**
  * 제조사와 모델명으로 carModel 조회
