@@ -1,1 +1,0 @@
-{"version":3,"file":"deleteUser.d.ts","sourceRoot":"","sources":["../../../../src/controllers/users/deleteUser.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAIjD,cAAM,UAAU;IACR,QAAQ,CAAC,GAAG,EAAE,OAAO,EAAE,GAAG,EAAE,QAAQ;IAYpC,UAAU,CAAC,GAAG,EAAE,OAAO,EAAE,GAAG,EAAE,QAAQ;CAe7C;;AAED,wBAAgC"}
