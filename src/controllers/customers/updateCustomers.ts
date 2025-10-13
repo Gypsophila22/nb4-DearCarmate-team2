@@ -1,10 +1,7 @@
-import { PrismaClient, Gender, Region } from '../../../generated/prisma/index.js';
+import { Gender, Region } from '@prisma/client';
 import type { Request, Response } from 'express';
 import { z, ZodError } from 'zod';
-
-const prisma = new PrismaClient();
-
-import type { AuthRequest } from '../../types.js';
+import prisma from '../../lib/prisma.js';
 
 // zod 를 이용해 유효성 검사
 const updateCustomerSchema = z.object({
@@ -17,12 +14,11 @@ const updateCustomerSchema = z.object({
     memo: z.string().optional(),
 });
 
-export const updateCustomers = async (req: Request, res: Response) => {
-    const authReq = req as AuthRequest;
+export const updateCustomer = async (req: Request, res: Response) => {
     try {
         // 파라미터에서 고객 ID를, 유저 정보에서 회사 ID를 가져옵니다.
         const customerId = parseInt(req.params.id!);
-        const companyId = authReq.user?.companyId;
+        const companyId = req.user?.companyId;
 
         if (!companyId) {
             return res.status(401).json({ message: '인증된 사용자 정보가 없습니다.' });
@@ -32,13 +28,17 @@ export const updateCustomers = async (req: Request, res: Response) => {
         }
         // Request body 유효성 검사
         const validatedData = updateCustomerSchema.parse(req.body);
+        const dataForUpdate = Object.fromEntries(
+            Object.entries(validatedData).filter(([_, v]) => v !== undefined)
+        );
+
         // 고객, 회사ID 모두 일치하는 데이터만 업데이트합니다.
         const updatedCustomers = await prisma.customers.updateMany({
             where: {
                 id: customerId,
                 companyId: companyId,
             },
-            data: validatedData,
+            data: dataForUpdate,
         });
         // 업데이트된 데이터가 없으면 404 에러를 반환합니다.
         if (updatedCustomers.count === 0) {

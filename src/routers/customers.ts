@@ -1,13 +1,12 @@
 import { Router } from 'express';
-import { Router } from 'express';
 import {
   createCustomer,
   getCustomers,
   updateCustomer,
   deleteCustomer,
   getCustomerById,
-} from '../controllers/customers';
-import { protect } from '../middlewares/auth'; // 인증 미들웨어
+} from '../controllers/customers/index.js';
+import { protect } from '../middlewares/auth.js'; // 인증 미들웨어
 
 const customersRouter = Router();
 
