@@ -9,6 +9,7 @@ import { requestLogger } from './src/middlewares/logger.js';
 import authRouter from './src/routers/auth.js';
 import carsRouter from './src/routers/carsRouter.js';
 import userRouter from './src/routers/users.js';
+import companyRouter from './src/routers/companies.js';
 
 import errorHandler from './src/middlewares/errorHandler.js';
 
@@ -28,8 +29,12 @@ app.use('/cars', carsRouter);
 
 app.use(errorHandler);
 
+
 app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`server running PORT ${PORT}`);
 });
+
+
+app.use('/admin', companyRouter);
