@@ -31,3 +31,10 @@ Content-Type: application/json
 GET {{baseUrl}}/users/me
 Content-Type: application/json
 Authorization: bearer {{accessToken}}
+
+
+################### 회사 API 테스트 #################
+
+### 회사 목록 조회 (더미 응답 확인)
+GET http://localhost:4000/admin/companies?page=1&pageSize=10
+Authorization: Bearer {{{{accessToken}}}}
