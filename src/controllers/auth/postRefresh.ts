@@ -1,15 +1,16 @@
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import createError from 'http-errors';
 
 const ACCESS_SECRET = process.env.ACCESS_TOKEN_SECRET!;
 const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET!;
 
 class PostRefresh {
-  async refresh(req: Request, res: Response) {
+  async refresh(req: Request, res: Response, next: NextFunction) {
     const { refreshToken } = req.body;
 
     if (!refreshToken) {
-      return res.status(400).json({ message: '잘못된 요청입니다' });
+      return next(createError(400, '잘못된 요청입니다.'));
     }
 
     try {
@@ -26,7 +27,7 @@ class PostRefresh {
 
       return res.json({ accessToken, refreshToken: newRefreshToken });
     } catch (err) {
-      return res.status(401).json({ message: '유효하지 않은 토큰' });
+      return next(createError(401, '유효하지 않은 토큰.'));
     }
   }
 }
