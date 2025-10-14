@@ -17,6 +17,14 @@ class TokenService {
     });
   }
 
+  verifyAccessToken(token: string): JwtPayload {
+    try {
+      return jwt.verify(token, TOKEN.access.secret) as JwtPayload;
+    } catch {
+      throw createError(401, '유효하지 않은 액세스 토큰');
+    }
+  }
+
   verifyRefreshToken(token: string): JwtPayload {
     try {
       return jwt.verify(token, TOKEN.refresh.secret) as JwtPayload;

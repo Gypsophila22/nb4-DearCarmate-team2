@@ -38,11 +38,11 @@ export const userDeleteService = {
         email: deleted.email,
       });
 
-      // ID로 재조회 (하드 삭제면 null)
+      // ID로 재조회
       const afterById = await userDeleteRepository.findById(before.id);
       console.log('[DELETE] after by id is null?:', afterById === null);
 
-      // 이메일로 재조회 (하드 삭제면 null, 소프트/다른 DB면 true일 수도)
+      // 이메일로 재조회
       const afterByEmail = await userDeleteRepository.findByEmail(
         deleted.email
       );

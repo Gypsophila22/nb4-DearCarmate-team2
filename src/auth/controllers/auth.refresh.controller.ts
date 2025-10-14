@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
-import { tokenService } from '../../auth/services/token.service.js';
+import { tokenService } from '../services/token.service.js';
 
 async function postRefresh(req: Request, res: Response, next: NextFunction) {
   try {
