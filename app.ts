@@ -5,7 +5,7 @@ import passport from "passport";
 import errorHandler from "./src/middlewares/errorHandler.js";
 import { requestLogger } from "./src/middlewares/logger.js";
 import routers from "./src/routers/index.js";
-import customersRouter from "./src/routers/customers.js"; // customer 라우터는 별도로 가져옵니다.
+
 
 dotenv.config(); // .env 파일 환경변수 적재
 
@@ -24,7 +24,7 @@ app.use("/users", routers.userRouter);
 app.use("/admin", routers.companyRouter);
 
 // customer 라우터는 별도로 추가합니다.
-app.use("/api/customers", customersRouter);
+app.use("/api/customers", routers.customersRouter);
 
 app.use(errorHandler);
 
