@@ -3,6 +3,11 @@ node_modules
 .env
 
 /generated/prisma
+<<<<<<< HEAD
 dist/
 uploads/*
 !uploads/.gitkeep
+=======
+/dist
+echo "prisma/migrations/"
+>>>>>>> d46613b (chore: Prisma migrations 폴더 Git 추적 제외)
