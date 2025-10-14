@@ -4,10 +4,11 @@ import passport from "passport";
 
 import errorHandler from "./src/middlewares/errorHandler.js";
 import { requestLogger } from "./src/middlewares/logger.js";
+import { jwtStrategy } from "./src/lib/passport/jwtStrategy.js";
 
 // import authRotuer from "./auth.route.js";
 // import carRouter from "./car.route.js";
-// import companyRouter from "./company.route.js";
+//import companyRouter from "./routers/company.route.ts";
 // import userRouter from "./user.route.js";
 
 import routers from "./src/routers/index.js";
@@ -18,6 +19,8 @@ const app = express();
 
 const PORT = process.env.PORT || 4000;
 
+passport.use(jwtStrategy);
+
 app.use(express.json());
 app.use(passport.initialize());
 app.use(requestLogger);
@@ -25,7 +28,7 @@ app.use(requestLogger);
 app.use("/auth", routers.authRotuer);
 app.use("/users", routers.userRouter);
 app.use("/cars", routers.carRouter);
-app.use("/admin", routers.companyRouter);
+app.use("/", routers.companyRouter);
 
 app.use(errorHandler);
 
