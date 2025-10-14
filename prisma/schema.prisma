@@ -23,8 +23,9 @@ model Users {
   password       String
   isAdmin        Boolean @default(false)
 
-  company   Companies @relation(fields: [companyId], references: [id])
+  company   Companies   @relation(fields: [companyId], references: [id])
   companyId Int
+  contract  Contracts[]
 }
 
 model Companies {
@@ -83,9 +84,9 @@ model Customers {
   email       String?
   memo        String?
 
-  company   Companies  @relation(fields: [companyId], references: [id])
+  company   Companies   @relation(fields: [companyId], references: [id])
   companyId Int
-  contract  Contracts?
+  contract  Contracts[]
 }
 
 enum Gender {
@@ -124,14 +125,40 @@ enum Region {
   제주
 }
 
+enum ContractsStatus {
+  carInspection // 차량 확인
+  priceNegotiation // 가격 협의
+  contractDraft // 계약서 작성 중
+  contractSuccessful // 계약 성공
+  contractFailed // 계약 실패
+}
+
 model Contracts {
-  id     Int        @id @default(autoincrement())
-  date   DateTime //계약 날짜
-  alarms DateTime[] //알람을 원하는 시간
+  id             Int             @id @default(autoincrement())
+  date           DateTime        @default(now())
+  contractPrice  Int // 계약 금액
+  status         ContractsStatus // 계약 상태
+  resolutionDate DateTime // 계약 완료일
+  carId          Int             @unique
+  car            Cars            @relation(fields: [carId], references: [id]) // 차량
+  customerId     Int
+  customer       Customers       @relation(fields: [customerId], references: [id]) // 고객
+  meetings       Meetings[] // 미팅 일정
+  userId         Int // 담당자
+  user           Users           @relation(fields: [userId], references: [id])
+}
 
-  car   Cars @relation(fields: [carId], references: [id])
-  carId Int  @unique
+model Meetings {
+  id         Int       @id @default(autoincrement())
+  date       DateTime
+  contractId Int
+  contract   Contracts @relation(fields: [contractId], references: [id])
+  alarms     Alarms[]
+}
 
-  custmor   Customers @relation(fields: [custmorId], references: [id])
-  custmorId Int       @unique
+model Alarms {
+  id        Int      @id @default(autoincrement())
+  time      DateTime
+  meetingId Int
+  meeting   Meetings @relation(fields: [meetingId], references: [id])
 }

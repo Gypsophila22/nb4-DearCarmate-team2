@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "public"."Contracts"
+ALTER COLUMN "date"
+SET DEFAULT CURRENT_TIMESTAMP;
