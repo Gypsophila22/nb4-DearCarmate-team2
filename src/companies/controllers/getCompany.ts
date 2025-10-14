@@ -1,45 +1,71 @@
 import type { Request, Response, NextFunction } from "express";
+import prisma from "../../lib/prisma.js";
 
-// 회사 목록 조회 (GET /admin/companies)
-async function getCompany(req: Request, res: Response, next: NextFunction) {
+
+// ⚠️ 관리자 권한 확인용 에러 클래스
+class UnauthorizedError extends Error {
+  statusCode: number;
+  constructor(message = "관리자 권한이 필요합니다") {
+    super(message);
+    this.statusCode = 401;
+    Object.setPrototypeOf(this, UnauthorizedError.prototype);
+  }
+}
+
+
+async function createCompany(req: Request, res: Response, next: NextFunction) {
   try {
-    // 페이지네이션 파라미터 기본값 처리
-    const { page = "1", pageSize = "10" } = req.query;
+    //🔐 관리자 권한 확인 (테스트 중이라 주석 가능)
+    if (!req.user || !req.user.isAdmin) {
+      throw new UnauthorizedError("관리자 권한이 필요합니다");
+    }
 
-    // 현 더미 데이터.
-    // 나중에는 prisma.companies.findMany()와 prisma.companies.count()로 교체 필요
-    const items = [
-      {
-        id: 1,
-        companyName: "코드카",
-        companyCode: "CARMATE123",
-        userCount: 5,
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: 2,
-        companyName: "오토모빌",
-        companyCode: "AUTO456",
-        userCount: 3,
-        createdAt: new Date().toISOString(),
-      },
-    ];
+    const rawName = (req.body.companyName ?? req.body.name) as string | undefined;
+    const rawCode = (req.body.companyCode ?? req.body.code) as string | undefined;
 
-    // 페이지 정보: 현 더미 데이터
-    // 실제 DB 연동 시 totalPages, totalItems를 prisma.count() 결과로 계산 필요. 
-    const pageInfo = {
-      page: Number(page),
-      pageSize: Number(pageSize),
-      totalPages: 1,
-      totalItems: items.length,
-    };
 
-    // 최종 응답 구조
-    return res.json({ success: true, data: { items, pageInfo } });
-  } catch (err) {
-    // 에러 발생 시 Express 에러 핸들러로 전달
+    const companyName = rawName?.trim();
+    const companyCode = rawCode?.trim().toUpperCase();
+
+
+    if (!companyName || !companyCode) {
+      return res.status(400).json({ message: "잘못된 요청입니다" });
+    }
+
+
+    // 중복 코드 확인
+    const exists = await prisma.companies.findUnique({
+      where: { companyCode },
+    });
+    if (exists) {
+      return res.status(400).json({ message: "이미 존재하는 회사 코드입니다" });
+    }
+
+
+    // 회사 생성
+    const company = await prisma.companies.create({
+      data: { companyName, companyCode },
+    });
+
+
+    return res.status(201).json({
+      id: company.id,
+      companyName: company.companyName,
+      companyCode: company.companyCode,
+      userCount: 0,
+    });
+  } catch (err: any) {
+    if (err instanceof UnauthorizedError) {
+      return res.status(err.statusCode).json({ message: err.message });
+    }
     next(err);
   }
 }
 
-export default { getCompany };
+
+export default { createCompany };
+
+
+
+
+
