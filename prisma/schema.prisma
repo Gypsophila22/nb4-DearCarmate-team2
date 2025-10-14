@@ -37,10 +37,6 @@ model Companies {
 
 model Cars {
   id                Int    @id @default(autoincrement())
-  number            String
-  manufacturer      String
-  model             String
-  id                Int        @id @unique @default(autoincrement())
   carNumber         String
   manufacturingYear Int
   mileage           Int

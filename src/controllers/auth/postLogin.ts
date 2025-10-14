@@ -38,15 +38,9 @@ class PostLogin {
       }
 
       // 토큰 발급
-      const accessToken = jwt.sign(
-        { id: user.id, email: user.email },
-        ACCESS_SECRET,
-        { expiresIn: '1h' }
-      );
-
-      const refreshToken = jwt.sign({ id: user.id }, REFRESH_SECRET, {
-        expiresIn: '7d',
-      });
+      const payload = { id: user.id, email: user.email };
+const accessToken = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '1h' });
+      const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, { expiresIn: '7d' });
 
       // 응답 (비밀번호 제외)
       const { password: _, ...userWithoutPw } = user;
