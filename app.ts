@@ -24,7 +24,7 @@ app.use("/users", routers.userRouter);
 app.use("/admin", routers.companyRouter);
 
 // customer 라우터는 별도로 추가합니다.
-app.use("/api/customers", routers.customersRouter);
+app.use("/customers", routers.customersRouter);
 
 app.use(errorHandler);
 
