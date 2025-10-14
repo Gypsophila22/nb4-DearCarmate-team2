@@ -16,9 +16,9 @@ DROP INDEX "public"."Contracts_id_key";
 DROP INDEX "public"."Customers_id_key";
 
 -- AlterTable
-CREATE SEQUENCE "public".cars_id_seq;
-ALTER TABLE "public"."Cars" ALTER COLUMN "id" SET DEFAULT nextval('"public".cars_id_seq');
-ALTER SEQUENCE "public".cars_id_seq OWNED BY "public"."Cars"."id";
+-- CREATE SEQUENCE "public".cars_id_seq;
+-- ALTER TABLE "public"."Cars" ALTER COLUMN "id" SET DEFAULT nextval('"public".cars_id_seq');
+-- ALTER SEQUENCE "public".cars_id_seq OWNED BY "public"."Cars"."id";
 
 -- AlterTable
 CREATE SEQUENCE "public".contracts_id_seq;

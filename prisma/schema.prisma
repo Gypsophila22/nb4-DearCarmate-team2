@@ -36,7 +36,11 @@ model Companies {
 }
 
 model Cars {
+<<<<<<< HEAD
   id                Int        @id @unique @default(autoincrement())
+=======
+  id                Int    @id @default(autoincrement())
+>>>>>>> a5f3acc (customer API 테스트 완료)
   carNumber         String
   manufacturingYear Int
   mileage           Int

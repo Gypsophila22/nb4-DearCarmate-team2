@@ -1,0 +1,48 @@
+@baseUrl=http://localhost:4000
+@accessTokenName=access-token
+@accessToken={{adminLogin.response.body.accessToken}}
+@refreshTokenName=refresh-token
+@refreshToken=
+
+### 어드민 로그인
+# @name adminLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@codeit.com",
+  "password": "AdminPass123!"
+}
+
+### 고객 등록
+# @name createCustomer
+POST {{baseUrl}}/api/customers
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "김코딩",
+  "gender": "MALE",
+  "phoneNumber": "010-1234-5678"
+}
+
+### 고객 목록 조회
+# @name getCustomers
+GET {{baseUrl}}/api/customers
+Authorization: Bearer {{accessToken}}
+
+### 고객 정보 수정
+# @name updateCustomer
+PUT {{baseUrl}}/api/customers/{{createCustomer.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "박해커",
+  "memo": "해킹중..."
+}
+
+### 고객 삭제
+# @name deleteCustomer
+DELETE {{baseUrl}}/api/customers/{{createCustomer.response.body.id}}
+Authorization: Bearer {{accessToken}}
