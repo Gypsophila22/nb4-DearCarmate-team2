@@ -1,45 +1,40 @@
 import express from "express";
 import passport from "passport";
-
-import postCompany from "../controllers/companies/postCompany.js";
-import getCompany from "../controllers/companies/getCompany.js";
-import patchCompany from "../controllers/companies/patchCompany.js";
-import deleteCompany from "../controllers/companies/deleteCompany.js";
-import getCompanyUsers from "../controllers/companies/getCompanyUsers.js";
+import companyController from "../controllers/companies/index.js";
 
 const router = express.Router();
 
-// 회사 등록
-router.post(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  postCompany.createCompany
-);
-
 // 회사 목록 조회
 router.get(
-  "/",
+  "/companies",
   passport.authenticate("jwt", { session: false }),
-  getCompany.getCompany
+  companyController.getCompany
 );
 
+// 회사 등록
+router.post(
+  "/companies",
+  passport.authenticate("jwt", { session: false }),
+  companyController.createCompany
+);
+
+// 회사별 유저 조회
 router.get(
-  "/:companyId/users",
+  "/companies/:companyId/users",
   passport.authenticate("jwt", { session: false }),
-  getCompanyUsers.getCompanyUsers
+  companyController.getCompanyUsers
 );
 
-// 회사 수정 & 삭제 (체인으로)
+// 회사 수정 & 삭제
 router
-  .route("/:companyId")
+  .route("/companies/:companyId")
   .patch(
     passport.authenticate("jwt", { session: false }),
-    patchCompany.updateCompany
+    companyController.updateCompany
   )
   .delete(
     passport.authenticate("jwt", { session: false }),
-    deleteCompany.deleteCompany
+    companyController.deleteCompany
   );
-
 
 export default router;
