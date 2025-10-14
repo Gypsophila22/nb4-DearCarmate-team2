@@ -3,26 +3,28 @@ import { z } from 'zod';
 export const userRegisterSchema = z.object({
   body: z
     .object({
-      name: z.string().min(1, '이름을 입력해야 합니다.'),
-      email: z.email('이메일 형식이 올바르지 않습니다.'),
-      employeeNumber: z.string().min(1, '사번을 입력해야 합니다.'),
-      phoneNumber: z.string().min(1, '전화번호를 입력해야 합니다.'),
-      password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다.'),
-      passwordConfirmation: z
-        .string()
-        .min(1, '비밀번호 확인을 입력해야 합니다.'),
-      company: z.string().min(1, '회사명을 입력해야 합니다.'),
-      companyCode: z.string().min(1, '회사 코드를 입력해야 합니다.'),
+      name: z.string({ error: '이름은 필수입니다.' }),
+      email: z.email({ error: '잘못된 이메일 형식입니다.' }),
+      employeeNumber: z.string({ error: '사번은 필수입니다.' }),
+      phoneNumber: z
+        .string({ error: '전화번호는 필수입니다.' })
+        .regex(/^\d{2,4}-\d{3,4}-\d{4}$|^\d{9,11}$/, {
+          error: '전화번호 형식이 올바르지 않습니다.',
+        }),
+      password: z
+        .string({ error: '비밀번호는 필수입니다.' })
+        .min(8, { error: '비밀번호는 8자 이상이어야 합니다.' }),
+      passwordConfirmation: z.string({ error: '비밀번호 확인은 필수입니다.' }),
+      companyName: z.string({ error: '회사명은 필수입니다.' }),
+      companyCode: z.string({ error: '회사코드는 필수입니다.' }),
     })
-    .superRefine((val, ctx) => {
-      if (val.password !== val.passwordConfirmation) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['passwordConfirmation'],
-          message: '비밀번호와 비밀번호 확인이 일치하지 않습니다.',
-        });
+    .refine(
+      ({ password, passwordConfirmation }) => password === passwordConfirmation,
+      {
+        message: '비밀번호와 비밀번호 확인이 일치하지 않습니다.',
+        path: ['passwordConfirmation'],
       }
-    }),
+    ),
 });
 
 export type RegisterBody = z.infer<typeof userRegisterSchema>['body'];

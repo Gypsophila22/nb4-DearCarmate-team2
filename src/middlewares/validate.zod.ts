@@ -1,10 +1,9 @@
-import type { ZodObject } from 'zod';
-import { ZodError } from 'zod';
 import type { Request, Response, NextFunction } from 'express';
-import createError from 'http-errors';
+import { ZodError } from 'zod';
 
 export const validate =
-  (schema: ZodObject) => (req: Request, _res: Response, next: NextFunction) => {
+  (schema: import('zod').ZodTypeAny) =>
+  (req: Request, res: Response, next: NextFunction) => {
     try {
       const parsed = schema.parse({
         body: req.body,
@@ -15,8 +14,33 @@ export const validate =
       next();
     } catch (e) {
       if (e instanceof ZodError) {
-        const msg = e.issues[0]?.message ?? '요청이 올바르지 않습니다.';
-        return next(createError(400, msg));
+        const issues = e.issues.map((i) => {
+          // 공통 필드
+          const out: Record<string, unknown> = {
+            path: i.path.join('.'),
+            code: i.code,
+            message: i.message,
+          };
+
+          // 버전에 따라 있을 수도/없을 수도 있는 필드들은 "안전 접근"
+          const src = i as unknown as Record<string, unknown>;
+          for (const k of [
+            'expected',
+            'received',
+            'minimum',
+            'maximum',
+            'inclusive',
+            'exact',
+            'options',
+            'validation', // 일부 버전/케이스에서만 존재
+          ]) {
+            if (k in src) out[k] = src[k];
+          }
+
+          return out;
+        });
+
+        return res.status(400).json({ message: '검증 오류', issues });
       }
       next(e);
     }
