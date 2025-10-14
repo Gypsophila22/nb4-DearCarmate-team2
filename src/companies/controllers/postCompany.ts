@@ -16,7 +16,9 @@ async function createCompany(req: Request, res: Response, next: NextFunction) {
       where: { code },
     });
     if (exists) {
-      return res.status(400).json({ message: "이미 존재하는 회사 코드입니다" });
+      return res
+        .status(400)
+        .json({ message: "이미 존재하는 회사 코드입니다" });
     }
 
     const company = await prisma.companies.create({
@@ -25,8 +27,8 @@ async function createCompany(req: Request, res: Response, next: NextFunction) {
 
     return res.status(201).json({
       id: company.id,
-      name: company.name,
-      code: company.code,
+      companyName: company.name,
+      companyCode: company.code,
       userCount: 0,
     });
   } catch (err) {

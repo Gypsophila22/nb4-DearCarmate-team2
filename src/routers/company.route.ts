@@ -4,6 +4,7 @@ import express, {
   type Response,
 } from "express";
 import passport from "passport";
+<<<<<<< HEAD
 
 import postCompany from "../companies/controllers/postCompany.js";
 import getCompany from "../companies/controllers/getCompany.js";
@@ -14,12 +15,20 @@ import getCompanyUsers from "../companies/controllers/getCompanyUsers.js";
 const router = express.Router();
 
 // 회사 등록
+=======
+import companyController from "../companies/controllers/index.js";
+
+const router = express.Router();
+
+// 회사 등록 (POST /companies)
+>>>>>>> 05e7632 (wip: JWT 인증 및 회사 등록 API 401 오류 원인 수정 진행 중)
 router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
   postCompany.createCompany
 );
 
+<<<<<<< HEAD
 // 회사 목록 조회
 // router.get(
 //   "/",
@@ -33,6 +42,16 @@ router.post(
 //   getCompanyUsers.getCompanyUsers
 // );
 
+=======
+// 회사 목록 조회 (GET /companies)
+router.get(
+  "/companies",
+  passport.authenticate("jwt", { session: false }),
+  companyController.getCompany
+);
+
+// 회사별 유저 조회 (GET /companies/:companyId/users)
+>>>>>>> 05e7632 (wip: JWT 인증 및 회사 등록 API 401 오류 원인 수정 진행 중)
 router.get(
   "/",
   passport.authenticate("jwt", { session: false }),
@@ -54,6 +73,7 @@ router.get(
   }
 );
 
+<<<<<<< HEAD
 router.get(
   "/:companyId/users",
   passport.authenticate("jwt", { session: false }),
@@ -90,5 +110,20 @@ router
     passport.authenticate("jwt", { session: false }),
     deleteCompany.deleteCompany
   );
+=======
+// 회사 수정 (PATCH /companies/:companyId)
+router.patch(
+  "/companies/:companyId",
+  passport.authenticate("jwt", { session: false }),
+  companyController.updateCompany
+);
+
+// 회사 삭제 (DELETE /companies/:companyId)
+router.delete(
+  "/companies/:companyId",
+  passport.authenticate("jwt", { session: false }),
+  companyController.deleteCompany
+);
+>>>>>>> 05e7632 (wip: JWT 인증 및 회사 등록 API 401 오류 원인 수정 진행 중)
 
 export default router;
