@@ -1,0 +1,103 @@
+@baseUrl=http://localhost:4000
+@accessTokenName=access-token
+@accessToken={{adminLogin.response.body.accessToken}}
+@refreshTokenName=refresh-token
+@refreshToken=
+
+### 어드민 로그인
+# @name adminLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@codeit.com",
+  "password": "AdminPass123!"
+}
+
+### 회원가입
+POST {{baseUrl}}/users/register
+Content-Type: application/json
+
+{
+	"name": "testman",
+	"email": "testman2@test.com",
+	"employeeNumber": "100",
+	"phoneNumber": "01021210696",
+	"password": "Test",
+	"passwordConfirmation": "Test",
+	"company": "Codeit",
+	"companyCode": "CDEIT2025"
+}
+
+### 토큰 리프레쉬
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": "{{login.response.body.refreshToken}}"
+}
+
+### 로그인
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "testman2@test.com",
+  "password": "Test"
+}
+
+### 내 정보 수정 (비밀번호 변경 + 프로필 수정)
+PATCH {{baseUrl}}/users/me
+Content-Type: application/json
+
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+{
+  "employeeNumber": "200",
+  "phoneNumber": "01099998888",
+  "currentPassword": "Test",
+  "password": "NewPass123!",
+  "passwordConfirmation": "NewPass123!",
+  "imgUrl": "https://example.com/profile.png"
+}
+
+### 유저 삭제 (회원 탈퇴)
+DELETE {{baseUrl}}/users/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+################### 회사 API 테스트 ###################
+#아직 형태만 갖춘 더미 test.http 내용들입니다. 
+
+### 회사 등록 (POST)
+POST {{baseUrl}}/companies
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBjb2RlaXQuY29tIiwiaWF0IjoxNzYwNDMwNzQ2LCJleHAiOjE3NjA0MzQzNDZ9.UuEVk64Er23bfRk56-vU0LPLiC2PgFb5CB446NLjF68
+Content-Type: application/json
+
+{
+  "companyName": "제발되라 컴퍼니",
+  "companyCode": "TST002"
+}
+
+
+### 회사 목록 조회 (GET)
+GET {{baseUrl}}/companies?page=1&pageSize=10
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 회사 정보 수정 (PATCH)
+PATCH {{baseUrl}}/companies/1
+Authorization: Bearer {{login.response.body.$.accessToken}}
+Content-Type: application/json
+
+{
+  "companyName": "테스트컴퍼니 수정",
+  "companyCode": "TST002"
+}
+
+### 회사 삭제 (DELETE)
+DELETE {{baseUrl}}/companies/1
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### 회사별 유저 조회 (GET)
+GET {{baseUrl}}/companies/1/users?page=1&pageSize=5
+Authorization: Bearer {{login.response.body.$.accessToken}}
