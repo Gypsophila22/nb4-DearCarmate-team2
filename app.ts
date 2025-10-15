@@ -1,13 +1,11 @@
-import * as dotenv from "dotenv";
+import "./src/config/env.js";
+
 import express from "express";
 import passport from "passport";
 
 import errorHandler from "./src/middlewares/errorHandler.js";
 import { requestLogger } from "./src/middlewares/logger.js";
 import routers from "./src/routers/index.js";
-
-
-dotenv.config(); // .env 파일 환경변수 적재
 
 const app = express();
 
