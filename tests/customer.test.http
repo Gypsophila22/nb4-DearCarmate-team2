@@ -42,6 +42,11 @@ Authorization: Bearer {{accessToken}}
   "memo": "해킹중..."
 }
 
+### 고객 상세 정보 조회
+# @name getCustomerById
+GET {{baseUrl}}/customers/{{createCustomer.response.body.id}}
+Authorization: Bearer {{accessToken}}
+
 ### 고객 삭제
 # @name deleteCustomer
 DELETE {{baseUrl}}/customers/{{createCustomer.response.body.id}}
