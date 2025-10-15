@@ -20,7 +20,7 @@ Authorization: bearer {{accessToken}}
 Content-Type: application/json
 
 {
-	"carId": 1,
+	"carId": 2,
 	"customerId": 1,
 	"meetings": [
 		{
