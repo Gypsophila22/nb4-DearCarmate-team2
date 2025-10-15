@@ -3,7 +3,6 @@ import "./src/config/env.js";
 import express from "express";
 import cors from "cors";
 import passport from "passport";
-import cors from "cors";
 
 import errorHandler from "./src/middlewares/errorHandler.js";
 import { requestLogger } from "./src/middlewares/logger.js";
@@ -25,9 +24,9 @@ app.use(
   })
 );
 
-app.use("/auth", routers.authRotuer);
+app.use("/auth", routers.authRouter);
 app.use("/users", routers.userRouter);
-// app.use("/cars", routers.carRouter); // cars 라우터는 여전히 문제가 있으므로 주석 처리 유지
+app.use("/cars", routers.carRouter); 
 app.use("/admin", routers.companyRouter);
 
 // customer 라우터는 별도로 추가합니다.
