@@ -1,3 +1,4 @@
+import cors from 'cors';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import passport from 'passport';
@@ -15,6 +16,14 @@ const PORT = process.env.PORT || 4000;
 app.use(express.json());
 app.use(passport.initialize());
 app.use(requestLogger);
+
+//테스트 용으로 만들어놓은 cors입니다.
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }),
+);
 
 app.use('/auth', routers.authRotuer);
 app.use('/users', routers.userRouter);
