@@ -4,7 +4,7 @@ import prisma from '../lib/prisma.js';
 import type { Request, Response, NextFunction } from 'express';
 
 export const protect = async (req: Request, res: Response, next: NextFunction) => {
-    const secret = process.env.JWT_SECRET;
+    const secret = process.env.ACCESS_TOKEN_SECRET;
     if (!secret) {
         //JWT_SECRET이 없는 경우 서버 에러 처리
         console.error('JWT_SECRET is not defined');
