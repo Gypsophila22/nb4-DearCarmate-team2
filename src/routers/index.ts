@@ -1,12 +1,12 @@
-import authRotuer from './auth.route.js';
+import authRouter from './auth.route.js';
 import carRouter from './car.route.js';
 import companyRouter from './company.route.js';
 import contractRouter from './contract.route.js';
-import customersRouter from './customers.js';
+import customersRouter from './customer.route.js';
 import userRouter from './user.route.js';
 
 const routers = {
-  authRotuer,
+  authRouter,
   carRouter,
   companyRouter,
   userRouter,

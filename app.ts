@@ -1,13 +1,12 @@
+import './src/config/env.js';
+
 import cors from 'cors';
-import * as dotenv from 'dotenv';
 import express from 'express';
 import passport from 'passport';
 
 import errorHandler from './src/middlewares/errorHandler.js';
 import { requestLogger } from './src/middlewares/logger.js';
 import routers from './src/routers/index.js';
-
-dotenv.config(); // .env 파일 환경변수 적재
 
 const app = express();
 
@@ -25,14 +24,12 @@ app.use(
   }),
 );
 
-app.use('/auth', routers.authRotuer);
+app.use('/auth', routers.authRouter);
 app.use('/users', routers.userRouter);
 app.use('/cars', routers.carRouter);
 app.use('/admin', routers.companyRouter);
 app.use('/contracts', routers.contractRouter);
 app.use('/customers', routers.customersRouter);
-
-app.use(errorHandler);
 
 app.use(errorHandler);
 
