@@ -1,4 +1,4 @@
-import prisma from '../../config/prisma.js';
+import prisma from '../../lib/prisma.js';
 import { createContractsRepository } from '../repositories/createContractsRepository.js';
 
 interface CreateContractInput {
