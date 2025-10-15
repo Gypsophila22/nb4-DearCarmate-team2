@@ -15,7 +15,14 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(requestLogger);
 
-// develop 브랜치의 리팩토링된 라우터들을 사용합니다.
+//테스트 용으로 만들어놓은 cors입니다.
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+
 app.use("/auth", routers.authRouter);
 app.use("/users", routers.userRouter);
 // app.use("/cars", routers.carRouter); // cars 라우터는 여전히 문제가 있으므로 주석 처리 유지
