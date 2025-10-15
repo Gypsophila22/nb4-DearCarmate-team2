@@ -1,5 +1,4 @@
 import prisma from "../../config/prisma.js";
-
 import type { Prisma } from "../../../generated/prisma/index.js";
 
 /**

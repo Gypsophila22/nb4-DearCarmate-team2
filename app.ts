@@ -1,19 +1,12 @@
-import * as dotenv from "dotenv";
+import "./src/config/env.js";
+
 import express from "express";
-import passport from "passport";
 import cors from "cors";
+import passport from "passport";
 
 import errorHandler from "./src/middlewares/errorHandler.js";
 import { requestLogger } from "./src/middlewares/logger.js";
-
-// import authRotuer from "./auth.route.js";
-// import carRouter from "./car.route.js";
-// import companyRouter from "./company.route.js";
-// import userRouter from "./user.route.js";
-
 import routers from "./src/routers/index.js";
-
-dotenv.config(); // .env 파일 환경변수 적재
 
 const app = express();
 
@@ -31,14 +24,16 @@ app.use(
   })
 );
 
-app.use("/auth", routers.authRotuer);
+app.use("/auth", routers.authRouter);
 app.use("/users", routers.userRouter);
-app.use("/cars", routers.carRouter);
+app.use("/cars", routers.carRouter); 
 app.use("/admin", routers.companyRouter);
 
-app.use(errorHandler);
+// customer 라우터는 별도로 추가합니다.
+app.use("/customers", routers.customersRouter);
 
 app.use(errorHandler);
+
 
 app.listen(PORT, () => {
   console.log(`server running PORT ${PORT}`);
