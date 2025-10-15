@@ -34,7 +34,7 @@ Authorization: Bearer {{accessToken}}
 ### 고객 정보 수정
 # @name updateCustomer
 PATCH {{baseUrl}}/customers/{{createCustomer.response.body.id}}
-Content-Type: application/jsong
+Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
