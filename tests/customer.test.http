@@ -16,7 +16,7 @@ Content-Type: application/json
 
 ### 고객 등록
 # @name createCustomer
-POST {{baseUrl}}/api/customers
+POST {{baseUrl}}/customers
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -28,12 +28,12 @@ Authorization: Bearer {{accessToken}}
 
 ### 고객 목록 조회
 # @name getCustomers
-GET {{baseUrl}}/api/customers
+GET {{baseUrl}}/customers
 Authorization: Bearer {{accessToken}}
 
 ### 고객 정보 수정
 # @name updateCustomer
-PATCH {{baseUrl}}/api/customers/{{createCustomer.response.body.id}}
+PATCH {{baseUrl}}/customers/{{createCustomer.response.body.id}}
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
@@ -44,5 +44,5 @@ Authorization: Bearer {{accessToken}}
 
 ### 고객 삭제
 # @name deleteCustomer
-DELETE {{baseUrl}}/api/customers/{{createCustomer.response.body.id}}
+DELETE {{baseUrl}}/customers/{{createCustomer.response.body.id}}
 Authorization: Bearer {{accessToken}}
