@@ -13,7 +13,6 @@ class PostLogin {
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password } = req.body;
-
       //유효성 검사도 별도의 파일로 분리하신 후, 라우트에 전처리 미들웨어로 등록하셔서 분리해주세요
       // 요청 유효성 검사
       if (!email || !password) {
