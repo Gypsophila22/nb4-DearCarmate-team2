@@ -6,11 +6,11 @@ const prisma = new PrismaClient();
 export const jwtStrategy = new JwtStrategy(
   {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.ACCESS_SECRET! || 'abcde',
+    secretOrKey: process.env.ACCESS_TOKEN_SECRET! || 'abcde',
   },
   async (payload, done) => {
     try {
-      console.log("[JWT payload]", payload);
+      console.log('[JWT payload]', payload);
       const user = await prisma.users.findUnique({
         where: { id: Number(payload.id) },
         select: {
@@ -21,7 +21,7 @@ export const jwtStrategy = new JwtStrategy(
         },
       });
 
-      console.log("[JWT user]", user);
+      console.log('[JWT user]', user);
       if (!user) return done(null, false);
       return done(null, user);
     } catch (err) {
@@ -29,4 +29,3 @@ export const jwtStrategy = new JwtStrategy(
     }
   }
 );
-

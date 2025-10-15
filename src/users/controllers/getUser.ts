@@ -1,8 +1,6 @@
-import { PrismaClient } from '../../../generated/prisma/index.js';
+import prisma from '../../config/prisma.js';
 import type { NextFunction, Request, Response } from 'express';
 import createError from 'http-errors';
-
-const prisma = new PrismaClient();
 
 class GetUser {
   async getMe(req: Request, res: Response, next: NextFunction) {

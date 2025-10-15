@@ -1,10 +1,6 @@
-import { PrismaClient } from '../../../generated/prisma/index.js';
+import prisma from '../../config/prisma.js';
 import type { NextFunction, Request, Response } from 'express';
 import createError from 'http-errors';
-import { nextTick } from 'process';
-import { ru } from 'zod/locales';
-
-const prisma = new PrismaClient();
 
 class DeleteUser {
   async deleteMe(req: Request, res: Response, next: NextFunction) {

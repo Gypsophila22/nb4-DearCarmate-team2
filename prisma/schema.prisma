@@ -14,14 +14,16 @@ datasource db {
 }
 
 model Users {
-  id             Int     @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   name           String
-  email          String  @unique
+  email          String   @unique
   employeeNumber String
   phoneNumber    String
   imgUrl         String?
   password       String
-  isAdmin        Boolean @default(false)
+  isAdmin        Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
 
   company   Companies @relation(fields: [companyId], references: [id])
   companyId Int
@@ -31,8 +33,10 @@ model Companies {
   id        Int         @id @default(autoincrement())
   name      String
   code      String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt
   user      Users[]
-  Customers Customers[]
+  customer  Customers[]
 }
 
 model Cars {

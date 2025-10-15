@@ -1,9 +1,7 @@
-import { PrismaClient } from '../../../generated/prisma/index.js';
+import prisma from '../../config/prisma.js';
 import type { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import createError from 'http-errors';
-
-const prisma = new PrismaClient();
 
 class PostRegister {
   async register(req: Request, res: Response, next: NextFunction) {
