@@ -1,7 +1,7 @@
 import express from 'express';
 
 import contractController from '../contracts/controllers/index.js';
-import contractDto from '../contracts/dtos/index.js';
+import contractDto from '../contracts/schemas/index.js';
 import passports from '../lib/passport/index.js';
 import { validationMiddleware } from '../middlewares/validationMiddleware.js';
 

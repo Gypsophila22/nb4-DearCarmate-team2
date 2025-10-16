@@ -11,7 +11,7 @@ export const createContractsController = async (
   next: NextFunction,
 ) => {
   try {
-    const { carId, customerId, meetings } = req.dto as {
+    const { carId, customerId, meetings } = req.schema as {
       carId: number;
       customerId: number;
       meetings: { date: string; alarms: string[] }[];
