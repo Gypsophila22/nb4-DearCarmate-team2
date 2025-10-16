@@ -38,7 +38,11 @@ export const userPatchService = {
     }
 
     const updated = await userPatchRepository.updateById(user.id, dataToUpdate);
+<<<<<<< HEAD
     const { password: _pw, ...safeUser } = updated;
+=======
+    const { password: _pw, ...safeUser } = updated as any;
+>>>>>>> 5994e76 (feat: user, auth 레이어드 아키텍처 적용, 이미지 등록, 이메일 전송 (#28))
     return safeUser;
   },
 };

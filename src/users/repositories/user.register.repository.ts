@@ -22,22 +22,7 @@ export const userRegisterRepository = {
         password: data.password,
         company: { connect: { companyCode: data.companyCode } },
       },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        employeeNumber: true,
-        phoneNumber: true,
-        imageUrl: true,
-        isAdmin: true,
-        company: {
-          select: { companyCode: true },
-        },
-      },
+      include: { company: { select: { companyName: true, companyCode: true } } },
     });
-  },
-
-  findByCode(companyCode: string) {
-    return prisma.companies.findUnique({ where: { companyCode } });
   },
 };
