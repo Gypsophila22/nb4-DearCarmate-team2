@@ -23,7 +23,7 @@ customersRouter.post("/", createCustomer);
 customersRouter.get("/:id", getCustomerById);
 
 // 고객 수정
-customersRouter.put("/:id", updateCustomer);
+customersRouter.patch("/:id", updateCustomer);
 
 // 고객 삭제
 customersRouter.delete("/:id", deleteCustomer);
