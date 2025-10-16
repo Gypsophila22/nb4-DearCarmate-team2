@@ -1,8 +1,18 @@
 import "./src/config/env.js";
 
-import express from "express";
+import express, {
+  request,
+  Router,
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
 import cors from "cors";
+<<<<<<< HEAD
 import path from 'path';
+=======
+import path from "path";
+>>>>>>> develop
 import passport from "passport";
 
 import errorHandler from "./src/middlewares/errorHandler.js";
@@ -24,6 +34,7 @@ app.use(
     credentials: true,
   })
 );
+<<<<<<< HEAD
 app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 
 app.use('/auth', routers.authRotuer);
@@ -31,12 +42,175 @@ app.use('/users', routers.userRouter);
 app.use('/cars', routers.carRouter);
 app.use('/admin', routers.companyRouter);
 app.use('/images', routers.imgaeRouter);
+=======
+app.use("/uploads", express.static(path.resolve(process.cwd(), "uploads")));
+
+app.use("/auth", routers.authRotuer);
+app.use("/users", routers.userRouter);
+app.use("/cars", routers.carRouter);
+app.use("/admin", routers.companyRouter);
+app.use("/images", routers.imgaeRouter);
+>>>>>>> develop
 
 // customer 라우터는 별도로 추가합니다.
 app.use("/customers", routers.customersRouter);
 
-app.use(errorHandler);
+app.use("/companies", routers.companyRouter);
 
+const testrouter = Router();
+testrouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
+  console.warn("테스트용 더미 코드");
+  res.json({
+    carInspection: {
+      totalItemCount: 1,
+      data: [
+        {
+          id: 1,
+          car: {
+            id: 1,
+            model: "K5",
+          },
+          customer: {
+            id: 1,
+            name: "최효정",
+          },
+          user: {
+            id: 1,
+            name: "김연우",
+          },
+          meetings: [
+            {
+              date: "2024-02-22",
+              alarms: ["2024-02-22T09:00:00.000Z", "2024-02-21T09:00:00.000Z"],
+            },
+          ],
+          contractPrice: 2000000,
+          resolutionDate: "2024-02-22T07:47:49.803Z",
+          status: "contractSuccessful",
+        },
+      ],
+    },
+    priceNegotiation: {
+      totalItemCount: 1,
+      data: [
+        {
+          id: 1,
+          car: {
+            id: 1,
+            model: "K5",
+          },
+          customer: {
+            id: 1,
+            name: "최효정",
+          },
+          user: {
+            id: 1,
+            name: "김연우",
+          },
+          meetings: [
+            {
+              date: "2024-02-22",
+              alarms: ["2024-02-22T09:00:00.000Z", "2024-02-21T09:00:00.000Z"],
+            },
+          ],
+          contractPrice: 2000000,
+          resolutionDate: "2024-02-22T07:47:49.803Z",
+          status: "contractSuccessful",
+        },
+      ],
+    },
+    contractDraft: {
+      totalItemCount: 1,
+      data: [
+        {
+          id: 1,
+          car: {
+            id: 1,
+            model: "K5",
+          },
+          customer: {
+            id: 1,
+            name: "최효정",
+          },
+          user: {
+            id: 1,
+            name: "김연우",
+          },
+          meetings: [
+            {
+              date: "2024-02-22",
+              alarms: ["2024-02-22T09:00:00.000Z", "2024-02-21T09:00:00.000Z"],
+            },
+          ],
+          contractPrice: 2000000,
+          resolutionDate: "2024-02-22T07:47:49.803Z",
+          status: "contractSuccessful",
+        },
+      ],
+    },
+    contractFailed: {
+      totalItemCount: 1,
+      data: [
+        {
+          id: 1,
+          car: {
+            id: 1,
+            model: "K5",
+          },
+          customer: {
+            id: 1,
+            name: "최효정",
+          },
+          user: {
+            id: 1,
+            name: "김연우",
+          },
+          meetings: [
+            {
+              date: "2024-02-22",
+              alarms: ["2024-02-22T09:00:00.000Z", "2024-02-21T09:00:00.000Z"],
+            },
+          ],
+          contractPrice: 2000000,
+          resolutionDate: "2024-02-22T07:47:49.803Z",
+          status: "contractSuccessful",
+        },
+      ],
+    },
+    contractSuccessful: {
+      totalItemCount: 1,
+      data: [
+        {
+          id: 1,
+          car: {
+            id: 1,
+            model: "K5",
+          },
+          customer: {
+            id: 1,
+            name: "최효정",
+          },
+          user: {
+            id: 1,
+            name: "김연우",
+          },
+          meetings: [
+            {
+              date: "2024-02-22",
+              alarms: ["2024-02-22T09:00:00.000Z", "2024-02-21T09:00:00.000Z"],
+            },
+          ],
+          contractPrice: 2000000,
+          resolutionDate: "2024-02-22T07:47:49.803Z",
+          status: "contractSuccessful",
+        },
+      ],
+    },
+  });
+});
+app.use("/contracts", testrouter);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`server running PORT ${PORT}`);

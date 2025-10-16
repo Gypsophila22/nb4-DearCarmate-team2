@@ -15,13 +15,18 @@ Content-Type: application/json
 }
 
 ### [USER] 회원가입
+<<<<<<< HEAD
 POST {{baseUrl}}/users
+=======
+POST {{baseUrl}}/users/register
+>>>>>>> develop
 Content-Type: application/json
 
 {
   "name": "testman",
   "email": "testman2@test.com",
   "employeeNumber": "100",
+<<<<<<< HEAD
   "phoneNumber": "010-2121-0696",
   "password": "aaaa1234",
   "passwordConfirmation": "aaaa1234",
@@ -44,6 +49,15 @@ Content-Type: application/json
   "companyCode": "CDEIT"
 }
 
+=======
+  "phoneNumber": "01021210696",
+  "password": "Test",
+  "passwordConfirmation": "Test",
+  "company": "Codeit",
+  "companyCode": "CDEIT2025"
+}
+
+>>>>>>> develop
 ### [USER] 로그인
 # @name userLogin
 POST {{baseUrl}}/auth/login
@@ -104,7 +118,11 @@ Content-Type: application/json
   "currentPassword": "AdminPass123!",
   "password": "AdminPass123!_NEW",
   "passwordConfirmation": "AdminPass123!_NEW",
+<<<<<<< HEAD
   "imageUrl": "https://example.com/admin.png"
+=======
+  "imgUrl": "https://example.com/admin.png"
+>>>>>>> develop
 }
 
 ### [USER] 내 정보 수정 (비밀번호 변경 + 프로필 수정)
@@ -121,10 +139,18 @@ Content-Type: application/json
   "imageUrl": "https://example.com/profile.png"
 }
 
+<<<<<<< HEAD
 ### [ADMIN] 유저 삭제 (회원 탈퇴)
 DELETE {{baseUrl}}/users/me
 Authorization: Bearer {{adminAccessToken}}
 
 ### [USER] 유저 삭제 (본인 계정 삭제 테스트용)
+=======
+### [ADMIN] 유저 삭제 (본인 계정 삭제 테스트용)
+DELETE {{baseUrl}}/users/me
+Authorization: Bearer {{adminAccessToken}}
+
+### [USER] 유저 삭제 (회원 탈퇴)
+>>>>>>> develop
 DELETE {{baseUrl}}/users/me
 Authorization: Bearer {{userAccessToken}}
