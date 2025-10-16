@@ -10,6 +10,13 @@ export const updateContractsRepository = {
   },
 
   // 계약 정보 업데이트
+
+  //TODO
+  // 업데이트 하려는 정보 검증하기
+  // 유저 조회해서 없으면 에러
+  // 차량 조회해서 없으면 에러
+  // 고객 조회해서 없으면 에러
+
   updateContract: async (
     prisma: PrismaClient,
     contractId: number,
@@ -18,6 +25,18 @@ export const updateContractsRepository = {
     return prisma.contracts.update({
       where: { id: contractId },
       data,
+      include: {
+        user: true,
+        customer: true,
+        car: {
+          include: { carModel: true },
+        },
+        meetings: {
+          include: {
+            alarms: true,
+          },
+        },
+      },
     });
   },
 
@@ -34,7 +53,7 @@ export const updateContractsRepository = {
       // 미팅 일정 생성
       const meeting = await prisma.meetings.create({
         data: {
-          date: new Date(m.date), // 문자열 → Date 객체로 변환
+          date: new Date(m.date), // 문자열을 Date 객체로 변환
           contractId, // 계약과 연결
         },
       });
@@ -65,6 +84,8 @@ export const updateContractsRepository = {
         id: { notIn: newDocIds },
       },
     });
+
+    // 계약서 조회해서 없으면 에러 추가필요
 
     // 새로 추가된 계약서를 계약에 연결
     for (const doc of documents) {

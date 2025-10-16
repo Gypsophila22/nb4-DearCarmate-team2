@@ -72,5 +72,28 @@ export const updateContractsService = async (data: UpdateContractInput) => {
     }
   }
 
-  return updatedContract;
+  const updateContractResponse = {
+    id: updatedContract.id,
+    status: updatedContract.status,
+    resolutionDate: updatedContract.resolutionDate.toISOString(),
+    contractPrice: updatedContract.contractPrice,
+    meetings: updatedContract.meetings.map((m) => ({
+      date: m.date.toISOString().split('T')[0], // yyyy-mm-dd
+      alarms: m.alarms.map((a) => a.time.toISOString()),
+    })),
+    user: {
+      id: updatedContract.user.id,
+      name: updatedContract.user.name,
+    },
+    customer: {
+      id: updatedContract.customer.id,
+      name: updatedContract.customer.name,
+    },
+    car: {
+      id: updatedContract.car.id,
+      model: updatedContract.car.carModel.model,
+    },
+  };
+
+  return updateContractResponse;
 };
