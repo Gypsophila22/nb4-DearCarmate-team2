@@ -32,7 +32,6 @@ model Companies {
   name      String
   code      String      @unique
   user      Users[]
-  Customers Customers[]
 }
 
 model Cars {
@@ -81,11 +80,9 @@ model Customers {
   ageGroup    String?
   region      Region?
   email       String?
-  memo        String?
-
-  company   Companies  @relation(fields: [companyId], references: [id])
-  companyId Int
-  contract  Contracts?
+  memo          String?
+  contractCount Int        @default(0)
+  contract      Contracts?
 }
 
 enum Gender {
