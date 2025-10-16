@@ -1,6 +1,6 @@
 import prisma from '../../lib/prisma.js';
 
-export const contractsRepository = {
+export const getContractsListRepository = {
   findByStatus: async (status: string, searchBy?: string, keyword?: string) => {
     // 계약 상태 필터
     const where: any = { status };

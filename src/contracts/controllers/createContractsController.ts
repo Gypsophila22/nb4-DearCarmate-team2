@@ -9,10 +9,6 @@ export const createContractsController = async (
   next: NextFunction,
 ) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ message: '로그인이 필요합니다' });
-    }
-
     const { carId, customerId, meetings } = req.body;
 
     // 요청 검증 (TODO: 나중에 다른파일로 빼면서 데이터 검증추가하기)
