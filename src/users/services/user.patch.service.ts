@@ -8,7 +8,7 @@ export const userPatchService = {
     body: {
       employeeNumber?: string | undefined;
       phoneNumber?: string | undefined;
-      imgUrl?: string | undefined;
+      imageUrl?: string | undefined;
       currentPassword: string;
       password?: string | undefined;
       passwordConfirmation?: string | undefined;
@@ -26,7 +26,8 @@ export const userPatchService = {
     const dataToUpdate: Record<string, any> = {};
     if (body.employeeNumber) dataToUpdate.employeeNumber = body.employeeNumber;
     if (body.phoneNumber) dataToUpdate.phoneNumber = body.phoneNumber;
-    if (typeof body.imgUrl !== 'undefined') dataToUpdate.imgUrl = body.imgUrl;
+    if (typeof body.imageUrl !== 'undefined')
+      dataToUpdate.imageUrl = body.imageUrl;
 
     if (body.password) {
       // (스키마에서 이미 확인했지만 이중 방어)
@@ -37,7 +38,7 @@ export const userPatchService = {
     }
 
     const updated = await userPatchRepository.updateById(user.id, dataToUpdate);
-    const { password: _pw, ...safeUser } = updated as any;
+    const { password: _pw, ...safeUser } = updated;
     return safeUser;
   },
 };

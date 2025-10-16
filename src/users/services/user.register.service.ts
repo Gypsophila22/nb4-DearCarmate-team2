@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
 import createError from 'http-errors';
 import { userRegisterRepository } from '../repositories/user.register.repository.js';
-// import { companyRepository } from '../repositories/company.repository.js';
 
 export const userRegisterService = {
   async register(input: {
@@ -10,7 +9,7 @@ export const userRegisterService = {
     employeeNumber: string;
     phoneNumber: string;
     password: string;
-    companyName: string;
+    company: string;
     companyCode: string;
   }) {
     // 이메일 중복
@@ -36,7 +35,7 @@ export const userRegisterService = {
       });
 
       // 비밀번호 제거 후 반환
-      const { password: _pw, ...safeUser } = created as any;
+      const { password: _pw, ...safeUser } = created;
       return safeUser;
     } catch (e: any) {
       // Prisma 고유 제약 조건 에러 매핑(P2002)

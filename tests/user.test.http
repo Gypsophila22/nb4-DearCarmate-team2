@@ -25,7 +25,7 @@ Content-Type: application/json
   "phoneNumber": "010-2121-0696",
   "password": "aaaa1234",
   "passwordConfirmation": "aaaa1234",
-  "companyName": "Codeit",
+  "company": "Codeit",
   "companyCode": "CDEIT2025"
 }
 
@@ -40,7 +40,7 @@ Content-Type: application/json
   "phoneNumber": "010-2121-0696",
   "password": "aaaa1234",
   "passwordConfirmation": "aaaa1234",
-  "companyName": "codeit",
+  "company": "codeit",
   "companyCode": "CDEIT"
 }
 
@@ -104,7 +104,7 @@ Content-Type: application/json
   "currentPassword": "AdminPass123!",
   "password": "AdminPass123!_NEW",
   "passwordConfirmation": "AdminPass123!_NEW",
-  "imgUrl": "https://example.com/admin.png"
+  "imageUrl": "https://example.com/admin.png"
 }
 
 ### [USER] 내 정보 수정 (비밀번호 변경 + 프로필 수정)
@@ -118,7 +118,7 @@ Content-Type: application/json
   "currentPassword": "aaaa1234",
   "password": "NewPass123!",
   "passwordConfirmation": "NewPass123!",
-  "imgUrl": "https://example.com/profile.png"
+  "imageUrl": "https://example.com/profile.png"
 }
 
 ### [ADMIN] 유저 삭제 (회원 탈퇴)

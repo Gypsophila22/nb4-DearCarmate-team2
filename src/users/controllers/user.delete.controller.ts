@@ -1,7 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { userDeleteService } from '../services/user.delete.service.js';
-import type { UserDeleteParams } from '../schemas/user.delete.schema.js';
 
 export async function deleteMe(
   req: Request,
@@ -23,10 +22,9 @@ export async function deleteUser(
   next: NextFunction
 ) {
   try {
-    if (!req.user?.isAdmin) throw createError(403, '관리자 권한이 필요합니다.');
-
-    const { params } = (req as any).validated as { params: UserDeleteParams };
-    const result = await userDeleteService.deleteByAdmin(params.id);
+    if (!req.user!.isAdmin) throw createError(403, '관리자 권한이 필요합니다.');
+    const id = Number(req.params.id);
+    const result = await userDeleteService.deleteByAdmin(id);
     return res.json(result);
   } catch (e) {
     next(e);

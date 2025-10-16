@@ -19,7 +19,7 @@ model Users {
   email          String  @unique
   employeeNumber String
   phoneNumber    String
-  imgUrl         String?
+  imageUrl       String?
   password       String
   isAdmin        Boolean @default(false)
 

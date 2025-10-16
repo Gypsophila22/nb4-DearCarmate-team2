@@ -1,18 +1,18 @@
-import prisma from "../../config/prisma.js";
+import prisma from '../../lib/prisma.js';
 
-import type { Request, Response } from "express";
+import type { Request, Response } from 'express';
 // TODO: 정리
 export const getCarByIdController = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
-      return res.status(401).json({ message: "로그인이 필요합니다." });
+      return res.status(401).json({ message: '로그인이 필요합니다.' });
     }
 
     const { carId } = req.params;
 
     // carId 검증
     if (!carId || isNaN(Number(carId))) {
-      return res.status(400).json({ message: "잘못된 요청입니다" });
+      return res.status(400).json({ message: '잘못된 요청입니다' });
     }
 
     // 차량 조회 (carModel 관계 포함)
@@ -24,7 +24,7 @@ export const getCarByIdController = async (req: Request, res: Response) => {
     });
 
     if (!car) {
-      return res.status(404).json({ message: "존재하지 않는 차량입니다" });
+      return res.status(404).json({ message: '존재하지 않는 차량입니다' });
     }
 
     // 조회 결과 반환

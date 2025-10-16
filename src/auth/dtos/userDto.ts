@@ -13,7 +13,7 @@ export interface UserResponseDTO {
   email: string;
   employeeNumber: string;
   phoneNumber: string;
-  imgUrl: string | null;
+  imageUrl: string | null;
   isAdmin: boolean;
   company: {
     name: string;
