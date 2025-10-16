@@ -10,7 +10,6 @@ export const jwtStrategy = new JwtStrategy(
   },
   async (payload, done) => {
     try {
-      console.log('[JWT payload]', payload);
       const user = await prisma.users.findUnique({
         where: { id: Number(payload.id) },
         select: {
@@ -21,7 +20,6 @@ export const jwtStrategy = new JwtStrategy(
         },
       });
 
-      console.log('[JWT user]', user);
       if (!user) return done(null, false);
       return done(null, user);
     } catch (err) {

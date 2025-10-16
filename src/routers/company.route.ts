@@ -8,6 +8,7 @@ import companyController from "../companies/controllers/index.js";
 
 const router = express.Router();
 
+<<<<<<< HEAD
 // 회사 등록 (POST /companies)
   router.post(
     "/",
@@ -42,19 +43,42 @@ router.get(
       ],
     });
   }
+=======
+//console.log("companyController 확인:", companyController);
+
+// 회사 등록 (POST /companies)1
+router.post(
+  "/",
+  // passport.authenticate("jwt", { session: false }),
+   companyController.createCompany
+);
+
+// 회사 목록 조회 (GET /companies)
+router.get(
+  "/",
+  // passport.authenticate("jwt", { session: false }),
+   companyController.getCompany
+);
+
+// 회사별 유저 조회 (GET /companies/:companyId/users)
+router.get(
+  "/:companyId/users",
+  // passport.authenticate("jwt", { session: false }),
+   companyController.getCompanyUsers
+>>>>>>> b891420 (test,feat,fix(company) : 테스트를 위한 추가 http 파일 추가 및 일부 주석 삭제, 확인용 console 라인 삭제)
 );
 
 // 회사 수정 (PATCH /companies/:companyId)
 router.patch(
-  "/companies/:companyId",
-  passport.authenticate("jwt", { session: false }),
+  "/:companyId",
+  // passport.authenticate("jwt", { session: false }),
   companyController.updateCompany
 );
 
 // 회사 삭제 (DELETE /companies/:companyId)
 router.delete(
-  "/companies/:companyId",
-  passport.authenticate("jwt", { session: false }),
+  "/:companyId",
+  // passport.authenticate("jwt", { session: false }),
   companyController.deleteCompany
 );
 

@@ -9,9 +9,9 @@ import getCompanyUsers from "./getCompanyUsers.js";
 const companyController = {
   ...postCompany,
   ...getCompany,
-  ...patchCompany,
-  ...deleteCompany,
   ...getCompanyUsers,
+  updateCompany: patchCompany,
+  deleteCompany,
 };
 
 export default companyController;

@@ -11,9 +11,15 @@ import cors from 'cors';
 import path from 'path';
 import passport from 'passport';
 
+<<<<<<< HEAD
 import errorHandler from './src/middlewares/errorHandler.js';
 import { requestLogger } from './src/middlewares/logger.js';
 import routers from './src/routers/index.js';
+=======
+import routers from "./src/routers/index.js";
+
+dotenv.config();
+>>>>>>> b891420 (test,feat,fix(company) : 테스트를 위한 추가 http 파일 추가 및 일부 주석 삭제, 확인용 console 라인 삭제)
 
 const app = express();
 
@@ -23,6 +29,7 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(requestLogger);
 
+<<<<<<< HEAD
 //테스트 용으로 만들어놓은 cors입니다.
 app.use(
   cors({
@@ -196,6 +203,12 @@ testrouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
 });
 app.use('/contracts', testrouter);
 
+=======
+app.use("/auth", routers.authRotuer);
+app.use("/users", routers.userRouter);
+app.use("/cars", routers.carRouter);
+app.use("/companies", routers.companyRouter);
+>>>>>>> b891420 (test,feat,fix(company) : 테스트를 위한 추가 http 파일 추가 및 일부 주석 삭제, 확인용 console 라인 삭제)
 app.use(errorHandler);
 
 app.listen(PORT, () => {

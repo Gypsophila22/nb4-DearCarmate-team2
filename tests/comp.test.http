@@ -1,0 +1,38 @@
+### ✅ 1. 서버 상태 확인
+GET http://localhost:4000/
+Content-Type: application/json
+
+
+### ✅ 2. 회사 목록 조회 (GET /companies)
+GET http://localhost:4000/companies
+Content-Type: application/json
+
+
+### ✅ 3. 회사 등록 (POST /companies)
+POST http://localhost:4000/companies
+Content-Type: application/json
+
+{
+  "companyName": "림버스 컴퍼니~!",
+  "companyCode": "Limb01"
+}
+
+
+### ✅ 4. 회사 수정 (PATCH /companies/:companyId)
+PATCH http://localhost:4000/companies/3
+Content-Type: application/json
+
+{
+  "companyName": "수정된회사명",
+  "companyCode": "EDIT01"
+}
+
+
+### ✅ 5. 특정 회사의 유저 조회 (GET /companies/:companyId/users)
+GET http://localhost:4000/companies/1/users
+Content-Type: application/json
+
+
+### ✅ 6. 회사 삭제 (DELETE /companies/:companyId)
+DELETE http://localhost:4000/companies/4
+Content-Type: application/json
