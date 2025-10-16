@@ -8,7 +8,7 @@ export const userPatchService = {
     body: {
       employeeNumber?: string | undefined;
       phoneNumber?: string | undefined;
-      imageUrl?: string | undefined;
+      imgUrl?: string | undefined;
       currentPassword: string;
       password?: string | undefined;
       passwordConfirmation?: string | undefined;
@@ -26,8 +26,7 @@ export const userPatchService = {
     const dataToUpdate: Record<string, any> = {};
     if (body.employeeNumber) dataToUpdate.employeeNumber = body.employeeNumber;
     if (body.phoneNumber) dataToUpdate.phoneNumber = body.phoneNumber;
-    if (typeof body.imageUrl !== 'undefined')
-      dataToUpdate.imageUrl = body.imageUrl;
+    if (typeof body.imgUrl !== 'undefined') dataToUpdate.imgUrl = body.imgUrl;
 
     if (body.password) {
       // (스키마에서 이미 확인했지만 이중 방어)

@@ -5,13 +5,9 @@ export const userPatchSchema = z.object({
     .object({
       employeeNumber: z.string().min(1).optional(),
       phoneNumber: z.string().min(1).optional(),
-      imgUrl: z.url().nullable().optional(),
+      imgUrl: z.url().optional(),
 
-      currentPassword: z
-        .string()
-        .trim()
-        .min(1, '현재 비밀번호가 필요합니다.')
-        .optional(),
+      currentPassword: z.string().trim().min(1, '현재 비밀번호가 필요합니다.'),
 
       password: z
         .string()

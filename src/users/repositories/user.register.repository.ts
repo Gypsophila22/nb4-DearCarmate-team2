@@ -25,4 +25,8 @@ export const userRegisterRepository = {
       include: { company: { select: { name: true, code: true } } },
     });
   },
+
+  findByCode(code: string) {
+    return prisma.companies.findUnique({ where: { code } });
+  },
 };

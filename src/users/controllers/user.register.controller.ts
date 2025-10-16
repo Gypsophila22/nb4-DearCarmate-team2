@@ -16,7 +16,7 @@ export async function postRegister(
       employeeNumber: body.employeeNumber,
       phoneNumber: body.phoneNumber,
       password: body.password,
-      company: body.company,
+      companyName: body.companyName,
       companyCode: body.companyCode,
     });
 
