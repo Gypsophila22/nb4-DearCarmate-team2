@@ -74,5 +74,8 @@ Content-Type: application/json
   "customerId": 1,
   "carId": 1
 }
-### 계약 수정 (계약 상태 변경)
-### 계약 수정 (계약서 관련)
+
+### 계약서 삭제
+DELETE {{baseUrl}}/contracts/1
+Authorization: bearer {{accessToken}}
+Content-Type: application/json
