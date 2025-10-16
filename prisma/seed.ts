@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-import prisma from '../src/config/prisma.js';
+import prisma from '../src/lib/prisma.js';
 
 async function main() {
   // CarModel 테이블에 차종(모델) 데이터 추가
