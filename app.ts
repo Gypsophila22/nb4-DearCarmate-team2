@@ -2,6 +2,7 @@ import "./src/config/env.js";
 
 import express from "express";
 import cors from "cors";
+import path from 'path';
 import passport from "passport";
 
 import errorHandler from "./src/middlewares/errorHandler.js";
@@ -23,11 +24,13 @@ app.use(
     credentials: true,
   })
 );
+app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 
-app.use("/auth", routers.authRouter);
-app.use("/users", routers.userRouter);
-app.use("/cars", routers.carRouter); 
-app.use("/admin", routers.companyRouter);
+app.use('/auth', routers.authRotuer);
+app.use('/users', routers.userRouter);
+app.use('/cars', routers.carRouter);
+app.use('/admin', routers.companyRouter);
+app.use('/images', routers.imgaeRouter);
 
 // customer 라우터는 별도로 추가합니다.
 app.use("/customers", routers.customersRouter);
