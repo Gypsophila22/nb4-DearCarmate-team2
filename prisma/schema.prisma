@@ -129,6 +129,6 @@ model Contracts {
   car   Cars @relation(fields: [carId], references: [id])
   carId Int  @unique
 
-  custmor   Customers @relation(fields: [custmorId], references: [id])
-  custmorId Int       @unique
+  customer   Customers @relation(fields: [customerId], references: [id])
+  customerId Int       @unique
 }
