@@ -20,11 +20,11 @@ Content-Type: application/json
 
 {
 	"name": "testman",
-	"email": "testman2@test.com",
+	"email": "email@email.com",
 	"employeeNumber": "100",
 	"phoneNumber": "01021210696",
-	"password": "Test",
-	"passwordConfirmation": "Test",
+	"password": "aaaa1234",
+	"passwordConfirmation": "aaaa1234",
 	"company": "Codeit",
 	"companyCode": "CDEIT2025"
 }

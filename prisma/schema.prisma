@@ -166,31 +166,49 @@ model Alarms {
   meeting   Meetings @relation(fields: [meetingId], references: [id])
 }
 
-model ContractDocuments {
-  id Int @id @default(autoincrement())
+// model ContractDocuments {
+//   id Int @id @default(autoincrement())
 
-  // 업로드 파일 메타
-  originalName String // 사용자가 올린 파일명
-  storedName   String // 서버에 저장한 파일명(중복방지)
+//   // 업로드 파일 메타
+//   originalName String // 사용자가 올린 파일명
+//   storedName   String // 서버에 저장한 파일명(중복방지)
+//   mimeType     String
+//   size         Int
+//   path         String? // LOCAL일 때 경로
+//   url          String?
+
+//   // 소유/관계
+//   contractId Int
+//   contract   Contracts @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+//   uploaderId Int // 업로더
+//   uploader   Users @relation(fields: [uploaderId], references: [id])
+
+//   companyId Int // 회사 경계(질의/권한 체크 편의)
+//   company   Companies @relation(fields: [companyId], references: [id])
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([contractId])
+//   @@index([companyId])
+//   @@index([uploaderId])
+// }
+
+model ContractDocuments {
+  id           Int        @id @default(autoincrement())
+  contractId   Int? // ← NULL 허용
+  contract     Contracts? @relation(fields: [contractId], references: [id])
+  companyId    Int
+  uploaderId   Int
+  originalName String
+  storedName   String
   mimeType     String
   size         Int
-  path         String? // LOCAL일 때 경로
-  url          String?
-
-  // 소유/관계
-  contractId Int
-  contract   Contracts @relation(fields: [contractId], references: [id], onDelete: Cascade)
-
-  uploaderId Int // 업로더
-  uploader   Users @relation(fields: [uploaderId], references: [id])
-
-  companyId Int // 회사 경계(질의/권한 체크 편의)
-  company   Companies @relation(fields: [companyId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([contractId])
-  @@index([companyId])
-  @@index([uploaderId])
+  path         String
+  createdAt    DateTime   @default(now())
+  Users        Users?     @relation(fields: [usersId], references: [id])
+  usersId      Int?
+  Companies    Companies? @relation(fields: [companiesId], references: [id])
+  companiesId  Int?
 }
