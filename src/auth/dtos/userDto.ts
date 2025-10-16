@@ -16,7 +16,7 @@ export interface UserResponseDTO {
   imageUrl: string | null;
   isAdmin: boolean;
   company: {
-    name: string;
-    code: string;
+    companyName: string;
+    companyCode: string;
   };
 }

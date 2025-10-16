@@ -16,7 +16,7 @@ const userRegisterSchema = z
       .string({ error: '비밀번호는 필수입니다.' })
       .min(8, { error: '비밀번호는 8자 이상이어야 합니다.' }),
     passwordConfirmation: z.string({ error: '비밀번호 확인은 필수입니다.' }),
-    company: z.string({ error: '회사명은 필수입니다.' }),
+    companyName: z.string({ error: '회사명은 필수입니다.' }),
     companyCode: z.string({ error: '회사코드는 필수입니다.' }),
   })
   .refine(

@@ -3,11 +3,10 @@ import passports from '../lib/passport/index.js';
 
 import C from '../users/controllers/index.js';
 import V from '../users/schemas/index.js';
-import { mapCompanyKey } from '../middlewares/mapCompanyKey.js';
 
 const router = express.Router();
 
-router.post('/', mapCompanyKey, V.validatedUserRegister, C.postRegister);
+router.post('/', V.validatedUserRegister, C.postRegister);
 
 router
   .route('/me')

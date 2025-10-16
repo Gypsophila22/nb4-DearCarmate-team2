@@ -12,7 +12,7 @@ export const userGetRepository = {
         phoneNumber: true,
         imageUrl: true,
         isAdmin: true,
-        company: { select: { code: true } },
+        company: { select: { companyCode: true } },
       },
     });
   },

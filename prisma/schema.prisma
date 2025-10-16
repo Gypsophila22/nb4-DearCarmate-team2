@@ -28,11 +28,11 @@ model Users {
 }
 
 model Companies {
-  id        Int         @id @default(autoincrement())
-  name      String
-  code      String      @unique
-  user      Users[]
-  Customers Customers[]
+  id          Int         @id @default(autoincrement())
+  companyName String
+  companyCode String      @unique
+  user        Users[]
+  Customers   Customers[]
 }
 
 model Cars {

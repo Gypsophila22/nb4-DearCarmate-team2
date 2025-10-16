@@ -25,7 +25,7 @@ Content-Type: application/json
   "phoneNumber": "010-2121-0696",
   "password": "aaaa1234",
   "passwordConfirmation": "aaaa1234",
-  "company": "Codeit",
+  "companyName": "Codeit",
   "companyCode": "CDEIT2025"
 }
 

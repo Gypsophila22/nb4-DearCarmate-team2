@@ -13,7 +13,7 @@ export async function postRegister(
       employeeNumber: req.body.employeeNumber,
       phoneNumber: req.body.phoneNumber,
       password: req.body.password,
-      company: req.body.company,
+      companyName: req.body.companyName,
       companyCode: req.body.companyCode,
     });
 
