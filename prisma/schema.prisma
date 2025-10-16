@@ -82,7 +82,7 @@ model Customers {
   email       String?
   memo          String?
   contractCount Int        @default(0)
-  contract      Contracts?
+  contract      Contracts[]
 }
 
 enum Gender {
@@ -130,5 +130,5 @@ model Contracts {
   carId Int  @unique
 
   customer   Customers @relation(fields: [customerId], references: [id])
-  customerId Int       @unique
+  customerId Int
 }
