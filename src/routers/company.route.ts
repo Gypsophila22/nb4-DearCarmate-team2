@@ -1,4 +1,8 @@
-import express from "express";
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
 import passport from "passport";
 
 import postCompany from "../companies/controllers/postCompany.js";
@@ -17,16 +21,62 @@ router.post(
 );
 
 // 회사 목록 조회
+// router.get(
+//   "/",
+//   passport.authenticate("jwt", { session: false }),
+//   getCompany.getCompany
+// );
+
+// router.get(
+//   "/:companyId/users",
+//   passport.authenticate("jwt", { session: false }),
+//   getCompanyUsers.getCompanyUsers
+// );
+
 router.get(
   "/",
   passport.authenticate("jwt", { session: false }),
-  getCompany.getCompany
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.warn("테스트용 더미 코드");
+    res.json({
+      currentPage: 1,
+      totalPages: 1,
+      totalItemCount: 1,
+      data: [
+        {
+          id: 1,
+          companyName: "string",
+          companyCode: "string",
+          userCount: 3,
+        },
+      ],
+    });
+  }
 );
 
 router.get(
   "/:companyId/users",
   passport.authenticate("jwt", { session: false }),
-  getCompanyUsers.getCompanyUsers
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.warn("테스트용 더미 코드");
+    res.json({
+      currentPage: 1,
+      totalPages: 2,
+      totalItemCount: 6,
+      data: [
+        {
+          id: 1,
+          name: "string",
+          email: "string",
+          employeeNumber: "string",
+          phoneNumber: "string",
+          company: {
+            companyName: "string",
+          },
+        },
+      ],
+    });
+  }
 );
 
 // 회사 수정 & 삭제 (체인으로)
