@@ -1,4 +1,6 @@
-import { createContractsService } from '../services/createContractsService.js';
+import contractService from '../services/index.js';
+
+import type { Meetings } from '@prisma/client';
 
 import type { NextFunction, Request, Response } from 'express';
 
@@ -9,18 +11,17 @@ export const createContractsController = async (
   next: NextFunction,
 ) => {
   try {
-    const { carId, customerId, meetings } = req.body;
-
-    // 요청 검증 (TODO: 나중에 다른파일로 빼면서 데이터 검증추가하기)
-    if (!carId || !customerId || !Array.isArray(meetings)) {
-      return res.status(400).json({ message: '잘못된 요청입니다' });
-    }
+    const { carId, customerId, meetings } = req.dto as {
+      carId: number;
+      customerId: number;
+      meetings: { date: string; alarms: string[] }[];
+    };
 
     // 로그인된 사용자 ID 추출
     const userId = (req.user as { id: number }).id;
 
     // 계약 생성 서비스 호출
-    const result = await createContractsService({
+    const result = await contractService.create({
       carId, // 차량
       customerId, // 고객
       meetings, // 일정

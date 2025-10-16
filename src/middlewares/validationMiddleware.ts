@@ -8,19 +8,25 @@ import type { NextFunction, Request, Response } from 'express';
  * @param source - 검증할 위치 ('body' | 'params' | 'query')
  */
 
-export function validationMiddleware(
-  schema: z.ZodObject<any, any>,
-  source: 'body' | 'params' | 'query' = 'body',
-) {
+export function validationMiddleware<
+  P extends z.ZodTypeAny,
+  B extends z.ZodTypeAny,
+>(schemas: { params?: P; body?: B }) {
   return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const data = schema.parse(req[source]);
-      req.dto = data; // 검증된 데이터 저장
-      next();
-    } catch (err) {
-      return res.status(400).json({
-        message: '잘못된 요청입니다',
-      });
+    if (schemas.params) {
+      const parsedParams = schemas.params.safeParse(req.params);
+      if (!parsedParams.success)
+        return res.status(400).json({ message: '잘못된 요청입니다' });
+      (req as any).paramsDto = parsedParams.data as z.infer<P>;
     }
+
+    if (schemas.body) {
+      const parsedBody = schemas.body.safeParse(req.body);
+      if (!parsedBody.success)
+        return res.status(400).json({ message: '잘못된 요청입니다' });
+      (req as any).bodyDto = parsedBody.data as z.infer<B>;
+    }
+
+    next();
   };
 }
