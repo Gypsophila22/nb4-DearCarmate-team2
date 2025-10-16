@@ -155,7 +155,7 @@ model Meetings {
   id         Int       @id @default(autoincrement())
   date       DateTime
   contractId Int
-  contract   Contracts @relation(fields: [contractId], references: [id])
+  contract   Contracts @relation(fields: [contractId], references: [id], onDelete: Cascade)
   alarms     Alarms[]
 }
 
@@ -163,7 +163,7 @@ model Alarms {
   id        Int      @id @default(autoincrement())
   time      DateTime
   meetingId Int
-  meeting   Meetings @relation(fields: [meetingId], references: [id])
+  meeting   Meetings @relation(fields: [meetingId], references: [id], onDelete: Cascade)
 }
 
 model ContractDocuments {
