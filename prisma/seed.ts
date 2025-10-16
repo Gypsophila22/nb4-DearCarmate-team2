@@ -36,6 +36,7 @@ async function main() {
 
   // 어드민 계정 비밀번호 해시
   const hashedPassword = await bcrypt.hash('AdminPass123!', 10);
+  const userHashed = await bcrypt.hash('aaaa1234', 10);
 
   // 어드민 유저 등록
   await prisma.users.upsert({
@@ -52,10 +53,6 @@ async function main() {
     },
   });
 
-  // 일반 유저 비밀번호 해시
-  const userHashed = await bcrypt.hash('UserPass123!', 10);
-
-  // 일반 유저 등록
   await prisma.users.createMany({
     data: [
       {
