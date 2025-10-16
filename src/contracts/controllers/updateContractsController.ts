@@ -1,6 +1,7 @@
 import contractsService from '../services/index.js';
 
 import type { Request, Response, NextFunction } from 'express';
+import type { ContractsStatus } from '@prisma/client';
 
 /**
  * 계약 업데이트
@@ -11,7 +12,9 @@ export const updateContractsController = async (
   next: NextFunction,
 ) => {
   try {
-    const { contractId } = req.params; // 변경할 계약 ID
+    const { contractId } = req.paramsDto as {
+      contractId: number;
+    };
 
     const {
       status, // 계약 상태
@@ -22,11 +25,20 @@ export const updateContractsController = async (
       userId, // 담당자
       customerId, // 고객
       carId, // 차량 번호
-    } = req.body; // 요청 데이터 추출
+    } = req.bodyDto as {
+      status: ContractsStatus;
+      resolutionDate: string;
+      contractPrice: number;
+      meetings: { date: string; alarms: string[] }[];
+      contractDocuments: { id: number; fileName: string }[];
+      userId: number;
+      customerId: number;
+      carId: number;
+    }; // 요청 데이터 추출
 
     // 계약 업데이트 서비스 호출
-    const updatedContract = await contractsService.update({
-      contractId: Number(contractId),
+    const result = await contractsService.update({
+      contractId,
       status,
       resolutionDate,
       contractPrice,
@@ -38,7 +50,7 @@ export const updateContractsController = async (
     });
 
     // 결과 반환
-    res.status(200).json(updatedContract);
+    res.status(200).json(result);
   } catch (err) {
     next(err);
   }

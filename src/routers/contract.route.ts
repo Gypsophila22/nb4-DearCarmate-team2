@@ -1,7 +1,7 @@
 import express from 'express';
 
 import contractController from '../contracts/controllers/index.js';
-import contractDto from '../contracts/schemas/index.js';
+import contractSchema from '../contracts/schemas/index.js';
 import passports from '../lib/passport/index.js';
 import { validationMiddleware } from '../middlewares/validationMiddleware.js';
 
@@ -11,17 +11,24 @@ router
   .route('/')
   .post(
     passports.jwtAuth,
-    validationMiddleware({ body: contractDto.create }),
+    validationMiddleware({ body: contractSchema.create }),
     contractController.create,
   ) // 계약 등록
   .get(passports.jwtAuth, contractController.getList); // 계약 목록 조회
 
 router
   .route('/:contractId')
-  .patch(passports.jwtAuth, contractController.update) // 계약 수정 (계약서 수정 포함)
+  .patch(
+    passports.jwtAuth,
+    validationMiddleware({
+      params: contractSchema.update.param,
+      body: contractSchema.update.body,
+    }),
+    contractController.update,
+  ) // 계약 수정 (계약서 수정 포함)
   .delete(
     passports.jwtAuth,
-    validationMiddleware({ params: contractDto.delete }),
+    validationMiddleware({ params: contractSchema.delete }),
     contractController.delete,
   ); // 계약 삭제
 

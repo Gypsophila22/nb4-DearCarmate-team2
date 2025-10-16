@@ -108,55 +108,50 @@ async function main() {
     skipDuplicates: true,
   });
 
-  // 계약 등록
-  await prisma.contracts.createMany({
-    data: [
-      {
-        contractPrice: 20000000,
-        status: 'carInspection',
-        resolutionDate: new Date('2024-10-22T09:00:00'),
-        carId: 1,
-        customerId: 1,
-        userId: 1,
-      },
-      {
-        contractPrice: 35000000,
-        status: 'carInspection',
-        resolutionDate: new Date('2024-11-15T10:00:00'),
-        carId: 2,
-        customerId: 2,
-        userId: 1,
-      },
-    ],
-    skipDuplicates: true,
-  });
-
-  // 계약에 대해 Meetings 시드
-  await prisma.meetings.create({
+  // TODO: id 하드코딩한거 수정해야함
+  // 계약 생성
+  const contract1 = await prisma.contracts.create({
     data: {
-      date: new Date('2024-10-25T14:00:00'),
-      contractId: 1,
+      contractPrice: 20000000,
+      status: 'carInspection',
+      resolutionDate: new Date('2024-10-22T09:00:00'),
+      carId: 1,
+      customerId: 1,
+      userId: 1,
     },
   });
 
-  await prisma.meetings.create({
+  const contract2 = await prisma.contracts.create({
+    data: {
+      contractPrice: 35000000,
+      status: 'carInspection',
+      resolutionDate: new Date('2024-11-15T10:00:00'),
+      carId: 2,
+      customerId: 2,
+      userId: 1,
+    },
+  });
+
+  // 계약에 대해 Meetings 시드
+  const meeting1 = await prisma.meetings.create({
+    data: {
+      date: new Date('2024-10-25T14:00:00'),
+      contractId: contract1.id, // contract1의 실제 ID
+    },
+  });
+
+  const meeting2 = await prisma.meetings.create({
     data: {
       date: new Date('2024-11-20T10:00:00'),
-      contractId: 2,
+      contractId: contract2.id, // contract2의 실제 ID
     },
   });
 
   // 각 미팅에 대해 Alarms 시드
   await prisma.alarms.createMany({
     data: [
-      {
-        time: new Date('2024-10-25T13:00:00'),
-        meetingId: 1,
-      },
-      {
-        time: new Date('2024-11-20T09:30:00'),
-        meetingId: 2,
-      },
+      { time: new Date('2024-10-25T13:00:00'), meetingId: meeting1.id },
+      { time: new Date('2024-11-20T09:30:00'), meetingId: meeting2.id },
     ],
     skipDuplicates: true,
   });

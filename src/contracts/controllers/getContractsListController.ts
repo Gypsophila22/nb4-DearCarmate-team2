@@ -13,9 +13,8 @@ export const getContractsListController = async (
       searchBy?: string; // 고객 이름 | 담당자 이름 (검색 기준)
       keyword?: string; // 검색어
     };
-    // TODO: 쿼리 검증 추가하기
 
-    // 계약 목록 조회 서비스 호출
+    // 계약 목록 조회 서비스 호출 TODO: 쿼리 검증 추가
     const result = await contractService.getList(searchBy, keyword);
 
     res.status(200).json(result);

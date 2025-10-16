@@ -1,9 +1,8 @@
 import { ContractsStatus } from '@prisma/client';
 
-import prisma from '../../lib/prisma.js';
 import contractRepository from '../repositories/index.js';
 
-// 계약 상태 변경, 계약서 관련 말고는 프론트에서 기존 정보 다 입력된채로 넘김
+// 계약 상태 변경
 interface UpdateContractInput {
   contractId: number;
   status?: ContractsStatus; // 계약 상태
@@ -18,15 +17,14 @@ interface UpdateContractInput {
 
 export const updateContractsService = async (data: UpdateContractInput) => {
   // 계약 존재 여부 확인
-  const contract = await contractRepository.update.findById(
-    prisma,
-    data.contractId,
-  );
-  if (!contract) throw new Error('존재하지 않는 계약입니다');
+  await contractRepository.findContract(data.contractId);
+  // 차량 존재 확인 및 보유중인지 체크
+  if (data.carId) {
+    await contractRepository.findCar(data.carId);
+  }
 
   // 계약 정보 업데이트 (undefined인 필드를 data 객체에서 제외)
   const updatedContract = await contractRepository.update.updateContract(
-    prisma,
     data.contractId,
     {
       ...(data.status && { status: data.status }),
@@ -40,14 +38,16 @@ export const updateContractsService = async (data: UpdateContractInput) => {
       ...(data.customerId && {
         customer: { connect: { id: data.customerId } },
       }),
-      ...(data.carId && { car: { connect: { id: data.carId } } }),
+      ...(data.carId !== undefined &&
+        data.carId !== null && {
+          car: { connect: { id: data.carId } },
+        }),
     },
   );
 
   // 미팅 정보 업데이트
   if (data.meetings && data.meetings.length > 0) {
     await contractRepository.update.updateMeetings(
-      prisma,
       data.contractId,
       data.meetings,
     );
@@ -62,7 +62,6 @@ export const updateContractsService = async (data: UpdateContractInput) => {
 
     if (validDocs.length > 0) {
       await contractRepository.update.updateContractDocuments(
-        prisma,
         data.contractId,
         validDocs.map((doc) => ({
           id: doc.id,
@@ -78,7 +77,7 @@ export const updateContractsService = async (data: UpdateContractInput) => {
     resolutionDate: updatedContract.resolutionDate.toISOString(),
     contractPrice: updatedContract.contractPrice,
     meetings: updatedContract.meetings.map((m) => ({
-      date: m.date.toISOString().split('T')[0], // yyyy-mm-dd
+      date: m.date.toISOString().split('T')[0],
       alarms: m.alarms.map((a) => a.time.toISOString()),
     })),
     user: {

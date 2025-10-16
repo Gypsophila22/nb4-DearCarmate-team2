@@ -1,11 +1,10 @@
-import prisma from '../../lib/prisma.js';
-import { createContractsRepository } from '../repositories/createContractsRepository.js';
+import contractRepository from '../repositories/index.js';
 
 interface CreateContractInput {
   carId: number;
-  customerId: number;
-  meetings: { date: string; alarms: string[] }[];
-  userId: number; // 로그인 사용자 (계약 담당자)
+  customerId: number; // 고객
+  meetings: { date: string; alarms: string[] }[]; // 미팅 일정
+  userId: number; // 계약 담당자
 }
 
 interface Alarm {
@@ -18,34 +17,15 @@ interface Meeting {
 }
 
 export const createContractsService = async (data: CreateContractInput) => {
-  // 차량 확인
-  const car = await createContractsRepository.findCarByIdForContract(
-    prisma,
-    data.carId,
-  );
-  if (car.status !== 'possession') {
-    throw new Error('보유 중인 차량만 계약할 수 있습니다');
-  }
-  // 고객 확인
-  const customer = await prisma.customers.findUnique({
-    where: { id: data.customerId },
-    select: { id: true, name: true },
-  });
-  if (!customer) {
-    throw new Error(`존재하지 않는 고객입니다`);
-  }
-
-  // 계약 담당자 정보 조회
-  const user = await prisma.users.findUnique({
-    where: { id: data.userId },
-    select: { id: true, name: true },
-  });
-  if (!user) {
-    throw new Error(`존재하지 않는 유저입니다`);
-  }
+  // 차량 존재 확인 및 보유중인지 상태 체크
+  const car = await contractRepository.findCar(data.carId);
+  // 고객 존재 확인
+  const customer = await contractRepository.findCustomer;
+  // 유저(계약 담당자) 존재 확인
+  const user = await contractRepository.findUser;
 
   // 계약 생성
-  const contract = await createContractsRepository.create(prisma, {
+  const contract = await contractRepository.create.createContract({
     carId: data.carId,
     customerId: data.customerId,
     contractPrice: car.price,
@@ -53,18 +33,13 @@ export const createContractsService = async (data: CreateContractInput) => {
   });
 
   // 미팅 및 알람 생성
-  const meetings = await createContractsRepository.createMeetingsAndAlarms(
-    prisma,
+  const meetings = await contractRepository.create.createMeetingsAndAlarms(
     contract.id,
     data.meetings,
   );
 
   // 차량 상태를 '계약 진행 중'으로 변경
-  await createContractsRepository.updateCarStatus(
-    prisma,
-    data.carId,
-    'contractProceeding',
-  );
+  await contractRepository.create.updateCarStatus(data.carId);
 
   return {
     id: contract.id,
@@ -79,7 +54,7 @@ export const createContractsService = async (data: CreateContractInput) => {
     customer,
     car: {
       id: car.id,
-      model: car.model,
+      model: car.carModel.model,
     },
   };
 };
