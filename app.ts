@@ -3,6 +3,7 @@ import "./src/config/env.js";
 
 import express from "express";
 import cors from "cors";
+import path from 'path';
 import passport from "passport";
 
 import errorHandler from "./src/middlewares/errorHandler.js";
@@ -43,11 +44,20 @@ app.use(
     credentials: true,
   })
 );
+app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 
+<<<<<<< HEAD
 app.use("/auth", routers.authRouter);
 app.use("/users", routers.userRouter);
 app.use("/cars", routers.carRouter);
 app.use("/admin", routers.companyRouter);
+=======
+app.use('/auth', routers.authRotuer);
+app.use('/users', routers.userRouter);
+app.use('/cars', routers.carRouter);
+app.use('/admin', routers.companyRouter);
+app.use('/images', routers.imgaeRouter);
+>>>>>>> 5994e76 (feat: user, auth 레이어드 아키텍처 적용, 이미지 등록, 이메일 전송 (#28))
 
 // customer 라우터는 별도로 추가합니다.
 app.use("/customers", routers.customersRouter);

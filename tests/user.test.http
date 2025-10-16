@@ -16,8 +16,11 @@ Content-Type: application/json
 
 ### [USER] 회원가입
 <<<<<<< HEAD
+<<<<<<< HEAD
 POST {{baseUrl}}/users
 =======
+=======
+>>>>>>> 5994e76 (feat: user, auth 레이어드 아키텍처 적용, 이미지 등록, 이메일 전송 (#28))
 POST {{baseUrl}}/users/register
 >>>>>>> develop
 Content-Type: application/json
@@ -26,6 +29,7 @@ Content-Type: application/json
   "name": "testman",
   "email": "testman2@test.com",
   "employeeNumber": "100",
+<<<<<<< HEAD
 <<<<<<< HEAD
   "phoneNumber": "010-2121-0696",
   "password": "aaaa1234",
@@ -58,6 +62,15 @@ Content-Type: application/json
 }
 
 >>>>>>> develop
+=======
+  "phoneNumber": "01021210696",
+  "password": "Test",
+  "passwordConfirmation": "Test",
+  "company": "Codeit",
+  "companyCode": "CDEIT2025"
+}
+
+>>>>>>> 5994e76 (feat: user, auth 레이어드 아키텍처 적용, 이미지 등록, 이메일 전송 (#28))
 ### [USER] 로그인
 # @name userLogin
 POST {{baseUrl}}/auth/login
@@ -119,10 +132,14 @@ Content-Type: application/json
   "password": "AdminPass123!_NEW",
   "passwordConfirmation": "AdminPass123!_NEW",
 <<<<<<< HEAD
+<<<<<<< HEAD
   "imageUrl": "https://example.com/admin.png"
 =======
   "imgUrl": "https://example.com/admin.png"
 >>>>>>> develop
+=======
+  "imgUrl": "https://example.com/admin.png"
+>>>>>>> 5994e76 (feat: user, auth 레이어드 아키텍처 적용, 이미지 등록, 이메일 전송 (#28))
 }
 
 ### [USER] 내 정보 수정 (비밀번호 변경 + 프로필 수정)
@@ -140,6 +157,7 @@ Content-Type: application/json
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ### [ADMIN] 유저 삭제 (회원 탈퇴)
 DELETE {{baseUrl}}/users/me
 Authorization: Bearer {{adminAccessToken}}
@@ -152,5 +170,12 @@ Authorization: Bearer {{adminAccessToken}}
 
 ### [USER] 유저 삭제 (회원 탈퇴)
 >>>>>>> develop
+=======
+### [ADMIN] 유저 삭제 (본인 계정 삭제 테스트용)
+DELETE {{baseUrl}}/users/me
+Authorization: Bearer {{adminAccessToken}}
+
+### [USER] 유저 삭제 (회원 탈퇴)
+>>>>>>> 5994e76 (feat: user, auth 레이어드 아키텍처 적용, 이미지 등록, 이메일 전송 (#28))
 DELETE {{baseUrl}}/users/me
 Authorization: Bearer {{userAccessToken}}

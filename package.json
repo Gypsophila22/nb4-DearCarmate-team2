@@ -20,9 +20,13 @@
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     "cors": "^2.8.5",
 >>>>>>> 340732a (develop 최신화 && users 파트 companyCode, companyName merge 전 임시 변경)
+=======
+    "cors": "^2.8.5",
+>>>>>>> 5994e76 (feat: user, auth 레이어드 아키텍처 적용, 이미지 등록, 이메일 전송 (#28))
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "http-errors": "^2.0.0",
@@ -38,9 +42,15 @@
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    "@types/cors": "^2.8.19",
+>>>>>>> 5994e76 (feat: user, auth 레이어드 아키텍처 적용, 이미지 등록, 이메일 전송 (#28))
     "@types/express": "^5.0.3",
     "@types/http-errors": "^2.0.5",
+    "@types/http-errors": "^2.0.5",
     "@types/jsonwebtoken": "^9.0.10",
+<<<<<<< HEAD
 =======
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
@@ -49,6 +59,9 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",
 >>>>>>> 340732a (develop 최신화 && users 파트 companyCode, companyName merge 전 임시 변경)
+=======
+    "@types/multer": "^2.0.0",
+>>>>>>> 5994e76 (feat: user, auth 레이어드 아키텍처 적용, 이미지 등록, 이메일 전송 (#28))
     "@types/node": "^24.6.0",
     "@types/nodemailer": "^7.0.2",
     "@types/passport": "^1.0.17",
