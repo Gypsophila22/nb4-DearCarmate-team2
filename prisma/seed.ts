@@ -36,6 +36,7 @@ async function main() {
 
   // 어드민 계정 비밀번호 해시
   const hashedPassword = await bcrypt.hash('AdminPass123!', 10);
+  const userHashed = await bcrypt.hash('aaaa1234', 10);
 
   // 어드민 유저 등록
   await prisma.users.upsert({
@@ -50,6 +51,57 @@ async function main() {
       isAdmin: true,
       companyId: company.id,
     },
+  });
+
+  await prisma.users.createMany({
+    data: [
+      {
+        name: '김코드',
+        email: 'user1@codeit.com',
+        employeeNumber: '101',
+        phoneNumber: '01011112222',
+        password: userHashed,
+        isAdmin: false,
+        companyId: company.id,
+      },
+      {
+        name: '이코드',
+        email: 'user2@codeit.com',
+        employeeNumber: '102',
+        phoneNumber: '01022223333',
+        password: userHashed,
+        isAdmin: false,
+        companyId: company.id,
+      },
+      {
+        name: '박코드',
+        email: 'user3@codeit.com',
+        employeeNumber: '103',
+        phoneNumber: '01033334444',
+        password: userHashed,
+        isAdmin: false,
+        companyId: company.id,
+      },
+      {
+        name: '최코드',
+        email: 'user4@codeit.com',
+        employeeNumber: '104',
+        phoneNumber: '01044445555',
+        password: userHashed,
+        isAdmin: false,
+        companyId: company.id,
+      },
+      {
+        name: '정코드',
+        email: 'user5@codeit.com',
+        employeeNumber: '105',
+        phoneNumber: '01055556666',
+        password: userHashed,
+        isAdmin: false,
+        companyId: company.id,
+      },
+    ],
+    skipDuplicates: true, // 이메일 unique면 중복 시 무시
   });
 
   console.log('✅ Seeding 완료');
