@@ -77,7 +77,7 @@ model Customers {
   name        String
   gender      Gender
   phoneNumber String
-  ageGroup    String?
+  ageGroup    AgeGroup?
   region      Region?
   email       String?
   memo          String?
