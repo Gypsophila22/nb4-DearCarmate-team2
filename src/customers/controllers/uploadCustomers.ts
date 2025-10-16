@@ -13,7 +13,7 @@ export { upload };
 const customerCsvRowSchema = z.object({
     고객명: z.string().min(1, '고객명은 필수입니다.'),
     성별: z.enum
-    (['MALE, FEMALE'], { message: '성별은 MALE 또는 FEMALE이어야 합니다.'}),
+    (['MALE', 'FEMALE'], { message: '성별은 MALE 또는 FEMALE이어야 합니다.'}),
     연락처: z.string().regex(/^\d{2,4}-\d{3,4}-\d{4}$|^\d{9,11}$/, '유효한 연락처 형식이 아닙니다.'),
     연령대: z.string().optional(), // '20대', '30대' 등등
     이메일: z.string().email('유효한 이메일 형식이 아닙니다.').optional(),
@@ -22,9 +22,9 @@ const customerCsvRowSchema = z.object({
 
 // CSV 파싱 및 유효성 검사 
 async function parseAndValidateCsv(buffer: Buffer) {
-    const results: z.infer<typeof customerCsvRowSchema?[] = [];
+    const results: z.infer<typeof customerCsvRowSchema>[] = [];
     const errors: { row: number; data: any; errors: z.ZodIssue[] }[] = [];
-    ler rowNumber = 1;
+    let rowNumber = 1;
 
     const stream = Readable.from(buffer);
 
@@ -45,7 +45,7 @@ async function parseAndValidateCsv(buffer: Buffer) {
                 resolve();
             })
             .on('error', (error) => {
-                reject(createError(400, 'CSV 파싱 오류: ${error.message'));
+                reject(createError(400, 'CSV 파싱 오류: ${error.message}'));
             });
     });
 
@@ -65,7 +65,7 @@ export const uploadCustomers = async (req: Request, res: Response, next: NextFun
         }
 
         // CSV 파일인지 확인
-        if (!req.file.mimetype !== 'text/csv') {
+        if (req.file.mimetype !== 'text/csv') {
             throw createError(400, 'CSV 파일만 업로드할 수 있습니다');
         }
 
@@ -73,6 +73,8 @@ export const uploadCustomers = async (req: Request, res: Response, next: NextFun
         
         // CSV 파싱, 유효성 검사
         const { results: validCustomers, errors: validationErrors } = await parseAndValidateCsv(csvBuffer);
+
+        const dbProcessResults = await customerUploadService.processCustomerCsv(validCustomers);
     
 
         res.status(200).json({
@@ -82,6 +84,7 @@ export const uploadCustomers = async (req: Request, res: Response, next: NextFun
             processedSuccessfully: validCustomers.length,
             failedRecords: validationErrors.length,
             validationErrors: validationErrors,
+            databaseErrors: dbProcessResults.errors,
         });
 
     } catch (error) {
