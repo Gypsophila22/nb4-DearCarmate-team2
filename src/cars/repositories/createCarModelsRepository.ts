@@ -1,4 +1,4 @@
-import { CarType } from '../../../generated/prisma/index.js';
+import { CarType } from '@prisma/client';
 import prisma from '../../lib/prisma.js';
 
 /**
