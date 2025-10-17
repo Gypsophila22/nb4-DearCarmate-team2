@@ -54,10 +54,7 @@ async function parseAndValidateCsv(buffer: Buffer) {
 
 export const uploadCustomers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // 관리자 확인
-        if (!req.user?.isAdmin) {
-            throw createError(403, '관리자 권한이 필요합니다.');
-        }
+
         
         // 파일 존재 확인
         if (!req.file) {
