@@ -1,8 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
-import prisma from '../../lib/prisma.js';
-import { decodeLatin1ToUtf8 } from '../../lib/filename.js';
+import { documentUploadTempService } from '../services/document.upload.service.js';
 
-export async function postUploadTemp(
+export async function documentUploadTemp(
   req: Request,
   res: Response,
   next: NextFunction
@@ -10,22 +9,23 @@ export async function postUploadTemp(
   try {
     if (!req.user) return res.status(401).json({ message: '로그인 필요' });
     if (!req.file) return res.status(400).json({ message: '파일 필수' });
-    const originalName = decodeLatin1ToUtf8(req.file.originalname);
-    const doc = await prisma.contractDocuments.create({
-      data: {
+
+    const result = await documentUploadTempService({
+      actor: {
+        id: req.user.id,
         companyId: req.user.companyId,
-        uploaderId: req.user.id,
-        originalName: req.file.originalname,
-        storedName: req.file.filename,
-        mimeType: req.file.mimetype,
+        isAdmin: req.user.isAdmin,
+      },
+      file: {
+        originalname: req.file.originalname,
+        filename: req.file.filename,
+        mimetype: req.file.mimetype,
         size: req.file.size,
         path: req.file.path ?? null,
-        status: 'TEMP',
       },
-      select: { id: true },
     });
 
-    return res.json({ contractDocumentId: doc.id });
+    return res.status(200).json(result);
   } catch (e) {
     next(e);
   }
