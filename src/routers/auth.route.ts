@@ -1,5 +1,4 @@
 import express from 'express';
-
 import authController from '../auth/controllers/index.js';
 import authValidation from '../auth/schemas/index.js';
 

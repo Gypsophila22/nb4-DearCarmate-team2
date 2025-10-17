@@ -1,6 +1,6 @@
 import express from 'express';
-
 import passports from '../lib/passport/index.js';
+
 import C from '../users/controllers/index.js';
 import V from '../users/schemas/index.js';
 
@@ -18,7 +18,7 @@ router.delete(
   '/:id',
   passports.jwtAuth,
   V.validatedserDeleteParam,
-  C.deleteUser,
+  C.deleteUser
 );
 
 export default router;

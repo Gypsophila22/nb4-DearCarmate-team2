@@ -1,7 +1,6 @@
+import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { z } from 'zod';
-
-import type { Request, Response, NextFunction } from 'express';
 
 const userPatchSchema = z
   .object({
@@ -78,7 +77,7 @@ const userPatchSchema = z
 export function validatedUserPatch(
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   const result = userPatchSchema.safeParse(req.body);
 

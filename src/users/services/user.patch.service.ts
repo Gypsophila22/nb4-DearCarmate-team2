@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
 import createError from 'http-errors';
-
 import { userPatchRepository } from '../repositories/user.patch.repository.js';
 
 export const userPatchService = {
@@ -13,7 +12,7 @@ export const userPatchService = {
       currentPassword: string;
       password?: string | undefined;
       passwordConfirmation?: string | undefined;
-    },
+    }
   ) {
     // 유저 조회
     const user = await userPatchRepository.findById(userId);

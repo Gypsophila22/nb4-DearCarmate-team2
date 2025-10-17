@@ -25,7 +25,6 @@ app.use(
   })
 );
 app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
-
 app.use('/auth', routers.authRouter);
 app.use('/users', routers.userRouter);
 app.use('/cars', routers.carRouter);
@@ -186,6 +185,7 @@ testrouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     },
   });
 });
+
 // app.use('/contracts', testrouter);
 
 app.use(errorHandler);

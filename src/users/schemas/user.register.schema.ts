@@ -1,7 +1,6 @@
+import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { z } from 'zod';
-
-import type { Request, Response, NextFunction } from 'express';
 
 const userRegisterSchema = z
   .object({
@@ -25,14 +24,14 @@ const userRegisterSchema = z
     {
       message: '비밀번호와 비밀번호 확인이 일치하지 않습니다.',
       path: ['passwordConfirmation'],
-    },
+    }
   )
   .strict();
 
 export function validatedUserRegister(
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   const result = userRegisterSchema.safeParse(req.body);
 

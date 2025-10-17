@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
 import createError from 'http-errors';
-
 import { userRegisterRepository } from '../repositories/user.register.repository.js';
 
 export const userRegisterService = {

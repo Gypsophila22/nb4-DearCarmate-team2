@@ -1,5 +1,4 @@
 import createError from 'http-errors';
-
 import { userDeleteRepository } from '../repositories/user.delete.repository.js';
 
 export const userDeleteService = {

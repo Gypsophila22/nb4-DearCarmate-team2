@@ -1,13 +1,11 @@
-import createError from 'http-errors';
-
-import { userDeleteService } from '../services/user.delete.service.js';
-
 import type { Request, Response, NextFunction } from 'express';
+import createError from 'http-errors';
+import { userDeleteService } from '../services/user.delete.service.js';
 
 export async function deleteMe(
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   try {
     if (!req.user) throw createError(401, '로그인이 필요합니다.');
@@ -21,7 +19,7 @@ export async function deleteMe(
 export async function deleteUser(
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
   try {
     if (!req.user!.isAdmin) throw createError(403, '관리자 권한이 필요합니다.');
