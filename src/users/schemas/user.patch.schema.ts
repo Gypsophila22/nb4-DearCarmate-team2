@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { z } from 'zod';
 
-const userPatchSchema = z
+const userPatch = z
   .object({
     employeeNumber: z.string().min(1).optional(),
     phoneNumber: z.string().min(1).optional(),
@@ -74,12 +74,12 @@ const userPatchSchema = z
     }
   });
 
-export function validatedUserPatch(
+export function userPatchSchema(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const result = userPatchSchema.safeParse(req.body);
+  const result = userPatch.safeParse(req.body);
 
   if (result.success) {
     return next();

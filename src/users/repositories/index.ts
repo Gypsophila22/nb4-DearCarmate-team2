@@ -10,11 +10,11 @@ export {
   userDeleteRepository,
 };
 
-const UserRepositories = {
+const UserRepository = {
   userRegisterRepository,
   userPatchRepository,
   userGetRepository,
   userDeleteRepository,
 } as const;
 
-export default Object.freeze(UserRepositories);
+export default Object.freeze(UserRepository);

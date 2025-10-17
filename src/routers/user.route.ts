@@ -6,19 +6,14 @@ import V from '../users/schemas/index.js';
 
 const router = express.Router();
 
-router.post('/', V.validatedUserRegister, C.postRegister);
+router.post('/', V.userRegisterSchema, C.postRegister);
 
 router
   .route('/me')
   .get(passports.jwtAuth, C.getMe)
-  .patch(passports.jwtAuth, V.validatedUserPatch, C.patchUser)
+  .patch(passports.jwtAuth, V.userPatchSchema, C.patchUser)
   .delete(passports.jwtAuth, C.deleteMe);
 
-router.delete(
-  '/:id',
-  passports.jwtAuth,
-  V.validatedserDeleteParam,
-  C.deleteUser
-);
+router.delete('/:id', passports.jwtAuth, V.userDeleteParamSchema, C.deleteUser);
 
 export default router;

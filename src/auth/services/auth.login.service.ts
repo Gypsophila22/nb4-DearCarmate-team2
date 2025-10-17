@@ -6,7 +6,7 @@ import { userLoginRepository } from '../repositories/auth.login.repository.js';
 const ACCESS_SECRET = process.env.ACCESS_TOKEN_SECRET || 'dev_access_secret';
 const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET || 'dev_refresh_secret';
 
-export const authService = {
+export const authLoginService = {
   async login(email: string, password: string) {
     // 1. 사용자 조회
     const user = await userLoginRepository.findByEmail(email);

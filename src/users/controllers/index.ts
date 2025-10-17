@@ -5,7 +5,7 @@ import { deleteMe, deleteUser } from './user.delete.controller.js';
 
 export { postRegister, patchUser, getMe, deleteMe, deleteUser };
 
-const UserControllers = {
+const UserController = {
   postRegister,
   patchUser,
   getMe,
@@ -13,4 +13,4 @@ const UserControllers = {
   deleteUser,
 } as const;
 
-export default Object.freeze(UserControllers);
+export default Object.freeze(UserController);

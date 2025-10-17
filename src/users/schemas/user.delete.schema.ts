@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { z } from 'zod';
 
-const userDeleteParamSchema = z
+const userDeleteParam = z
   .object({
     id: z
       .string()
@@ -12,12 +12,12 @@ const userDeleteParamSchema = z
   })
   .strict();
 
-export function validatedserDeleteParam(
+export function userDeleteParamSchema(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const result = userDeleteParamSchema.safeParse(req.params);
+  const result = userDeleteParam.safeParse(req.params);
 
   if (result.success) {
     return next();

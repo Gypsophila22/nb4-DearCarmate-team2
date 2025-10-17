@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { z } from 'zod';
 
-const userRegisterSchema = z
+const userRegister = z
   .object({
     name: z.string({ error: '이름은 필수입니다.' }),
     email: z.email({ error: '잘못된 이메일 형식입니다.' }),
@@ -28,12 +28,12 @@ const userRegisterSchema = z
   )
   .strict();
 
-export function validatedUserRegister(
+export function userRegisterSchema(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const result = userRegisterSchema.safeParse(req.body);
+  const result = userRegister.safeParse(req.body);
 
   if (result.success) {
     return next();

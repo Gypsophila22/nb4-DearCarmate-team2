@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { authService } from '../services/auth.service.js';
+import { authLoginService } from '../services/auth.login.service.js';
 
 async function authLoginController(
   req: Request,
@@ -8,7 +8,7 @@ async function authLoginController(
 ) {
   try {
     const { email, password } = req.body;
-    const result = await authService.login(email, password);
+    const result = await authLoginService.login(email, password);
     return res.status(200).json(result);
   } catch (err) {
     return next(err);
