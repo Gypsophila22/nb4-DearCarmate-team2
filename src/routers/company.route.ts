@@ -92,6 +92,12 @@ router.delete(
   companyController.deleteCompany
 );
 
+// 회사 삭제 (DELETE /companies/:companyId)
+router.delete(
+  "/:companyId",
+  passport.authenticate("jwt", { session: false }),
+  companyController.deleteCompany
+)
 
 export default router;
 
