@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { getDocumentDraftsService } from '../services/document.draft.service.js';
 
-export async function getDocumentDrafts(
+export async function getDocumentDraftsController(
   req: Request,
   res: Response,
   next: NextFunction

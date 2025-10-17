@@ -1,7 +1,10 @@
-import { validateDownload } from './document.download.schema.js';
-import { validateGetDocuments } from './document.get.schema.js';
+import { validateDownloadSchema } from './document.download.schema.js';
+import { getDocumentsQuerySchema } from './document.get.schema.js';
 
-const documentValidation = { validateDownload, validateGetDocuments };
+const documentValidation = {
+  validateDownloadSchema,
+  getDocumentsQuerySchema,
+};
 
 Object.freeze(documentValidation);
 

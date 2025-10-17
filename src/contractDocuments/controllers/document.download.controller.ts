@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { downloadDocumentService } from '../services/document.download.service.js';
 
-export async function downloadContractDocument(
+export async function downloadContractDocumentController(
   req: Request,
   res: Response,
   next: NextFunction

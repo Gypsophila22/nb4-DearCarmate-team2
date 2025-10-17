@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { getDocumentsService } from '../services/document.get.service.js';
 
-export async function getDocuments(
+export async function getDocumentsController(
   req: Request,
   res: Response,
   next: NextFunction

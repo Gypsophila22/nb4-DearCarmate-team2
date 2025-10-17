@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { documentUploadTempService } from '../services/document.upload.service.js';
 
-export async function documentUploadTemp(
+export async function documentUploadTempController(
   req: Request,
   res: Response,
   next: NextFunction
