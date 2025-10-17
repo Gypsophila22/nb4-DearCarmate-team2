@@ -1,5 +1,4 @@
-import prisma from '../../config/prisma.js'; // 싱글톤 Prisma 사용
-
+import prisma from '../../lib/prisma.js';
 export const userPatchRepository = {
   findById(id: number) {
     return prisma.users.findUnique({ where: { id } });

@@ -26,11 +26,11 @@ async function main() {
 
   // 회사 등록
   const company = await prisma.companies.upsert({
-    where: { code: 'CDEIT2025' },
+    where: { companyCode: 'CDEIT2025' },
     update: {},
     create: {
-      name: 'Codeit',
-      code: 'CDEIT2025',
+      companyName: 'Codeit',
+      companyCode: 'CDEIT2025',
     },
   });
 
