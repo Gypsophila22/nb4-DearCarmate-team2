@@ -15,8 +15,8 @@ export const companyRepository = {
     const company = await prisma.companies.update({
       where: { id: companyId },
       data: {
-        name: data.companyName, // ✅ 명세서와 DB 필드명 매핑
-        code: data.companyCode,
+        companyName: data.companyName, // ✅ 명세서와 DB 필드명 매핑
+        companyCode: data.companyCode,
       },
     });
 
@@ -28,8 +28,8 @@ export const companyRepository = {
     // 4️⃣ 최종 반환 (명세서 맞춤)
     return {
       id: company.id,
-      companyName: company.name,
-      companyCode: company.code,
+      companyName: company.companyName,
+      companyCode: company.companyCode,
       userCount,
     };
   },
