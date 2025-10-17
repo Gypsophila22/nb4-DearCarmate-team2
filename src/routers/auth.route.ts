@@ -4,7 +4,11 @@ import authValidation from '../auth/schemas/index.js';
 
 const router = express.Router();
 
-router.post('/login', authValidation.authLogin, authController.PostLogin);
-router.post('/refresh', authController.PostRefresh);
+router.post(
+  '/login',
+  authValidation.authLoginSchema,
+  authController.authLoginController
+);
+router.post('/refresh', authController.authRefreshController);
 
 export default router;

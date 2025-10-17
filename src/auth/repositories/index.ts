@@ -1,7 +1,7 @@
-import { authLoginSchema } from './auth.login.schema.js';
+import { userLoginRepository } from './auth.login.repository.js';
 
 export const authValidation = {
-  authLoginSchema,
+  userLoginRepository,
 } as const;
 
 // default + freeze (런타임 불변)

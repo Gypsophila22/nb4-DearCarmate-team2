@@ -2,7 +2,11 @@ import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { tokenService } from '../services/token.service.js';
 
-async function postRefresh(req: Request, res: Response, next: NextFunction) {
+async function authRefreshController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken)
@@ -17,4 +21,4 @@ async function postRefresh(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export default postRefresh;
+export default authRefreshController;

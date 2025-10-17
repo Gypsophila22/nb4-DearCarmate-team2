@@ -1,7 +1,11 @@
 import type { Request, Response, NextFunction } from 'express';
 import { authService } from '../services/auth.service.js';
 
-async function postLogin(req: Request, res: Response, next: NextFunction) {
+async function authLoginController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const { email, password } = req.body;
     const result = await authService.login(email, password);
@@ -11,4 +15,4 @@ async function postLogin(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export default postLogin;
+export default authLoginController;

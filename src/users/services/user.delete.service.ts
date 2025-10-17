@@ -1,5 +1,16 @@
 import createError from 'http-errors';
+import { Prisma } from '@prisma/client';
 import { userDeleteRepository } from '../repositories/user.delete.repository.js';
+
+function mapPrismaDeleteError(e: unknown) {
+  if (e instanceof Prisma.PrismaClientKnownRequestError) {
+    if (e.code === 'P2003') {
+      // FK 제약 등으로 삭제 불가
+      throw createError(409, '관련된 데이터가 있어 삭제할 수 없습니다.');
+    }
+  }
+  throw e;
+}
 
 export const userDeleteService = {
   /** 본인 삭제 */
@@ -9,12 +20,8 @@ export const userDeleteService = {
 
     try {
       await userDeleteRepository.deleteById(user.id);
-    } catch (e: any) {
-      if (e?.code === 'P2003') {
-        // FK 제약 등으로 삭제 불가
-        throw createError(409, '관련된 데이터가 있어 삭제할 수 없습니다.');
-      }
-      throw e;
+    } catch (e: unknown) {
+      mapPrismaDeleteError(e);
     }
     return { message: '유저 삭제 성공.' };
   },
@@ -26,11 +33,8 @@ export const userDeleteService = {
 
     try {
       await userDeleteRepository.deleteById(targetUserId);
-    } catch (e: any) {
-      if (e?.code === 'P2003') {
-        throw createError(409, '관련된 데이터가 있어 삭제할 수 없습니다.');
-      }
-      throw e;
+    } catch (e: unknown) {
+      mapPrismaDeleteError(e);
     }
     return { message: '유저 삭제 성공.' };
   },

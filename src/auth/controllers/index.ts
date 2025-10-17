@@ -1,9 +1,9 @@
-import PostLogin from './auth.login.controller.js';
-import PostRefresh from './auth.refresh.controller.js';
+import authLoginController from './auth.login.controller.js';
+import authRefreshController from './auth.refresh.controller.js';
 
 const authController = {
-  PostLogin: PostLogin,
-  PostRefresh: PostRefresh,
+  authLoginController,
+  authRefreshController,
 };
 
 Object.freeze(authController);
