@@ -119,9 +119,9 @@ async function main() {
       { name: '안지아', email: 'jia@example.com', gender: 'female', phoneNumber: '010-0123-4567', region: '경기', ageGroup: 'GENERATION_20', memo: '온라인 문의', contractCount: 0, companyId: company.id },
       { name: '정시우', email: 'siwoo@example.com', gender: 'male', phoneNumber: '010-1122-3344', region: '서울', ageGroup: 'GENERATION_30', memo: '장기 고객', contractCount: 7, companyId: company.id },
       { name: '오서아', email: 'seoa@example.com', gender: 'female', phoneNumber: '010-2233-4455', region: '부산', ageGroup: 'GENERATION_40', memo: '차량 교체 문의', contractCount: 2, companyId: company.id },
-      { name: '강이준', email: 'ijun@example.com', gender: 'MALE', phoneNumber: '010-3344-5566', region: '경남', ageGroup: 'GENERATION_20', memo: '첫차 구매', contractCount: 1, companyId: company.id },
-      { name: '신지유', email: 'jiyoo@example.com', gender: 'FEMALE', phoneNumber: '010-4455-6677', region: '제주', ageGroup: 'GENERATION_50', memo: '가족 차량 문의', contractCount: 3, companyId: company.id },
-      { name: '한예준', email: 'yejun@example.com', gender: 'MALE', phoneNumber: '010-5566-7788', region: '부산', ageGroup: 'GENERATION_30', memo: '견적 문의', contractCount: 0, companyId: company.id }
+      { name: '강이준', email: 'ijun@example.com', gender: 'male', phoneNumber: '010-3344-5566', region: '경남', ageGroup: 'GENERATION_20', memo: '첫차 구매', contractCount: 1, companyId: company.id },
+      { name: '신지유', email: 'jiyoo@example.com', gender: 'female', phoneNumber: '010-4455-6677', region: '제주', ageGroup: 'GENERATION_50', memo: '가족 차량 문의', contractCount: 3, companyId: company.id },
+      { name: '한예준', email: 'yejun@example.com', gender: 'male', phoneNumber: '010-5566-7788', region: '부산', ageGroup: 'GENERATION_30', memo: '견적 문의', contractCount: 0, companyId: company.id }
     ],
     skipDuplicates: true, // email이 중복되면 추가X
   });
