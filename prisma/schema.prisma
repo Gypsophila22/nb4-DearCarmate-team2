@@ -31,8 +31,8 @@ model Users {
 
 model Companies {
   id                Int                 @id @default(autoincrement())
-  name              String
-  code              String              @unique
+  companyName       String
+  companyCode       String              @unique
   user              Users[]
   Customers         Customers[]
   contractDocuments ContractDocuments[]
@@ -77,11 +77,11 @@ enum CarStatus {
 }
 
 model Customers {
-  id          Int     @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
   gender      Gender
   phoneNumber String
-  ageGroup    String?
+  ageGroup    AgeGroup?
   region      Region?
   email       String?
   memo        String?
@@ -140,7 +140,7 @@ model Contracts {
   date           DateTime            @default(now())
   contractPrice  Int // 계약 금액
   status         ContractsStatus // 계약 상태
-  resolutionDate DateTime // 계약 완료일
+  resolutionDate DateTime // 계약 종료일
   carId          Int                 @unique
   car            Cars                @relation(fields: [carId], references: [id]) // 차량
   customerId     Int
@@ -148,14 +148,14 @@ model Contracts {
   meetings       Meetings[] // 미팅 일정
   userId         Int // 담당자
   user           Users               @relation(fields: [userId], references: [id])
-  documents      ContractDocuments[]
+  documents      ContractDocuments[] // 계약서
 }
 
 model Meetings {
   id         Int       @id @default(autoincrement())
   date       DateTime
   contractId Int
-  contract   Contracts @relation(fields: [contractId], references: [id])
+  contract   Contracts @relation(fields: [contractId], references: [id], onDelete: Cascade)
   alarms     Alarms[]
 }
 
@@ -163,7 +163,7 @@ model Alarms {
   id        Int      @id @default(autoincrement())
   time      DateTime
   meetingId Int
-  meeting   Meetings @relation(fields: [meetingId], references: [id])
+  meeting   Meetings @relation(fields: [meetingId], references: [id], onDelete: Cascade)
 }
 
 // model ContractDocuments {
@@ -196,19 +196,28 @@ model Alarms {
 // }
 
 model ContractDocuments {
-  id           Int        @id @default(autoincrement())
-  contractId   Int? // ← NULL 허용
-  contract     Contracts? @relation(fields: [contractId], references: [id])
+  id           Int       @id @default(autoincrement())
   companyId    Int
+  contractId   Int? // ← nullable (임시 업로드 허용)
   uploaderId   Int
   originalName String
   storedName   String
   mimeType     String
   size         Int
-  path         String
-  createdAt    DateTime   @default(now())
-  Users        Users?     @relation(fields: [usersId], references: [id])
-  usersId      Int?
-  Companies    Companies? @relation(fields: [companiesId], references: [id])
-  companiesId  Int?
+  path         String?
+  url          String?
+  status       DocStatus @default(TEMP) // TEMP | LINKED
+  createdAt    DateTime  @default(now())
+
+  company  Companies  @relation(fields: [companyId], references: [id])
+  contract Contracts? @relation(fields: [contractId], references: [id])
+  uploader Users      @relation(fields: [uploaderId], references: [id])
+
+  @@index([companyId])
+  @@index([contractId])
+}
+
+enum DocStatus {
+  TEMP
+  LINKED
 }

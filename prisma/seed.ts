@@ -65,7 +65,7 @@
 //   });
 // prisma/seed.ts
 import bcrypt from 'bcrypt';
-import prisma from '../src/config/prisma.js';
+import prisma from '../src/lib/prisma.js';
 import {
   CarType,
   CarStatus,
@@ -98,9 +98,9 @@ async function main() {
 
   // 1) 회사
   const company = await prisma.companies.upsert({
-    where: { code: 'CDEIT2025' },
+    where: { companyCode: 'CDEIT2025' },
     update: {},
-    create: { name: 'Codeit', code: 'CDEIT2025' },
+    create: { companyName: 'Codeit', companyCode: 'CDEIT2025' },
   });
 
   // 2) 사용자 (관리자 + 직원)
@@ -118,6 +118,144 @@ async function main() {
       isAdmin: true,
       companyId: company.id,
     },
+  });
+
+  // 고객 등록
+  await prisma.customers.createMany({
+    data: [
+      {
+        name: '고객테스트이름',
+        gender: 'MALE',
+        phoneNumber: '01012345678',
+        ageGroup: 'GENERATION_10',
+        region: '서울',
+        email: 'test@test.com',
+        memo: '고객설명 테스트',
+        companyId: company.id,
+      },
+      {
+        name: '고객테스트이름2',
+        gender: 'MALE',
+        phoneNumber: '01012345678',
+        ageGroup: 'GENERATION_10',
+        region: '서울',
+        email: 'test@test.com',
+        memo: '고객설명 테스트',
+        companyId: company.id,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  // 차량 등록
+  await prisma.cars.createMany({
+    data: [
+      {
+        carNumber: '12가3456',
+        manufacturingYear: 2022,
+        mileage: 15000,
+        price: 20000000,
+        accidentCount: 0,
+        explanation: '깨끗한 상태의 중고차',
+        accidentDetails: '',
+        status: 'possession',
+        modelId: 1,
+      },
+      {
+        carNumber: '34나7890',
+        manufacturingYear: 2021,
+        mileage: 30000,
+        price: 18000000,
+        accidentCount: 1,
+        explanation: '경미한 사고 있음',
+        accidentDetails: '뒷범퍼 약간 긁힘',
+        status: 'possession',
+        modelId: 2,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  // 계약 등록
+  await prisma.contracts.createMany({
+    data: [
+      {
+        contractPrice: 20000000,
+        status: 'carInspection',
+        resolutionDate: new Date('2024-10-22T09:00:00'),
+        carId: 1,
+        customerId: 1,
+        userId: 1,
+      },
+      {
+        contractPrice: 35000000,
+        status: 'carInspection',
+        resolutionDate: new Date('2024-11-15T10:00:00'),
+        carId: 2,
+        customerId: 2,
+        userId: 1,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  // 계약에 대해 Meetings 시드
+  await prisma.meetings.create({
+    data: {
+      date: new Date('2024-10-25T14:00:00'),
+      contractId: 1,
+    },
+  });
+
+  await prisma.meetings.create({
+    data: {
+      date: new Date('2024-11-20T10:00:00'),
+      contractId: 2,
+    },
+  });
+
+  // 각 미팅에 대해 Alarms 시드
+  await prisma.alarms.createMany({
+    data: [
+      {
+        time: new Date('2024-10-25T13:00:00'),
+        meetingId: 1,
+      },
+      {
+        time: new Date('2024-11-20T09:30:00'),
+        meetingId: 2,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  // 계약서 등록
+  await prisma.contractDocuments.createMany({
+    data: [
+      {
+        originalName: '계약서_샘플1.pdf',
+        storedName: 'contract_sample1_20251016.pdf',
+        mimeType: 'application/pdf',
+        size: 102400,
+        path: '/path/test/contract_sample1_20251016.pdf',
+        url: '/url/test/contract_sample1_20251016.pdf',
+        contractId: 1,
+        uploaderId: 1,
+        companyId: 1,
+      },
+      {
+        originalName: '계약서_샘플2.pdf',
+        storedName: 'contract_sample2_20251016.pdf',
+        mimeType: 'application/pdf',
+        size: 204800,
+        path: '/path/test/contract_sample2_20251016.pdf',
+        url: '/url/test/contract_sample2_20251016.pdf',
+        contractId: 2,
+        uploaderId: 1,
+        companyId: 1,
+      },
+    ],
+    skipDuplicates: true,
   });
 
   const user = await prisma.users.upsert({
@@ -143,7 +281,7 @@ async function main() {
         name: '김고객',
         gender: Gender.MALE,
         phoneNumber: '010-1234-5678',
-        ageGroup: '30대',
+        ageGroup: 'GENERATION_30',
         region: Region.서울,
         email: 'kim@example.com',
         memo: '시드 데이터',
@@ -157,7 +295,7 @@ async function main() {
         name: '홍길동',
         gender: Gender.MALE,
         phoneNumber: '010-2222-3333',
-        ageGroup: '30대',
+        ageGroup: 'GENERATION_30',
         region: Region.서울,
         email: 'hong@example.com',
         memo: '시드 데이터',
@@ -248,7 +386,7 @@ async function main() {
   ]);
 
   console.log('✅ Seeding 완료');
-  console.log('company:', company.name);
+  console.log('company:', company.companyName);
   console.log('admin:', admin.email, 'user:', user.email);
   console.log('upload test contractIds →', contract1.id, contract2.id);
   console.log(

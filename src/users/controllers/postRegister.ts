@@ -1,9 +1,7 @@
-import { PrismaClient } from '../../../generated/prisma/index.js';
+import prisma from '../../lib/prisma.js';
 import type { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import createError from 'http-errors';
-
-const prisma = new PrismaClient();
 
 class PostRegister {
   async register(req: Request, res: Response, next: NextFunction) {
@@ -40,7 +38,7 @@ class PostRegister {
 
       // 회사 인증코드 체크
       let companyRecord = await prisma.companies.findUnique({
-        where: { code: companyCode },
+        where: { companyCode: companyCode },
       });
 
       if (!companyRecord) {
@@ -54,10 +52,10 @@ class PostRegister {
           employeeNumber,
           phoneNumber,
           password: hashedPassword,
-          company: { connect: { code: companyCode } },
+          company: { connect: { companyCode: companyCode } },
         },
         include: {
-          company: { select: { name: true, code: true } },
+          company: { select: { companyName: true, companyCode: true } },
         },
       });
 

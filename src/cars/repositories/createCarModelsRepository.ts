@@ -1,5 +1,6 @@
-import { CarType } from "../../../generated/prisma/index.js";
-import prisma from "../../config/prisma.js";
+import { CarType } from '@prisma/client';
+
+import prisma from '../../lib/prisma.js';
 
 /**
  * 차량 모델 생성 Repository

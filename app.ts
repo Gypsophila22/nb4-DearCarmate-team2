@@ -1,4 +1,5 @@
-import * as dotenv from 'dotenv';
+import './src/config/env.js';
+
 import express from 'express';
 import passport from 'passport';
 import cors from 'cors';
@@ -6,8 +7,6 @@ import cors from 'cors';
 import errorHandler from './src/middlewares/errorHandler.js';
 import { requestLogger } from './src/middlewares/logger.js';
 import routers from './src/routers/index.js';
-
-dotenv.config(); // .env 파일 환경변수 적재
 
 const app = express();
 
@@ -33,15 +32,21 @@ app.use((_, res, next) => {
   next();
 });
 
-app.use('/auth', routers.authRotuer);
+//테스트 용으로 만들어놓은 cors입니다.
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  })
+);
+
+app.use('/auth', routers.authRouter);
 app.use('/users', routers.userRouter);
 app.use('/cars', routers.carRouter);
 app.use('/admin', routers.companyRouter);
 app.use('/contracts', routers.contractRouter);
 app.use('/customers', routers.customersRouter);
 app.use('/contractDocuments', routers.documentRouter);
-
-app.use(errorHandler);
 
 app.use(errorHandler);
 

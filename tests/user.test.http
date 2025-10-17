@@ -19,13 +19,13 @@ POST {{baseUrl}}/users/register
 Content-Type: application/json
 
 {
-	"name": "testman",
+	"name": "test",
 	"email": "email@email.com",
 	"employeeNumber": "100",
 	"phoneNumber": "01021210696",
 	"password": "aaaa1234",
 	"passwordConfirmation": "aaaa1234",
-	"company": "Codeit",
+	"companyName": "Codeit",
 	"companyCode": "CDEIT2025"
 }
 

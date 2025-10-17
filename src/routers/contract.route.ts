@@ -1,17 +1,34 @@
 import express from 'express';
 
 import contractController from '../contracts/controllers/index.js';
+import contractDto from '../contracts/dtos/index.js';
 import passports from '../lib/passport/index.js';
-import { protect } from '../middlewares/auth.js';
-import { patchContract } from '../contracts/controllers/patchContract.controller.js';
+import { validationMiddleware } from '../middlewares/validationMiddleware.js';
 
 const router = express.Router();
 
 router
   .route('/')
-  .get(passports.jwtAuth, contractController.getList) // 계약 목록 조회
-  .post(passports.jwtAuth, contractController.create); // 계약 등록
+  .post(
+    passports.jwtAuth,
+    validationMiddleware({ body: contractDto.create }),
+    contractController.create
+  ) // 계약 등록
+  .get(passports.jwtAuth, contractController.getList); // 계약 목록 조회
 
-// TODO: 실제 수정 로직은 보경님 구현 예정
-router.patch('/:id', protect, patchContract);
+router
+  .route('/:contractId')
+  .patch(passports.jwtAuth, contractController.update) // 계약 수정 (계약서 수정 포함)
+  .delete(
+    passports.jwtAuth,
+    validationMiddleware({ params: contractDto.delete }),
+    contractController.delete
+  ); // 계약 삭제
+
+router.route('/cars').get(passports.jwtAuth, contractController.getCarList); // 계약용 차량 목록 조회
+router
+  .route('/customers')
+  .get(passports.jwtAuth, contractController.getCustomerList); // 계약용 고객 목록 조회
+router.route('/users').get(passports.jwtAuth, contractController.getUsersList); // 계약용 유저 목록 조회
+
 export default router;

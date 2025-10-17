@@ -1,5 +1,5 @@
 import express from 'express';
-import { uploadContractDocument } from '../contractDocuments/controllers/document.upload.controller.js';
+import { postUploadTemp } from '../contractDocuments/controllers/document.upload.controller.js';
 import { protect } from '../middlewares/auth.js';
 import { uploadContract } from '../lib/document.upload.js';
 import { getContractDocuments } from '../contractDocuments/controllers/document.get.controller.js';
@@ -13,10 +13,10 @@ router.post(
   '/upload',
   protect,
   uploadContract.single(DOCUMENT_FIELD_NAME),
-  uploadContractDocument
+  postUploadTemp
 );
 
 router.get('/', protect, getContractDocuments);
 router.get('/draft', protect, getDocumentDrafts);
-router.get('/:contractId/download', protect, downloadContractDocument);
+router.get('/:contractDocumentId/download', protect, downloadContractDocument);
 export default router;

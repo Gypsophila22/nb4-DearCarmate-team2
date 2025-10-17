@@ -1,8 +1,6 @@
-import { PrismaClient } from '../../../generated/prisma/index.js';
+import prisma from '../../lib/prisma.js';
 import type { NextFunction, Request, Response } from 'express';
 import createError from 'http-errors';
-
-const prisma = new PrismaClient();
 
 class GetUser {
   async getMe(req: Request, res: Response, next: NextFunction) {
@@ -21,7 +19,7 @@ class GetUser {
           phoneNumber: true,
           imgUrl: true,
           isAdmin: true,
-          company: { select: { code: true } },
+          company: { select: { companyCode: true } },
         },
       });
 

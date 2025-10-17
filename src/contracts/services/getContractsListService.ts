@@ -1,4 +1,4 @@
-import { contractsRepository } from '../repositories/getContractsListRepository.js';
+import contractRepository from '../repositories/index.js';
 
 interface Contract {
   id: number;
@@ -30,7 +30,7 @@ export const getContractsListService = async (
 
   // 각 상태별 계약 조회
   for (const status of statuses) {
-    const data: Contract[] = await contractsRepository.findByStatus(
+    const data: Contract[] = await contractRepository.getList.findByStatus(
       status,
       searchBy, // 검색 기준: 'customerName' | 'userName'
       keyword, // 검색 키워드
@@ -48,7 +48,7 @@ export const getContractsListService = async (
           alarms: m.alarms.map((a) => a.time.toISOString()), // 알람 시간
         })),
         contractPrice: c.contractPrice, // 계약 금액
-        resolutionDate: c.resolutionDate // 계약 완료일
+        resolutionDate: c.resolutionDate // 계약 종료일
           ? c.resolutionDate.toISOString()
           : null,
         status: c.status, // 계약 상태
