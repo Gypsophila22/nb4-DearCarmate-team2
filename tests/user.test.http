@@ -121,7 +121,7 @@ Content-Type: application/json
 <<<<<<< HEAD
   "imageUrl": "https://example.com/admin.png"
 =======
-  "imgUrl": "https://example.com/admin.png"
+  "imageUrl": "https://example.com/admin.png"
 >>>>>>> develop
 }
 

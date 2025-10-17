@@ -84,6 +84,9 @@ model Customers {
   memo          String?
   contractCount Int        @default(0)
   contract      Contracts[]
+
+  company   Companies @relation(fields: [companyId], references: [id])
+  companyId Int
 }
 
 enum Gender {
