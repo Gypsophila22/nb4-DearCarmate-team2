@@ -38,7 +38,7 @@ export const userPatchService = {
     }
 
     const updated = await userPatchRepository.updateById(user.id, dataToUpdate);
-    const { password: _pw, ...safeUser } = updated as any;
+    const { password: _pw, ...safeUser } = updated;
     return safeUser;
   },
 };

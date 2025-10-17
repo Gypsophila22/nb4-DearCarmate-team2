@@ -1,4 +1,4 @@
-import prisma from '../../config/prisma.js';
+import prisma from '../../lib/prisma.js';
 
 export const userRegisterRepository = {
   findByEmail(email: string) {
@@ -20,9 +20,24 @@ export const userRegisterRepository = {
         employeeNumber: data.employeeNumber,
         phoneNumber: data.phoneNumber,
         password: data.password,
-        company: { connect: { code: data.companyCode } },
+        company: { connect: { companyCode: data.companyCode } },
       },
-      include: { company: { select: { name: true, code: true } } },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        employeeNumber: true,
+        phoneNumber: true,
+        imageUrl: true,
+        isAdmin: true,
+        company: {
+          select: { companyCode: true },
+        },
+      },
     });
+  },
+
+  findByCode(companyCode: string) {
+    return prisma.companies.findUnique({ where: { companyCode } });
   },
 };

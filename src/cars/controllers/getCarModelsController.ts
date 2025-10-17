@@ -1,4 +1,4 @@
-import prisma from '../../config/prisma.js';
+import prisma from '../../lib/prisma.js';
 
 import type { Request, Response } from 'express';
 /**
@@ -19,7 +19,7 @@ export const getCarModelsController = async (req: Request, res: Response) => {
     const grouped = models.reduce((acc, curr) => {
       // 기존 그룹에 제조사가 존재하는지 확인
       const existing = acc.find(
-        (item) => item.manufacturer === curr.manufacturer,
+        (item) => item.manufacturer === curr.manufacturer
       );
       // 존재하면 모델 리스트에 추가
       if (existing) {

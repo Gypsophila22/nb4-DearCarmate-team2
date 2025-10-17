@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-import prisma from '../src/config/prisma.js';
+import prisma from '../src/lib/prisma.js';
 
 async function main() {
   // CarModel 테이블에 차종(모델) 데이터 추가
@@ -26,11 +26,11 @@ async function main() {
 
   // 회사 등록
   const company = await prisma.companies.upsert({
-    where: { code: 'CDEIT2025' },
+    where: { companyCode: 'CDEIT2025' },
     update: {},
     create: {
-      name: 'Codeit',
-      code: 'CDEIT2025',
+      companyName: 'Codeit',
+      companyCode: 'CDEIT2025',
     },
   });
 

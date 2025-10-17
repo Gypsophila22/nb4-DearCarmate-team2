@@ -19,7 +19,7 @@ model Users {
   email          String  @unique
   employeeNumber String
   phoneNumber    String
-  imgUrl         String?
+  imageUrl       String?
   password       String
   isAdmin        Boolean @default(false)
 
@@ -28,11 +28,11 @@ model Users {
 }
 
 model Companies {
-  id        Int         @id @default(autoincrement())
-  name      String
-  code      String      @unique
-  user      Users[]
-  Customers Customers[]
+  id          Int         @id @default(autoincrement())
+  companyName String
+  companyCode String      @unique
+  user        Users[]
+  Customers   Customers[]
 }
 
 model Cars {

@@ -1,4 +1,4 @@
-import "./src/config/env.js";
+import './src/config/env.js';
 
 import express, {
   request,
@@ -6,14 +6,14 @@ import express, {
   type NextFunction,
   type Request,
   type Response,
-} from "express";
-import cors from "cors";
-import path from "path";
-import passport from "passport";
+} from 'express';
+import cors from 'cors';
+import path from 'path';
+import passport from 'passport';
 
-import errorHandler from "./src/middlewares/errorHandler.js";
-import { requestLogger } from "./src/middlewares/logger.js";
-import routers from "./src/routers/index.js";
+import errorHandler from './src/middlewares/errorHandler.js';
+import { requestLogger } from './src/middlewares/logger.js';
+import routers from './src/routers/index.js';
 
 const app = express();
 
@@ -26,26 +26,26 @@ app.use(requestLogger);
 //테스트 용으로 만들어놓은 cors입니다.
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: 'http://localhost:3000',
     credentials: true,
   })
 );
-app.use("/uploads", express.static(path.resolve(process.cwd(), "uploads")));
+app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 
-app.use("/auth", routers.authRotuer);
-app.use("/users", routers.userRouter);
-app.use("/cars", routers.carRouter);
-app.use("/admin", routers.companyRouter);
-app.use("/images", routers.imgaeRouter);
+app.use('/auth', routers.authRotuer);
+app.use('/users', routers.userRouter);
+app.use('/cars', routers.carRouter);
+app.use('/admin', routers.companyRouter);
+app.use('/images', routers.imgaeRouter);
 
 // customer 라우터는 별도로 추가합니다.
-app.use("/customers", routers.customersRouter);
+app.use('/customers', routers.customersRouter);
 
-app.use("/companies", routers.companyRouter);
+app.use('/companies', routers.companyRouter);
 
 const testrouter = Router();
-testrouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
-  console.warn("테스트용 더미 코드");
+testrouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
+  console.warn('테스트용 더미 코드');
   res.json({
     carInspection: {
       totalItemCount: 1,
@@ -54,25 +54,25 @@ testrouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
           id: 1,
           car: {
             id: 1,
-            model: "K5",
+            model: 'K5',
           },
           customer: {
             id: 1,
-            name: "최효정",
+            name: '최효정',
           },
           user: {
             id: 1,
-            name: "김연우",
+            name: '김연우',
           },
           meetings: [
             {
-              date: "2024-02-22",
-              alarms: ["2024-02-22T09:00:00.000Z", "2024-02-21T09:00:00.000Z"],
+              date: '2024-02-22',
+              alarms: ['2024-02-22T09:00:00.000Z', '2024-02-21T09:00:00.000Z'],
             },
           ],
           contractPrice: 2000000,
-          resolutionDate: "2024-02-22T07:47:49.803Z",
-          status: "contractSuccessful",
+          resolutionDate: '2024-02-22T07:47:49.803Z',
+          status: 'contractSuccessful',
         },
       ],
     },
@@ -83,25 +83,25 @@ testrouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
           id: 1,
           car: {
             id: 1,
-            model: "K5",
+            model: 'K5',
           },
           customer: {
             id: 1,
-            name: "최효정",
+            name: '최효정',
           },
           user: {
             id: 1,
-            name: "김연우",
+            name: '김연우',
           },
           meetings: [
             {
-              date: "2024-02-22",
-              alarms: ["2024-02-22T09:00:00.000Z", "2024-02-21T09:00:00.000Z"],
+              date: '2024-02-22',
+              alarms: ['2024-02-22T09:00:00.000Z', '2024-02-21T09:00:00.000Z'],
             },
           ],
           contractPrice: 2000000,
-          resolutionDate: "2024-02-22T07:47:49.803Z",
-          status: "contractSuccessful",
+          resolutionDate: '2024-02-22T07:47:49.803Z',
+          status: 'contractSuccessful',
         },
       ],
     },
@@ -112,25 +112,25 @@ testrouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
           id: 1,
           car: {
             id: 1,
-            model: "K5",
+            model: 'K5',
           },
           customer: {
             id: 1,
-            name: "최효정",
+            name: '최효정',
           },
           user: {
             id: 1,
-            name: "김연우",
+            name: '김연우',
           },
           meetings: [
             {
-              date: "2024-02-22",
-              alarms: ["2024-02-22T09:00:00.000Z", "2024-02-21T09:00:00.000Z"],
+              date: '2024-02-22',
+              alarms: ['2024-02-22T09:00:00.000Z', '2024-02-21T09:00:00.000Z'],
             },
           ],
           contractPrice: 2000000,
-          resolutionDate: "2024-02-22T07:47:49.803Z",
-          status: "contractSuccessful",
+          resolutionDate: '2024-02-22T07:47:49.803Z',
+          status: 'contractSuccessful',
         },
       ],
     },
@@ -141,25 +141,25 @@ testrouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
           id: 1,
           car: {
             id: 1,
-            model: "K5",
+            model: 'K5',
           },
           customer: {
             id: 1,
-            name: "최효정",
+            name: '최효정',
           },
           user: {
             id: 1,
-            name: "김연우",
+            name: '김연우',
           },
           meetings: [
             {
-              date: "2024-02-22",
-              alarms: ["2024-02-22T09:00:00.000Z", "2024-02-21T09:00:00.000Z"],
+              date: '2024-02-22',
+              alarms: ['2024-02-22T09:00:00.000Z', '2024-02-21T09:00:00.000Z'],
             },
           ],
           contractPrice: 2000000,
-          resolutionDate: "2024-02-22T07:47:49.803Z",
-          status: "contractSuccessful",
+          resolutionDate: '2024-02-22T07:47:49.803Z',
+          status: 'contractSuccessful',
         },
       ],
     },
@@ -170,31 +170,31 @@ testrouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
           id: 1,
           car: {
             id: 1,
-            model: "K5",
+            model: 'K5',
           },
           customer: {
             id: 1,
-            name: "최효정",
+            name: '최효정',
           },
           user: {
             id: 1,
-            name: "김연우",
+            name: '김연우',
           },
           meetings: [
             {
-              date: "2024-02-22",
-              alarms: ["2024-02-22T09:00:00.000Z", "2024-02-21T09:00:00.000Z"],
+              date: '2024-02-22',
+              alarms: ['2024-02-22T09:00:00.000Z', '2024-02-21T09:00:00.000Z'],
             },
           ],
           contractPrice: 2000000,
-          resolutionDate: "2024-02-22T07:47:49.803Z",
-          status: "contractSuccessful",
+          resolutionDate: '2024-02-22T07:47:49.803Z',
+          status: 'contractSuccessful',
         },
       ],
     },
   });
 });
-app.use("/contracts", testrouter);
+app.use('/contracts', testrouter);
 
 app.use(errorHandler);
 

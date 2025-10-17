@@ -15,13 +15,41 @@ Content-Type: application/json
 }
 
 ### [USER] 회원가입
+<<<<<<< HEAD
+POST {{baseUrl}}/users
+=======
 POST {{baseUrl}}/users/register
+>>>>>>> develop
 Content-Type: application/json
 
 {
   "name": "testman",
   "email": "testman2@test.com",
   "employeeNumber": "100",
+<<<<<<< HEAD
+  "phoneNumber": "010-2121-0696",
+  "password": "aaaa1234",
+  "passwordConfirmation": "aaaa1234",
+  "companyName": "Codeit",
+  "companyCode": "CDEIT2025"
+}
+
+### [USER] 회원가입(companyCode 불일치)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "testman",
+  "email": "testman3@test.com",
+  "employeeNumber": "100",
+  "phoneNumber": "010-2121-0696",
+  "password": "aaaa1234",
+  "passwordConfirmation": "aaaa1234",
+  "company": "codeit",
+  "companyCode": "CDEIT"
+}
+
+=======
   "phoneNumber": "01021210696",
   "password": "Test",
   "passwordConfirmation": "Test",
@@ -29,6 +57,7 @@ Content-Type: application/json
   "companyCode": "CDEIT2025"
 }
 
+>>>>>>> develop
 ### [USER] 로그인
 # @name userLogin
 POST {{baseUrl}}/auth/login
@@ -36,7 +65,7 @@ Content-Type: application/json
 
 {
   "email": "testman2@test.com",
-  "password": "Test"
+  "password": "aaaa1234"
 }
 
 ### 역할별 토큰 변수
@@ -89,7 +118,11 @@ Content-Type: application/json
   "currentPassword": "AdminPass123!",
   "password": "AdminPass123!_NEW",
   "passwordConfirmation": "AdminPass123!_NEW",
+<<<<<<< HEAD
+  "imageUrl": "https://example.com/admin.png"
+=======
   "imgUrl": "https://example.com/admin.png"
+>>>>>>> develop
 }
 
 ### [USER] 내 정보 수정 (비밀번호 변경 + 프로필 수정)
@@ -100,16 +133,24 @@ Content-Type: application/json
 {
   "employeeNumber": "200",
   "phoneNumber": "01099998888",
-  "currentPassword": "Test",
+  "currentPassword": "aaaa1234",
   "password": "NewPass123!",
   "passwordConfirmation": "NewPass123!",
-  "imgUrl": "https://example.com/profile.png"
+  "imageUrl": "https://example.com/profile.png"
 }
 
+<<<<<<< HEAD
+### [ADMIN] 유저 삭제 (회원 탈퇴)
+DELETE {{baseUrl}}/users/me
+Authorization: Bearer {{adminAccessToken}}
+
+### [USER] 유저 삭제 (본인 계정 삭제 테스트용)
+=======
 ### [ADMIN] 유저 삭제 (본인 계정 삭제 테스트용)
 DELETE {{baseUrl}}/users/me
 Authorization: Bearer {{adminAccessToken}}
 
 ### [USER] 유저 삭제 (회원 탈퇴)
+>>>>>>> develop
 DELETE {{baseUrl}}/users/me
 Authorization: Bearer {{userAccessToken}}
