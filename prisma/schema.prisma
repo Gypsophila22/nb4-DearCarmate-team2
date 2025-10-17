@@ -90,8 +90,8 @@ model Customers {
 }
 
 enum Gender {
-  MALE
-  FEMALE
+  male
+  female
 }
 
 enum AgeGroup {
