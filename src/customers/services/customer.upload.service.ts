@@ -1,8 +1,9 @@
+import type { Gender } from '@prisma/client';
 import prisma from '../../lib/prisma.ts';
 
 interface CustomerUploadData {
     고객명: string;
-    성별: 'MALE' | 'FEMALE';
+    성별: Gender;
     연락처: string;
     연령대?: string;
     지역?: string;
