@@ -12,7 +12,7 @@ const router = express.Router();
 // 회사 등록 (POST /companies)1
 router.post(
   "/",
-    passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
    companyController.createCompany
 );
 

@@ -4,7 +4,7 @@ import prisma from '../src/lib/prisma.js';
 
 async function main() {
   // CarModel 테이블에 차종(모델) 데이터 추가
-  await prisma.CarModel.createMany({
+  await prisma.carModel.createMany({
     data: [
       // 기아 차종 데이터
       { model: 'K3', manufacturer: '기아', type: '세단' },

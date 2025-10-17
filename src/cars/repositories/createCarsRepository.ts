@@ -1,13 +1,12 @@
+import { CarType } from '@prisma/client';
 import prisma from '../../lib/prisma.js';
-import type { Prisma } from '../../../generated/prisma/index.js';
 
 /**
- * 차량 생성 Repository
+ * 차량 모델 생성 Repository
  */
-export const createCarsRepository = {
-  create: (data: Prisma.CarsCreateInput) =>
-    prisma.cars.create({
+export const createCarsModelRepository = {
+  create: (data: { manufacturer: string; model: string; type: CarType }) =>
+    prisma.carModel.create({
       data,
-      include: { carModel: true },
     }),
 };

@@ -5,8 +5,4 @@ node_modules
 /generated/prisma
 dist/
 uploads/*
-<<<<<<< HEAD
 !uploads/.gitkeep
-=======
-!uploads/.gitkeep
->>>>>>> 5994e76 (feat: user, auth 레이어드 아키텍처 적용, 이미지 등록, 이메일 전송 (#28))
