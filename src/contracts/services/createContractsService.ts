@@ -20,9 +20,9 @@ export const createContractsService = async (data: CreateContractInput) => {
   // 차량 존재 확인 및 보유중인지 상태 체크
   const car = await contractRepository.findCar(data.carId);
   // 고객 존재 확인
-  const customer = await contractRepository.findCustomer;
+  const customer = await contractRepository.findCustomer(data.customerId);
   // 유저(계약 담당자) 존재 확인
-  const user = await contractRepository.findUser;
+  const user = await contractRepository.findUser(data.userId);
 
   // 계약 생성
   const contract = await contractRepository.create.createContract({
