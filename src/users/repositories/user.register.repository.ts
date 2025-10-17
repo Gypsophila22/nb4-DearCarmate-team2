@@ -21,10 +21,6 @@ export const userRegisterRepository = {
         phoneNumber: data.phoneNumber,
         password: data.password,
         company: { connect: { companyCode: data.companyCode } },
-<<<<<<< HEAD
-      },
-      include: { company: { select: { companyName: true, companyCode: true } } },
-=======
       },
       select: {
         id: true,
@@ -38,7 +34,6 @@ export const userRegisterRepository = {
           select: { companyCode: true },
         },
       },
->>>>>>> 821a78b (refactor: 리뷰 반영, 스키마 수정 (#38))
     });
   },
 
