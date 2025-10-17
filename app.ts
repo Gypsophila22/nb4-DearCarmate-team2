@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-import "./src/config/env.js";
-
-import express from "express";
-import cors from "cors";
-import path from 'path';
-import passport from "passport";
-
-import errorHandler from "./src/middlewares/errorHandler.js";
-import { requestLogger } from "./src/middlewares/logger.js";
-import routers from "./src/routers/index.js";
-
-=======
->>>>>>> 3f31d5b (fix : develop 변경 사항 최신화)
 import './src/config/env.js';
 
 import express, {
@@ -25,15 +11,9 @@ import cors from 'cors';
 import path from 'path';
 import passport from 'passport';
 
-<<<<<<< HEAD
-import routers from "./src/routers/index.js";
-
-dotenv.config();
-=======
 import errorHandler from './src/middlewares/errorHandler.js';
 import { requestLogger } from './src/middlewares/logger.js';
 import routers from './src/routers/index.js';
->>>>>>> 3f31d5b (fix : develop 변경 사항 최신화)
 
 const app = express();
 
