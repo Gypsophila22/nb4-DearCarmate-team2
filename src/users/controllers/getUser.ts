@@ -19,7 +19,11 @@ class GetUser {
           phoneNumber: true,
           imgUrl: true,
           isAdmin: true,
+<<<<<<< HEAD
           company: { select: { companyCode: true } },
+=======
+          company: { select: { companyCode : true } },
+>>>>>>> 037d69e (develop 최신화 && users 파트 companyCode, companyName merge 전 임시 변경)
         },
       });
 

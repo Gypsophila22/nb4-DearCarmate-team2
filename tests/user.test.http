@@ -15,7 +15,8 @@ Content-Type: application/json
 }
 
 ### [USER] 회원가입
-POST {{baseUrl}}/users
+
+POST {{baseUrl}}/users/register
 Content-Type: application/json
 
 {
@@ -104,7 +105,7 @@ Content-Type: application/json
   "currentPassword": "AdminPass123!",
   "password": "AdminPass123!_NEW",
   "passwordConfirmation": "AdminPass123!_NEW",
-  "imageUrl": "https://example.com/admin.png"
+  "imgUrl": "https://example.com/admin.png"
 }
 
 ### [USER] 내 정보 수정 (비밀번호 변경 + 프로필 수정)
@@ -128,3 +129,13 @@ Authorization: Bearer {{adminAccessToken}}
 ### [USER] 유저 삭제 (본인 계정 삭제 테스트용)
 DELETE {{baseUrl}}/users/me
 Authorization: Bearer {{userAccessToken}}
+
+### [ADMIN] 유저 삭제 (본인 계정 삭제 테스트용)
+DELETE {{baseUrl}}/users/me
+Authorization: Bearer {{adminAccessToken}}
+
+### [USER] 유저 삭제 (회원 탈퇴)
+
+DELETE {{baseUrl}}/users/me
+Authorization: Bearer {{userAccessToken}}
+

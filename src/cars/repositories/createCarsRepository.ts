@@ -1,6 +1,7 @@
 import prisma from '../../lib/prisma.js';
 import type { Prisma } from '../../../generated/prisma/index.js';
 
+
 /**
  * 차량 생성 Repository
  */

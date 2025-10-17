@@ -31,12 +31,15 @@ model Users {
 
 model Companies {
 <<<<<<< HEAD
+<<<<<<< HEAD
   id          Int         @id @default(autoincrement())
   companyName String
   companyCode String      @unique
   user        Users[]
   Customers   Customers[]
 =======
+=======
+>>>>>>> 037d69e (develop 최신화 && users 파트 companyCode, companyName merge 전 임시 변경)
   id        Int         @id @default(autoincrement())
   name      String
   code      String      @unique
@@ -44,7 +47,17 @@ model Companies {
   updatedAt DateTime    @default(now()) @updatedAt
   user      Users[]
   customer  Customers[]
+<<<<<<< HEAD
 >>>>>>> 3f3c8a6 (fix: 전체 수정)
+=======
+=======
+  id          Int         @id @default(autoincrement())
+  companyName String
+  companyCode String      @unique
+  user        Users[]
+  Customers   Customers[]
+>>>>>>> develop
+>>>>>>> 037d69e (develop 최신화 && users 파트 companyCode, companyName merge 전 임시 변경)
 }
 
 model Cars {
