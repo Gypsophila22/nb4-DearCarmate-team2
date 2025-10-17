@@ -78,19 +78,20 @@ model Customers {
   name        String
   gender      Gender
   phoneNumber String
-  ageGroup    String?
+  ageGroup    AgeGroup?
   region      Region?
   email       String?
-  memo        String?
+  memo          String?
+  contractCount Int        @default(0)
+  contract      Contracts[]
 
-  company   Companies  @relation(fields: [companyId], references: [id])
+  company   Companies @relation(fields: [companyId], references: [id])
   companyId Int
-  contract  Contracts?
 }
 
 enum Gender {
-  MALE
-  FEMALE
+  male
+  female
 }
 
 enum AgeGroup {
@@ -132,6 +133,6 @@ model Contracts {
   car   Cars @relation(fields: [carId], references: [id])
   carId Int  @unique
 
-  custmor   Customers @relation(fields: [custmorId], references: [id])
-  custmorId Int       @unique
+  customer   Customers @relation(fields: [customerId], references: [id])
+  customerId Int
 }

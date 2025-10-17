@@ -1,7 +1,18 @@
-import { Gender, Region } from '@prisma/client';
+import { AgeGroup, Gender, Region } from '@prisma/client';
 import type { Request, Response } from 'express';
 import { z, ZodError } from 'zod';
 import prisma from '../../lib/prisma.js';
+
+const ageGroupMap: { [key: string]: AgeGroup } = {
+  '10대': AgeGroup.GENERATION_10,
+  '20대': AgeGroup.GENERATION_20,
+  '30대': AgeGroup.GENERATION_30,
+  '40대': AgeGroup.GENERATION_40,
+  '50대': AgeGroup.GENERATION_50,
+  '60대': AgeGroup.GENERATION_60,
+  '70대': AgeGroup.GENERATION_70,
+  '80대': AgeGroup.GENERATION_80,
+};
 
 // zod 유효성 검사
 const customersSchema = z.object({
@@ -24,13 +35,16 @@ export const createCustomer = async (req: Request, res: Response) => {
         if (!companyId) {
             return res.status(401).json({ message: '인증된 사용자 정보가 없습니다.' });
         }
+
+        const mappedAgeGroup = ageGroup ? ageGroupMap[ageGroup] : null;
+
         // 데이터베이스에 고객 정보 생성
         const newCustomer = await prisma.customers.create({
             data: {
                 name,
                 gender,
                 phoneNumber,
-                ageGroup: ageGroup ?? null,
+                ageGroup: mappedAgeGroup,
                 region: region ?? null,
                 email: email ?? null,
                 memo: memo ?? null,
