@@ -3,6 +3,7 @@ import carRouter from './car.route.js';
 import companyRouter from './company.route.js';
 import contractRouter from './contract.route.js';
 import customersRouter from './customer.route.js';
+import imageRouter from './images.js';
 import userRouter from './user.route.js';
 
 const routers = {
@@ -10,6 +11,7 @@ const routers = {
   carRouter,
   companyRouter,
   userRouter,
+  imageRouter,
   contractRouter,
   customersRouter,
 };

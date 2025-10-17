@@ -1,7 +1,8 @@
-import authLogin from "./authLogin.js";
+import { authLoginSchema } from './auth.login.schema.js';
 
-const authValidation = { authLogin };
+export const authValidation = {
+  authLoginSchema,
+} as const satisfies Record<string, import('zod').ZodTypeAny>;
 
-Object.freeze(authValidation);
-
-export default authValidation;
+// default + freeze (런타임 불변)
+export default Object.freeze(authValidation);
