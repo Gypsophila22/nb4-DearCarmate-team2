@@ -13,43 +13,38 @@ class UnauthorizedError extends Error {
 
 async function createCompany(req: Request, res: Response, next: NextFunction) {
   try {
-    // // 🔐 관리자 권한 확인
+    // 🔐 관리자 권한 확인 (테스트 중이라 주석 가능)
     // if (!req.user || !req.user.isAdmin) {
     //   throw new UnauthorizedError("관리자 권한이 필요합니다");
     // }
 
-    // const { name, code } = req.body;
-    // 디버깅용 테스트 -
-    const rawName = (req.body.name ?? req.body.companyName) as
-      | string
-      | undefined;
-    const rawCode = (req.body.code ?? req.body.companyCode) as
-      | string
-      | undefined;
+    const rawName = (req.body.companyName ?? req.body.name) as string | undefined;
+    const rawCode = (req.body.companyCode ?? req.body.code) as string | undefined;
 
-    const name = rawName?.trim();
-    const code = rawCode?.trim().toUpperCase();
+    const companyName = rawName?.trim();
+    const companyCode = rawCode?.trim().toUpperCase();
 
-    if (!name || !code) {
+    if (!companyName || !companyCode) {
       return res.status(400).json({ message: "잘못된 요청입니다" });
     }
 
     // 중복 코드 확인
     const exists = await prisma.companies.findUnique({
-      where: { code },
+      where: { companyCode },
     });
     if (exists) {
       return res.status(400).json({ message: "이미 존재하는 회사 코드입니다" });
     }
 
+    // 회사 생성
     const company = await prisma.companies.create({
-      data: { name, code },
+      data: { companyName, companyCode },
     });
 
     return res.status(201).json({
       id: company.id,
-      companyName: company.name,
-      companyCode: company.code,
+      companyName: company.companyName,
+      companyCode: company.companyCode,
       userCount: 0,
     });
   } catch (err: any) {
