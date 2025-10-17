@@ -30,6 +30,7 @@ model Users {
 }
 
 model Companies {
+<<<<<<< HEAD
   id        Int         @id @default(autoincrement())
   name      String
   code      String      @unique
@@ -37,6 +38,13 @@ model Companies {
   updatedAt DateTime    @default(now()) @updatedAt
   user      Users[]
   customer  Customers[]
+=======
+  id          Int         @id @default(autoincrement())
+  companyName String
+  companyCode String      @unique
+  user        Users[]
+  Customers   Customers[]
+>>>>>>> 3f31d5b (fix : develop 변경 사항 최신화)
 }
 
 model Cars {
