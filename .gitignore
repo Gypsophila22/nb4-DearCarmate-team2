@@ -3,5 +3,6 @@ node_modules
 .env
 
 /generated/prisma
-/dist
-prisma/migrations/
+dist/
+uploads/*
+!uploads/.gitkeep

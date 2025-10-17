@@ -19,7 +19,7 @@ class GetUser {
           phoneNumber: true,
           imgUrl: true,
           isAdmin: true,
-          company: { select: { code: true } },
+          company: { select: { companyCode : true } },
         },
       });
 

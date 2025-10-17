@@ -1,9 +1,9 @@
-import PostLogin from "./postLogin.js";
-
-//남은 인덱스를 채워주세요
+import PostLogin from './auth.login.controller.js';
+import PostRefresh from './auth.refresh.controller.js';
 
 const authController = {
   PostLogin: PostLogin,
+  PostRefresh: PostRefresh,
 };
 
 Object.freeze(authController);

@@ -3,8 +3,13 @@ declare global {
     interface User {
       id: number;
       email: string;
+<<<<<<< HEAD
       name?: string;
       isAdmin?: boolean;
+=======
+      name: string;
+      isAdmin: boolean;
+>>>>>>> develop
     }
   }
 }
