@@ -1,4 +1,4 @@
-import prisma from '../../config/prisma.js';
+import prisma from '../../lib/prisma.js';
 
 export const userGetRepository = {
   findSelectedById(id: number) {
@@ -10,9 +10,9 @@ export const userGetRepository = {
         email: true,
         employeeNumber: true,
         phoneNumber: true,
-        imgUrl: true,
+        imageUrl: true,
         isAdmin: true,
-        company: { select: { code: true } },
+        company: { select: { companyCode: true } },
       },
     });
   },

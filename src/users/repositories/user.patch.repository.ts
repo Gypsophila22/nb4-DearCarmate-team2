@@ -1,4 +1,4 @@
-import prisma from '../../config/prisma.js'; // 싱글톤 Prisma 사용
+import prisma from '../../lib/prisma.js';
 
 export const userPatchRepository = {
   findById(id: number) {
@@ -12,7 +12,7 @@ export const userPatchRepository = {
       phoneNumber: string;
       imageUrl: string | null;
       password: string;
-    }>
+    }>,
   ) {
     return prisma.users.update({
       where: { id },

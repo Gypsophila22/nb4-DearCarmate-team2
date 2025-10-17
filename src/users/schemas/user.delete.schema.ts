@@ -1,13 +1,28 @@
+import createError from 'http-errors';
 import { z } from 'zod';
 
-export const userDeleteParamSchema = z.object({
-  params: z.object({
+import type { Request, Response, NextFunction } from 'express';
+
+const userDeleteParamSchema = z
+  .object({
     id: z
       .string()
-      .regex(/^\d+$/, 'id는 숫자여야 합니다.')
+      .regex(/^\d+$/, { message: 'id는 숫자여야 합니다.' })
       .transform((v) => Number(v))
-      .refine((n) => n > 0, 'id는 1 이상의 정수여야 합니다.'),
-  }),
-});
+      .refine((n) => n > 0, { message: 'id는 1 이상의 정수여야 합니다.' }),
+  })
+  .strict();
 
-export type UserDeleteParams = z.infer<typeof userDeleteParamSchema>['params'];
+export function validatedserDeleteParam(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const result = userDeleteParamSchema.safeParse(req.params);
+
+  if (result.success) {
+    return next();
+  } else {
+    return next(createError(400, `잘못된 입력값입니다.`));
+  }
+}
