@@ -7,27 +7,35 @@ const param = z.object({
     .transform(Number),
 });
 const body = z.object({
-  status: z.enum([
-    'carInspection',
-    'priceNegotiation',
-    'contractDraft',
-    'contractSuccessful',
-    'contractFailed',
-  ]),
-  resolutionDate: z.string(),
-  contractPrice: z.number(),
-  meetings: z.array(
-    z.object({ date: z.string(), alarms: z.array(z.string()) }),
-  ),
-  contractDocuments: z.array(
-    z.object({
-      id: z.number().int().positive(),
-      fileName: z.string().min(1),
-    }),
-  ),
-  userId: z.number().int().positive(),
-  customerId: z.number().int().positive(),
-  carId: z.number().int().positive(),
+  status: z
+    .enum([
+      'carInspection',
+      'priceNegotiation',
+      'contractDraft',
+      'contractSuccessful',
+      'contractFailed',
+    ])
+    .optional(),
+  resolutionDate: z.string().optional(),
+  contractPrice: z.number().optional(),
+  meetings: z
+    .array(
+      z.object({ date: z.string(), alarms: z.array(z.string()) }).optional(),
+    )
+    .optional(),
+  contractDocuments: z
+    .array(
+      z
+        .object({
+          id: z.number().int().positive(),
+          fileName: z.string().min(1),
+        })
+        .optional(),
+    )
+    .optional(),
+  userId: z.number().int().positive().optional(),
+  customerId: z.number().int().positive().optional(),
+  carId: z.number().int().positive().optional(),
 });
 
 export const UpdateContractSchema = {
