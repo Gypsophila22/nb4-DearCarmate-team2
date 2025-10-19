@@ -20,7 +20,7 @@ CREATE TABLE "public"."Users" (
     "email" TEXT NOT NULL,
     "employeeNumber" TEXT NOT NULL,
     "phoneNumber" TEXT NOT NULL,
-    "imgUrl" TEXT,
+    "imageUrl" TEXT,
     "password" TEXT NOT NULL,
     "isAdmin" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

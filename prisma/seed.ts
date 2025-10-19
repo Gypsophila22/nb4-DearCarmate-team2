@@ -34,6 +34,24 @@ async function main() {
     },
   });
 
+  
+
+  await prisma.companies.createMany({
+    data: [
+      { companyName: "햇살카", companyCode: "sunshine" },
+      { companyName: "케이카", companyCode: "kcar" },
+      { companyName: "굿모닝카", companyCode: "goodmorning" },
+      { companyName: "믿음카", companyCode: "trust" },
+      { companyName: "행복카", companyCode: "happy" },
+      { companyName: "신뢰카", companyCode: "reliable" },
+      { companyName: "우리카", companyCode: "ourcar" },
+      { companyName: "미래카", companyCode: "future" },
+    ],
+    skipDuplicates: true,
+  });
+
+  console.log("✅ 회사 데이터 시드 완료");
+
   // 어드민 계정 비밀번호 해시
   const hashedPassword = await bcrypt.hash('AdminPass123!', 10);
   const userHashed = await bcrypt.hash('aaaa1234', 10);
@@ -106,6 +124,9 @@ async function main() {
 
   console.log('✅ Seeding 완료');
 }
+
+
+
 
 main()
   .catch((e) => {

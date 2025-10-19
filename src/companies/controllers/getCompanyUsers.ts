@@ -106,6 +106,3 @@ async function getCompanyUsers(
 
 
 export default { getCompanyUsers };
-
-
-

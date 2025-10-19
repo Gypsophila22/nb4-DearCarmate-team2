@@ -7,6 +7,7 @@ async function getCompany(req: Request, res: Response, next: NextFunction) {
     // const page = parseInt((req.query.page as string) ?? '1', 10) || 1;
     // const pageSize = parseInt((req.query.pageSize as string) ?? '10', 10) || 10;
 
+    res.setHeader("Cache-Control", "no-store");
 
     const DEFAULT_PAGE_NUM = 1;
     const DEFAULT_PAGE_SIZE = 10;
@@ -36,8 +37,9 @@ async function getCompany(req: Request, res: Response, next: NextFunction) {
       id: c.id,
       companyName: c.companyName,
       companyCode: c.companyCode,
-      userCount: c._count.user,
-      // createdAt: c.createdAt,
+      userCount: c._count.user ?? 0,
+      createdAt: c.createdAt,
+      updatedAt: c.updatedAt,
     }));
 
 
@@ -49,7 +51,7 @@ async function getCompany(req: Request, res: Response, next: NextFunction) {
     };
 
 
-    return res.json({ success: true, data: { items, pageInfo } });
+    return res.json({ success: true, data: companies });
   } catch (err) {
     next(err);
   }

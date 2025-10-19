@@ -55,7 +55,7 @@ router.get(
 // 회사 등록 (POST /companies)1
 router.post(
   "/",
-  //passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
    companyController.createCompany
 );
 
@@ -63,15 +63,15 @@ router.post(
 // 회사 목록 조회 (GET /companies)
 router.get(
   "/",
-  // passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
    companyController.getCompany
 );
 
 
 // 회사별 유저 조회 (GET /companies/:companyId/users)
 router.get(
-  "/:companyId/users",
-  // passport.authenticate("jwt", { session: false }),
+  "/:company/users",
+  passport.authenticate("jwt", { session: false }),
    companyController.getCompanyUsers
 >>>>>>> b891420 (test,feat,fix(company) : 테스트를 위한 추가 http 파일 추가 및 일부 주석 삭제, 확인용 console 라인 삭제)
 );
@@ -80,7 +80,7 @@ router.get(
 // 회사 수정 (PATCH /companies/:companyId)
 router.patch(
   "/:companyId",
-  // passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   companyController.updateCompany
 );
 
@@ -88,14 +88,14 @@ router.patch(
 // 회사 삭제 (DELETE /companies/:companyId)
 router.delete(
   "/:companyId",
-  // passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   companyController.deleteCompany
 );
 
 // 회사 삭제 (DELETE /companies/:companyId)
 router.delete(
   "/:companyId",
-  // passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   companyController.deleteCompany
 )
 
