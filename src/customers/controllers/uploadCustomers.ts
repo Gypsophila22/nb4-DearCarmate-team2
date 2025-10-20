@@ -10,6 +10,11 @@ export { upload };
 
 export const uploadCustomers = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const companyId = req.user?.companyId;
+        if (!companyId) {
+            throw createError(401, '인증된 사용자 정보가 없습니다.');
+        }
+
         // 파일 존재 확인
         if (!req.file) {
             throw createError(400, '업로드된 파일이 없습니다.');
@@ -25,7 +30,7 @@ export const uploadCustomers = async (req: Request, res: Response, next: NextFun
         // CSV 파싱, 유효성 검사
         const { results: validCustomers, errors: validationErrors } = await customerParseService.parseAndValidateCsv(csvBuffer);
 
-        const dbProcessResults = await customerUploadService.processCustomerCsv(validCustomers);
+        const dbProcessResults = await customerUploadService.processCustomerCsv(validCustomers, companyId);
     
         res.status(200).json({
             message: 'CSV 파일 업로드 요청을 받았습니다.',
