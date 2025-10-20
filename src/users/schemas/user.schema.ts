@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { z } from 'zod';
 
-const userDeleteParam = z
+const userDeleteParamSchema = z
   .object({
     id: z
       .string()
@@ -12,7 +12,7 @@ const userDeleteParam = z
   })
   .strict();
 
-const userPatch = z
+const userPatchSchema = z
   .object({
     employeeNumber: z.string().min(1).optional(),
     phoneNumber: z.string().min(1).optional(),
@@ -83,7 +83,7 @@ const userPatch = z
     }
   });
 
-const userRegister = z
+const userRegisterSchema = z
   .object({
     name: z.string({ error: '이름은 필수입니다.' }),
     email: z.email({ error: '잘못된 이메일 형식입니다.' }),
@@ -110,8 +110,8 @@ const userRegister = z
   .strict();
 
 class UserSchema {
-  userPatchSchema(req: Request, res: Response, next: NextFunction) {
-    const result = userPatch.safeParse(req.body);
+  userPatch(req: Request, res: Response, next: NextFunction) {
+    const result = userPatchSchema.safeParse(req.body);
 
     if (result.success) {
       return next();
@@ -120,8 +120,8 @@ class UserSchema {
     }
   }
 
-  userRegisterSchema(req: Request, res: Response, next: NextFunction) {
-    const result = userRegister.safeParse(req.body);
+  userRegister(req: Request, res: Response, next: NextFunction) {
+    const result = userRegisterSchema.safeParse(req.body);
 
     if (result.success) {
       return next();
@@ -130,8 +130,8 @@ class UserSchema {
     }
   }
 
-  userDeleteParamSchema(req: Request, res: Response, next: NextFunction) {
-    const result = userDeleteParam.safeParse(req.params);
+  userDeleteParam(req: Request, res: Response, next: NextFunction) {
+    const result = userDeleteParamSchema.safeParse(req.params);
 
     if (result.success) {
       return next();

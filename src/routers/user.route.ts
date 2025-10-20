@@ -6,22 +6,18 @@ import { userSchema } from '../users/schemas/user.schema.js';
 
 const router = express.Router();
 
-router.post('/', userSchema.userRegisterSchema, userController.postRegister);
+router.post('/', userSchema.userRegister, userController.postRegister);
 
 router
   .route('/me')
   .get(passports.jwtAuth, userController.getMe)
-  .patch(
-    passports.jwtAuth,
-    userSchema.userPatchSchema,
-    userController.patchUser
-  )
+  .patch(passports.jwtAuth, userSchema.userPatch, userController.patchUser)
   .delete(passports.jwtAuth, userController.deleteMe);
 
 router.delete(
   '/:id',
   passports.jwtAuth,
-  userSchema.userDeleteParamSchema,
+  userSchema.userDeleteParam,
   userController.deleteUser
 );
 
