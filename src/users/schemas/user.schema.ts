@@ -2,13 +2,9 @@ import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { z } from 'zod';
 
-const userDeleteParamSchema = z
+export const userDeleteParamSchema = z
   .object({
-    id: z
-      .string()
-      .regex(/^\d+$/, { message: 'id는 숫자여야 합니다.' })
-      .transform((v) => Number(v))
-      .refine((n) => n > 0, { message: 'id는 1 이상의 정수여야 합니다.' }),
+    id: z.coerce.number(),
   })
   .strict();
 
@@ -105,7 +101,7 @@ const userRegisterSchema = z
     {
       message: '비밀번호와 비밀번호 확인이 일치하지 않습니다.',
       path: ['passwordConfirmation'],
-    }
+    },
   )
   .strict();
 

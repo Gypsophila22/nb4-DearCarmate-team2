@@ -52,7 +52,7 @@ class UserRepository {
       phoneNumber: string;
       imageUrl: string | null;
       password: string;
-    }>
+    }>,
   ) {
     return prisma.users.update({
       where: { id },

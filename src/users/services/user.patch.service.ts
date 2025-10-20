@@ -50,6 +50,7 @@ export const userPatchService = {
 
     const updated = await userRepository.updateById(user.id, dataToUpdate);
     const { password: _pw, ...safeUser } = updated;
+    void _pw;
     return safeUser;
   },
 };

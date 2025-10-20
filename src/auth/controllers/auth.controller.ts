@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { authLoginService } from '../services/auth.login.service.js';
 import createError from 'http-errors';
-import { tokenService } from '../services/token.service.js';
+import { tokenService } from '../services/auth.token.service.js';
 
 class AuthController {
   async authLoginController(req: Request, res: Response, next: NextFunction) {

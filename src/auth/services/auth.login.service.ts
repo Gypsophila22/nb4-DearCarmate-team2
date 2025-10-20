@@ -27,7 +27,8 @@ export const authLoginService = {
     });
 
     // 4. 응답용 데이터 가공
-    const { password: _, ...userWithoutPw } = user;
+    const { password: _pw, ...userWithoutPw } = user;
+    void _pw;
     return { user: userWithoutPw, accessToken, refreshToken };
   },
 };
