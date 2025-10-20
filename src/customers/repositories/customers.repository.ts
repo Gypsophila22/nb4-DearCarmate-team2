@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import prisma from '../../lib/prisma.js';
+import prisma from '../../lib/prisma.ts';
 import type { CreateCustomerBody, UpdateCustomerBody, CustomerCsvRow } from '../schemas/customers.schema.js';
 
 export const customerRepository = {

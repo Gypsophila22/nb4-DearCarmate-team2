@@ -32,6 +32,6 @@ customersRouter.patch("/:id", validate(customerValidation.updateCustomerSchema),
 customersRouter.delete("/:id", validate(customerValidation.deleteCustomerSchema), deleteCustomer);
 
 // 고객 CSV 대용량 업로드
-customersRouter.post("/upload", upload.single('csvfile'), uploadCustomers);
+customersRouter.post("/upload", upload.single('file'), uploadCustomers);
 
 export default customersRouter;
