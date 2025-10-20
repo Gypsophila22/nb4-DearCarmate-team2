@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../../lib/prisma.js';
+import type { CreateCustomerBody, UpdateCustomerBody } from '../schemas/customers.schema.js';
 
 export const customerRepository = {
   findMany: async (
@@ -43,6 +44,36 @@ export const customerRepository = {
 
   findById: async (id: number, companyId: number) => {
     return prisma.customers.findFirst({
+      where: {
+        id,
+        companyId,
+      },
+    });
+  },
+
+  create: async (data: CreateCustomerBody, companyId: number) => {
+    return prisma.customers.create({
+      data: {
+        ...data,
+        company: {
+          connect: { id: companyId },
+        },
+      },
+    });
+  },
+
+  update: async (id: number, data: UpdateCustomerBody, companyId: number) => {
+    return prisma.customers.updateMany({
+      where: {
+        id,
+        companyId,
+      },
+      data,
+    });
+  },
+
+  delete: async (id: number, companyId: number) => {
+    return prisma.customers.deleteMany({
       where: {
         id,
         companyId,
