@@ -1,0 +1,169 @@
+@baseUrl=http://localhost:4000
+
+### =====================================
+### 1) 로그인 (역할별) & 토큰 변수 바인딩
+### =====================================
+
+### [ADMIN] 로그인
+# @name adminLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@codeit.com",
+  "password": "AdminPass123!"
+}
+
+### [USER] 회원가입
+POST {{baseUrl}}/users/register
+Content-Type: application/json
+
+{
+  "name": "testman",
+  "email": "testman2@test.com",
+  "employeeNumber": "100",
+  "phoneNumber": "01021210696",
+  "password": "Test",
+  "passwordConfirmation": "Test",
+  "company": "Codeit",
+  "companyCode": "CDEIT2025"
+}
+
+### [USER] 로그인
+# @name userLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "testman2@test.com",
+  "password": "Test"
+}
+
+### 역할별 토큰 변수
+@adminAccessToken={{adminLogin.response.body.accessToken}}
+@adminRefreshToken={{adminLogin.response.body.refreshToken}}
+@userAccessToken={{userLogin.response.body.accessToken}}
+@userRefreshToken={{userLogin.response.body.refreshToken}}
+
+### =====================================
+### 2) 리프레시 (역할별)
+### =====================================
+
+### [ADMIN] 토큰 리프레쉬
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{adminRefreshToken}}"
+}
+
+### [USER] 토큰 리프레쉬
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{userRefreshToken}}"
+}
+
+### =====================================
+### 3) 자기 정보 (역할별로 분리 테스트)
+###    - 같은 엔드포인트도 어떤 토큰을 쓰느냐로 역할 검증 가능
+### =====================================
+
+### [ADMIN] 내 정보 조회
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{adminAccessToken}}
+
+### [USER] 내 정보 조회
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{userAccessToken}}
+
+### [ADMIN] 내 정보 수정 (예시)
+PATCH {{baseUrl}}/users/me
+Authorization: Bearer {{adminAccessToken}}
+Content-Type: application/json
+
+{
+  "employeeNumber": "900",
+  "phoneNumber": "01011112222",
+  "currentPassword": "AdminPass123!",
+  "password": "AdminPass123!_NEW",
+  "passwordConfirmation": "AdminPass123!_NEW",
+  "imgUrl": "https://example.com/admin.png"
+}
+
+### [USER] 내 정보 수정 (비밀번호 변경 + 프로필 수정)
+PATCH {{baseUrl}}/users/me
+Authorization: Bearer {{userAccessToken}}
+Content-Type: application/json
+
+{
+  "employeeNumber": "200",
+  "phoneNumber": "01099998888",
+  "currentPassword": "Test",
+  "password": "NewPass123!",
+  "passwordConfirmation": "NewPass123!",
+  "imgUrl": "https://example.com/profile.png"
+}
+
+### [ADMIN] 유저 삭제 (본인 계정 삭제 테스트용)
+DELETE {{baseUrl}}/users/me
+Authorization: Bearer {{adminAccessToken}}
+
+### [USER] 유저 삭제 (회원 탈퇴)
+DELETE {{baseUrl}}/users/me
+Authorization: Bearer {{userAccessToken}}
+
+################### 회사 API 테스트 ###################
+#아직 형태만 갖춘 더미 test.http 내용들입니다. 
+
+##############################
+# 회사 API 테스트 (admin / user 분리)
+##############################
+
+@baseUrl=http://localhost:4000
+
+# (선행: adminLogin, userLogin 실행 후 아래 변수들 자동 바인딩)
+@adminAccessToken={{adminLogin.response.body.accessToken}}
+
+### =====================================
+### [ADMIN] 회사 등록 (POST)
+### =====================================
+POST {{baseUrl}}/companies
+Authorization: Bearer {{adminAccessToken}}
+Content-Type: application/json
+
+{
+  "companyName": "제발되라 컴퍼니2",
+  "companyCode": "TST004"
+}
+
+### =====================================
+### [ADMIN] 회사 목록 조회 (GET)
+### =====================================
+GET {{baseUrl}}/companies?page=1&pageSize=10
+Authorization: Bearer {{adminAccessToken}}
+
+### =====================================
+### [ADMIN] 회사별 유저 조회 (GET)
+### =====================================
+GET {{baseUrl}}/companies/1/users?page=1&pageSize=5
+Authorization: Bearer {{adminAccessToken}}
+
+### =====================================
+### [ADMIN] 회사 정보 수정 (PATCH)
+### =====================================
+PATCH {{baseUrl}}/companies/1
+Authorization: Bearer {{adminAccessToken}}
+Content-Type: application/json
+
+{
+  "companyName": "테스트컴퍼니 수정",
+  "companyCode": "TST002"
+}
+
+### =====================================
+### [ADMIN] 회사 삭제 (DELETE)
+### =====================================
+DELETE {{baseUrl}}/companies/1
+Authorization: Bearer {{adminAccessToken}}
