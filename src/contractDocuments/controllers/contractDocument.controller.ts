@@ -58,7 +58,7 @@ class ContractDocumentController {
   async getContractDocument(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.user)
-        return res.status(401).json({ message: '로그인이 필요합니다' });
+        return res.status(401).json({ message: '로그인이 필요합니다.' });
 
       // 쿼리 파라미터 파싱
       const page = Math.max(
@@ -75,7 +75,7 @@ class ContractDocumentController {
       const result = await getDocumentsService({
         actor: {
           id: req.user.id,
-          companyId: req.user.companyId as number, // 타입 맞추기
+          companyId: req.user.companyId,
           isAdmin: !!req.user.isAdmin,
         },
         page,
@@ -95,8 +95,10 @@ class ContractDocumentController {
     next: NextFunction
   ) {
     try {
-      if (!req.user) return res.status(401).json({ message: '로그인 필요' });
-      if (!req.file) return res.status(400).json({ message: '파일 필수' });
+      if (!req.user)
+        return res.status(401).json({ message: '로그인이 필요합니다.' });
+      if (!req.file)
+        return res.status(400).json({ message: '파일은 필수입니다.' });
 
       const result = await documentUploadTempService({
         actor: {

@@ -42,27 +42,7 @@ export async function getDocumentsService({
   const totalPages = Math.max(Math.ceil(totalItemCount / pageSize), 1);
 
   /* 응답 DTO 매핑
-  / 임시 수정(프론트불일치) 
-  / documentsCount > documentCount
-  / manager> userName
-  */
-  // return {
-  //   currentPage: page,
-  //   totalPages,
-  //   totalItemCount,
-  //   data: contracts.map((c) => ({
-  //     id: c.id,
-  //     contractName: c.customer?.name ?? '',
-  //     resolutionDate: c.resolutionDate,
-  //     documentsCount: c._count.documents,
-  //     manager: c.user?.name ?? '',
-  //     carNumber: c.car?.carNumber ?? '',
-  //     documents: c.documents.map((d) => ({
-  //       id: d.id,
-  //       fileName: d.originalName,
-  //     })),
-  //   })),
-  // };
+   */
   return {
     currentPage: page,
     totalPages,

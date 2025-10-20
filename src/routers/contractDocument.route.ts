@@ -1,5 +1,5 @@
 import express from 'express';
-import { protect } from '../middlewares/auth.js';
+import passports from '../lib/passport/index.js';
 import { uploadContract } from '../lib/document.upload.js';
 
 import { contractDocumentSchema } from '../contractDocuments/schemas/contractDocument.schema.js';
@@ -11,25 +11,25 @@ const DOCUMENT_FIELD_NAME = 'file';
 // 라우터
 router.post(
   '/upload',
-  protect,
+  passports.jwtAuth,
   uploadContract.single(DOCUMENT_FIELD_NAME),
   contractDocumentController.postContractDocumentUploadTemp
 );
 
 router.get(
   '/',
-  protect,
+  passports.jwtAuth,
   contractDocumentSchema.getContractDocument,
   contractDocumentController.getContractDocument
 );
 router.get(
   '/draft',
-  protect,
+  passports.jwtAuth,
   contractDocumentController.getContractDocumentDraft
 );
 router.get(
   '/:contractDocumentId/download',
-  protect,
+  passports.jwtAuth,
   contractDocumentSchema.getContractDocumentDownload,
   contractDocumentController.getContractDocumentDownload
 );

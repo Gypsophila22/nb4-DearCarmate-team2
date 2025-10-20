@@ -39,7 +39,7 @@ class ContractDocumentSchema {
   ) {
     const result = getContractDocumentDownloadSchema.safeParse(req.params);
     if (!result.success) {
-      return next(createError(400, '잘못된 요청입니다(다운로드)'));
+      return next(createError(400, '잘못된 다운로드 요청입니다'));
     }
     return next();
   }
