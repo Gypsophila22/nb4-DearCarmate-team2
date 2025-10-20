@@ -3,7 +3,6 @@ import csv from "csv-parser";
 import { CarStatus, CarType } from "@prisma/client";
 import { Readable } from "stream";
 
-import type { z } from "zod";
 import type carDto from "../dtos/index.js";
 // CSV 차량 생성 (추후 트랜잭션 넣기)
 export const carUploadCsvService = async (csvBuffer: Buffer) => {
