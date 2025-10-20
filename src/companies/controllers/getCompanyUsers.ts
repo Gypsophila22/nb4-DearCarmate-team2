@@ -3,18 +3,18 @@ import prisma from '../../lib/prisma.js';
 
 // ✅ 열거형 형태로 검색 키 정의
 const SEARCHABLE_FIELDS = {
-  NAME: "name",
-  EMAIL: "email",
-  EMPLOYEENUMBER: "employeeNumber",
-  PHONENUMBER: "phoneNumber",
-  COMPANYNAME: "companyName",
+  NAME: 'name',
+  EMAIL: 'email',
+  EMPLOYEENUMBER: 'employeeNumber',
+  PHONENUMBER: 'phoneNumber',
+  COMPANYNAME: 'companyName',
 } as const;
 type SearchBy = (typeof SEARCHABLE_FIELDS)[keyof typeof SEARCHABLE_FIELDS];
 
 async function getCompanyUsers(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     // ✅ companyId는 선택적 처리 (경로에 없으면 전체 조회)
@@ -22,7 +22,10 @@ async function getCompanyUsers(
       ? Number(req.params.companyId)
       : undefined;
 
-    if (companyIdNum !== undefined && (!Number.isInteger(companyIdNum) || companyIdNum <= 0)) {
+    if (
+      companyIdNum !== undefined &&
+      (!Number.isInteger(companyIdNum) || companyIdNum <= 0)
+    ) {
       return res.status(400).json({ message: '잘못된 회사 ID입니다.' });
     }
 
@@ -33,7 +36,9 @@ async function getCompanyUsers(
 
     // ✅ 문자열 타입 안전하게 처리
     const rawSearchBy =
-      typeof req.query.searchBy === 'string' ? req.query.searchBy.trim() : undefined;
+      typeof req.query.searchBy === 'string'
+        ? req.query.searchBy.trim()
+        : undefined;
     const keyword =
       typeof req.query.keyword === 'string' ? req.query.keyword.trim() : '';
 
@@ -48,9 +53,16 @@ async function getCompanyUsers(
       ...(companyIdNum ? { companyId: companyIdNum } : {}), // 선택적 회사 필터
       ...(keyword
         ? searchBy === 'companyName'
-        ? { company: { companyName: { contains: keyword, mode: 'insensitive' as const } } }
-        : { [searchBy]: { contains: keyword, mode: 'insensitive' as const } }
-      : {}),
+          ? {
+              company: {
+                companyName: {
+                  contains: keyword,
+                  mode: 'insensitive' as const,
+                },
+              },
+            }
+          : { [searchBy]: { contains: keyword, mode: 'insensitive' as const } }
+        : {}),
     };
 
     // ✅ 총 개수 & 목록 병렬 조회

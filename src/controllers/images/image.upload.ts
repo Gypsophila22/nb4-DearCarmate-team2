@@ -6,7 +6,7 @@ import fs from 'fs/promises'; // ✅ promises API
 export async function postUpload(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     if (!req.file) {

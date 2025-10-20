@@ -1,9 +1,9 @@
-import carRepository from "../repositories/index.js";
-import csv from "csv-parser";
-import { CarStatus, CarType } from "@prisma/client";
-import { Readable } from "stream";
+import carRepository from '../repositories/index.js';
+import csv from 'csv-parser';
+import { CarStatus, CarType } from '@prisma/client';
+import { Readable } from 'stream';
 
-import type carDto from "../dtos/index.js";
+import type carDto from '../dtos/index.js';
 // CSV 차량 생성 (추후 트랜잭션 넣기)
 export const carUploadCsvService = async (csvBuffer: Buffer) => {
   try {
@@ -11,15 +11,15 @@ export const carUploadCsvService = async (csvBuffer: Buffer) => {
     const records: CarCsvRecord[] = [];
 
     // 버퍼 -> 문자열 -> 스트림 변환
-    const stream = Readable.from(csvBuffer.toString("utf-8"));
+    const stream = Readable.from(csvBuffer.toString('utf-8'));
 
     // csv-parser로 csv를 records 배열에 저장
     await new Promise<void>((resolve, reject) => {
       stream
         .pipe(csv()) // csv 각 행을 객체로 변환
-        .on("data", (data) => records.push(data)) // 한 행씩 push
-        .on("end", resolve) // 모든 행 파싱 완료
-        .on("error", reject); // 오류 발생 시 reject
+        .on('data', (data) => records.push(data)) // 한 행씩 push
+        .on('end', resolve) // 모든 행 파싱 완료
+        .on('error', reject); // 오류 발생 시 reject
     });
 
     const carsToCreate = []; // 차량 데이터 모음
@@ -49,8 +49,8 @@ export const carUploadCsvService = async (csvBuffer: Buffer) => {
         mileage: Number(record.mileage),
         price: Number(record.price),
         accidentCount: Number(record.accidentCount),
-        explanation: record.explanation?.trim() || "",
-        accidentDetails: record.accidentDetails?.trim() || "",
+        explanation: record.explanation?.trim() || '',
+        accidentDetails: record.accidentDetails?.trim() || '',
         modelId: carModel.id,
         status: CarStatus.possession,
       });
