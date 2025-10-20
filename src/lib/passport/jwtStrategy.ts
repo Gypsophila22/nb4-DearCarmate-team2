@@ -17,6 +17,7 @@ export const jwtStrategy = new JwtStrategy(
           email: true,
           name: true,
           isAdmin: true,
+          companyId: true,
         },
       });
       if (!user) return done(null, false);
