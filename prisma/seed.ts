@@ -24,15 +24,36 @@ async function main() {
     skipDuplicates: true, // 동일 데이터가 존재하면 추가 안 함
   });
 
-  // 회사 등록
+  // 회사 등록 (Codeit만 변수로 받아두고 나머지는 반복문)
   const company = await prisma.companies.upsert({
     where: { companyCode: 'CDEIT2025' },
     update: {},
-    create: {
-      companyName: 'Codeit',
-      companyCode: 'CDEIT2025',
-    },
+    create: { companyName: 'Codeit', companyCode: 'CDEIT2025' },
   });
+
+  // 나머지 회사 등록
+  const otherCompanies = [
+    { companyName: '햇살카', companyCode: 'sunshine' },
+    { companyName: '케이카', companyCode: 'kcar' },
+    { companyName: '굿모닝카', companyCode: 'goodmorning' },
+    { companyName: '행복카', companyCode: 'happy' },
+    { companyName: '믿음카', companyCode: 'trust' },
+    { companyName: '신뢰카', companyCode: 'reliable' },
+    { companyName: '우리카', companyCode: 'ourcar' },
+    { companyName: '미래카', companyCode: 'future' },
+  ];
+
+  for (const c of otherCompanies) {
+    await prisma.companies.upsert({
+      where: { companyCode: c.companyCode },
+      update: {},
+      create: {
+        companyName: c.companyName,
+        companyCode: c.companyCode,
+      },
+    });
+  }
+
 
   // 어드민 계정 비밀번호 해시
   const hashedPassword = await bcrypt.hash('AdminPass123!', 10);
@@ -125,20 +146,7 @@ async function main() {
     ],
     skipDuplicates: true, // email이 중복되면 추가X
   });
-
-  // 회사 데이터 임시 추가.
-  const companies = [
-  { companyName: "햇살카", companyCode: "sunshine" },
-  { companyName: "케이카", companyCode: "kcar" },
-  { companyName: "굿모닝카", companyCode: "goodmorning" },
-  { companyName: "행복카", companyCode: "happy" },
-  { companyName: "믿음카", companyCode: "trust" },
-  { companyName: "신뢰카", companyCode: "reliable" },
-  { companyName: "우리카", companyCode: "ourcar" },
-  { companyName: "미래카", companyCode: "future" },
-];
-
-
+  
   console.log('✅ Seeding 완료');
 }
 
