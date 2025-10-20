@@ -1,11 +1,10 @@
-// src/contractDocuments/services/documentDownload.get.service.ts
 import type { Response } from 'express';
 import path from 'path';
 import { existsSync, statSync, createReadStream } from 'fs';
 import contentDisposition from 'content-disposition';
 import mime from 'mime';
 import createError from 'http-errors';
-import { documentDownloadRepository } from '../repositories/document.download.repository.js';
+import { contractDocumentRepository } from '../repositories/contractDocument.repository.js';
 
 type Actor = { id: number; companyId: number; isAdmin?: boolean };
 
@@ -26,7 +25,7 @@ export async function downloadDocumentService(args: {
 }) {
   const { actor, contractDocumentId, wantsJson, res } = args;
 
-  const doc = await documentDownloadRepository.findByIdForCompany({
+  const doc = await contractDocumentRepository.findByIdForCompany({
     contractDocumentId,
     companyId: actor.companyId,
   });

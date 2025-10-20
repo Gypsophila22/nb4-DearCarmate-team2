@@ -1,9 +1,9 @@
-import { documentDraftsRepository } from '../repositories/document.draft.repository.js';
+import { contractDocumentRepository } from '../repositories/contractDocument.repository.js';
 
 type Actor = { id: number; companyId: number; isAdmin?: boolean };
 
 export async function getDocumentDraftsService(actor: Actor) {
-  const contracts = await documentDraftsRepository.findDraftableContracts(
+  const contracts = await contractDocumentRepository.findDraftableContracts(
     actor.companyId
   );
 

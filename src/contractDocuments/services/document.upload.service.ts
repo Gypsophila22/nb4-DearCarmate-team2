@@ -1,4 +1,4 @@
-import { documentUploadRepository } from '../repositories/document.upload.repository.js';
+import { contractDocumentRepository } from '../repositories/contractDocument.repository.js';
 import { decodeLatin1ToUtf8 } from '../../lib/filename.js';
 
 type Actor = { id: number; companyId: number; isAdmin?: boolean };
@@ -15,7 +15,7 @@ export async function documentUploadTempService(args: {
 }) {
   const originalName = decodeLatin1ToUtf8(args.file.originalname);
 
-  const doc = await documentUploadRepository.createTemp({
+  const doc = await contractDocumentRepository.createTemp({
     companyId: args.actor.companyId,
     uploaderId: args.actor.id,
     originalName,

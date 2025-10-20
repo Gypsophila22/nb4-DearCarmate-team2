@@ -1,4 +1,4 @@
-import { documentGetRepository } from '../repositories/document.get.repository.js';
+import { contractDocumentRepository } from '../repositories/contractDocument.repository.js';
 import { Prisma } from '@prisma/client';
 
 type Actor = { id: number; companyId: number; isAdmin?: boolean };
@@ -35,8 +35,8 @@ export async function getDocumentsService({
   const skip = (page - 1) * pageSize;
 
   const [totalItemCount, contracts] = await Promise.all([
-    documentGetRepository.count(where),
-    documentGetRepository.findPage({ where, skip, take: pageSize }),
+    contractDocumentRepository.count(where),
+    contractDocumentRepository.findPage({ where, skip, take: pageSize }),
   ]);
 
   const totalPages = Math.max(Math.ceil(totalItemCount / pageSize), 1);

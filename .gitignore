@@ -4,3 +4,7 @@ node_modules
 
 /generated/prisma
 /dist
+uploads/*
+!uploads/.gitkeep
+!uploads/contractDocuments/
+!uploads/contractDocuments/.gitkeep
