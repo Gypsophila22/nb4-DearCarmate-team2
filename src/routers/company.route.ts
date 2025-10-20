@@ -25,9 +25,9 @@ router.get(
    companyController.getCompany
 );
 
-// 회사별 유저 조회 (GET /companies/:companyId/users)
+// 회사별 유저 조회 (GET /companies/users)
 router.get(
-  "/:companyId/users",
+  "/users",
   passport.authenticate("jwt", { session: false }),
    companyController.getCompanyUsers
 );
