@@ -126,6 +126,19 @@ async function main() {
     skipDuplicates: true, // email이 중복되면 추가X
   });
 
+  // 회사 데이터 임시 추가.
+  const companies = [
+  { companyName: "햇살카", companyCode: "sunshine" },
+  { companyName: "케이카", companyCode: "kcar" },
+  { companyName: "굿모닝카", companyCode: "goodmorning" },
+  { companyName: "행복카", companyCode: "happy" },
+  { companyName: "믿음카", companyCode: "trust" },
+  { companyName: "신뢰카", companyCode: "reliable" },
+  { companyName: "우리카", companyCode: "ourcar" },
+  { companyName: "미래카", companyCode: "future" },
+];
+
+
   console.log('✅ Seeding 완료');
 }
 
