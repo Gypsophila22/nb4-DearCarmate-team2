@@ -11,7 +11,7 @@ export const jwtStrategy = new JwtStrategy(
   async (payload, done) => {
     try {
       const user = await prisma.users.findUnique({
-        where: { id: Number(payload.id) },
+        where: { id: payload.id },
         select: {
           id: true,
           email: true,
@@ -19,7 +19,6 @@ export const jwtStrategy = new JwtStrategy(
           isAdmin: true,
         },
       });
-
       if (!user) return done(null, false);
       return done(null, user);
     } catch (err) {
