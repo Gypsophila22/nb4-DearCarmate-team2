@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import createError from 'http-errors';
-import { TOKEN } from '../config/token.js';
+import { TOKEN } from '../config/token.const.js';
 
 type JwtPayload = { id: number; tokenVersion?: number };
 
