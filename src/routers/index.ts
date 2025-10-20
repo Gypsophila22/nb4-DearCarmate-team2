@@ -4,7 +4,7 @@ import companyRouter from './company.route.js';
 import contractRouter from './contract.route.js';
 import customersRouter from './customer.route.js';
 import userRouter from './user.route.js';
-import documentRouter from './contractDocument.route.js';
+import documentRouter from './contract-document.route.js';
 
 const routers = {
   authRouter,

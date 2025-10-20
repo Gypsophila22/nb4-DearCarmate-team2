@@ -14,14 +14,16 @@ datasource db {
 }
 
 model Users {
-  id             Int     @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   name           String
-  email          String  @unique
+  email          String   @unique
   employeeNumber String
   phoneNumber    String
-  imgUrl         String?
+  imageUrl       String?
   password       String
-  isAdmin        Boolean @default(false)
+  isAdmin        Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
 
   company           Companies           @relation(fields: [companyId], references: [id])
   companyId         Int
@@ -30,12 +32,13 @@ model Users {
 }
 
 model Companies {
-  id                Int                 @id @default(autoincrement())
-  companyName       String
-  companyCode       String              @unique
-  user              Users[]
-  Customers         Customers[]
-  contractDocuments ContractDocuments[]
+  id        Int         @id @default(autoincrement())
+  companyName      String
+  companyCode      String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt
+  user      Users[]
+  customer  Customers[]
 }
 
 model Cars {
@@ -82,9 +85,12 @@ model Customers {
   gender      Gender
   phoneNumber String
   ageGroup    AgeGroup?
+  ageGroup    AgeGroup?
   region      Region?
   email       String?
-  memo        String?
+  memo          String?
+  contractCount Int        @default(0)
+  contract      Contracts[]
 
   company   Companies   @relation(fields: [companyId], references: [id])
   companyId Int
@@ -92,8 +98,8 @@ model Customers {
 }
 
 enum Gender {
-  MALE
-  FEMALE
+  male
+  female
 }
 
 enum AgeGroup {
@@ -165,35 +171,6 @@ model Alarms {
   meetingId Int
   meeting   Meetings @relation(fields: [meetingId], references: [id], onDelete: Cascade)
 }
-
-// model ContractDocuments {
-//   id Int @id @default(autoincrement())
-
-//   // 업로드 파일 메타
-//   originalName String // 사용자가 올린 파일명
-//   storedName   String // 서버에 저장한 파일명(중복방지)
-//   mimeType     String
-//   size         Int
-//   path         String? // LOCAL일 때 경로
-//   url          String?
-
-//   // 소유/관계
-//   contractId Int
-//   contract   Contracts @relation(fields: [contractId], references: [id], onDelete: Cascade)
-
-//   uploaderId Int // 업로더
-//   uploader   Users @relation(fields: [uploaderId], references: [id])
-
-//   companyId Int // 회사 경계(질의/권한 체크 편의)
-//   company   Companies @relation(fields: [companyId], references: [id])
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   @@index([contractId])
-//   @@index([companyId])
-//   @@index([uploaderId])
-// }
 
 model ContractDocuments {
   id           Int       @id @default(autoincrement())

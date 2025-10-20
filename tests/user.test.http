@@ -1,10 +1,10 @@
 @baseUrl=http://localhost:4000
-@accessTokenName=access-token
-@accessToken={{adminLogin.response.body.accessToken}}
-@refreshTokenName=refresh-token
-@refreshToken=
 
-### 어드민 로그인
+### =====================================
+### 1) 로그인 (역할별) & 토큰 변수 바인딩
+### =====================================
+
+### [ADMIN] 로그인
 # @name adminLogin
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
@@ -14,54 +14,117 @@ Content-Type: application/json
   "password": "AdminPass123!"
 }
 
-### 회원가입
-POST {{baseUrl}}/users/register
+### [USER] 회원가입
+POST {{baseUrl}}/users
 Content-Type: application/json
 
 {
-	"name": "test",
-	"email": "email@email.com",
-	"employeeNumber": "100",
-	"phoneNumber": "01021210696",
-	"password": "aaaa1234",
-	"passwordConfirmation": "aaaa1234",
-	"companyName": "Codeit",
-	"companyCode": "CDEIT2025"
+  "name": "testman",
+  "email": "testman2@test.com",
+  "employeeNumber": "100",
+  "phoneNumber": "010-2121-0696",
+  "password": "aaaa1234",
+  "passwordConfirmation": "aaaa1234",
+  "companyName": "Codeit",
+  "companyCode": "CDEIT2025"
 }
 
-### 토큰 리프레쉬
-POST {{baseUrl}}/auth/refresh
+### [USER] 회원가입(companyCode 불일치)
+POST {{baseUrl}}/users
 Content-Type: application/json
 
 {
-    "refreshToken": "{{login.response.body.refreshToken}}"
+  "name": "testman",
+  "email": "testman3@test.com",
+  "employeeNumber": "100",
+  "phoneNumber": "010-2121-0696",
+  "password": "aaaa1234",
+  "passwordConfirmation": "aaaa1234",
+  "company": "codeit",
+  "companyCode": "CDEIT"
 }
 
-### 로그인
-# @name login
+### [USER] 로그인
+# @name userLogin
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
   "email": "testman2@test.com",
-  "password": "Test"
+  "password": "aaaa1234"
 }
 
-### 내 정보 수정 (비밀번호 변경 + 프로필 수정)
-PATCH {{baseUrl}}/users/me
+### 역할별 토큰 변수
+@adminAccessToken={{adminLogin.response.body.accessToken}}
+@adminRefreshToken={{adminLogin.response.body.refreshToken}}
+@userAccessToken={{userLogin.response.body.accessToken}}
+@userRefreshToken={{userLogin.response.body.refreshToken}}
+
+### =====================================
+### 2) 리프레시 (역할별)
+### =====================================
+
+### [ADMIN] 토큰 리프레쉬
+POST {{baseUrl}}/auth/refresh
 Content-Type: application/json
 
-Authorization: Bearer {{login.response.body.$.accessToken}}
+{
+  "refreshToken": "{{adminRefreshToken}}"
+}
+
+### [USER] 토큰 리프레쉬
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{userRefreshToken}}"
+}
+
+### =====================================
+### 3) 자기 정보 (역할별로 분리 테스트)
+###    - 같은 엔드포인트도 어떤 토큰을 쓰느냐로 역할 검증 가능
+### =====================================
+
+### [ADMIN] 내 정보 조회
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{adminAccessToken}}
+
+### [USER] 내 정보 조회
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{userAccessToken}}
+
+### [ADMIN] 내 정보 수정 (예시)
+PATCH {{baseUrl}}/users/me
+Authorization: Bearer {{adminAccessToken}}
+Content-Type: application/json
+
+{
+  "employeeNumber": "900",
+  "phoneNumber": "01011112222",
+  "currentPassword": "AdminPass123!",
+  "password": "AdminPass123!_NEW",
+  "passwordConfirmation": "AdminPass123!_NEW",
+  "imageUrl": "https://example.com/admin.png"
+}
+
+### [USER] 내 정보 수정 (비밀번호 변경 + 프로필 수정)
+PATCH {{baseUrl}}/users/me
+Authorization: Bearer {{userAccessToken}}
+Content-Type: application/json
 
 {
   "employeeNumber": "200",
   "phoneNumber": "01099998888",
-  "currentPassword": "Test",
+  "currentPassword": "aaaa1234",
   "password": "NewPass123!",
   "passwordConfirmation": "NewPass123!",
-  "imgUrl": "https://example.com/profile.png"
+  "imageUrl": "https://example.com/profile.png"
 }
 
-### 유저 삭제 (회원 탈퇴)
+### [ADMIN] 유저 삭제 (회원 탈퇴)
 DELETE {{baseUrl}}/users/me
-Authorization: Bearer {{login.response.body.$.accessToken}}
+Authorization: Bearer {{adminAccessToken}}
+
+### [USER] 유저 삭제 (본인 계정 삭제 테스트용)
+DELETE {{baseUrl}}/users/me
+Authorization: Bearer {{userAccessToken}}

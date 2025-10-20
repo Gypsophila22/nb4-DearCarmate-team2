@@ -1,7 +1,7 @@
-import { downloadDocumentService } from './document.download.service.js';
-import { getDocumentDraftsService } from './document.draft.service.js';
-import { getDocumentsService } from './document.get.service.js';
-import { documentUploadTempService } from './document.upload.service.js';
+import { downloadDocumentService } from './contract-document.download.service.js';
+import { getDocumentDraftsService } from './contract-document.draft.service.js';
+import { getDocumentsService } from './contract-document.get.service.js';
+import { documentUploadTempService } from './contract-document.upload.service.js';
 
 const documentService = {
   downloadDocumentService,

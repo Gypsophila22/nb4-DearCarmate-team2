@@ -1,7 +1,7 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import type { Cars } from "../../../generated/prisma/index.js";
-import type { CreateCarsResponseDto } from "../dtos/createCarsResponseDto.js";
+import type { Cars } from '../../../generated/prisma/index.js';
+import type { CreateCarsResponseDto } from '../dtos/createCarsResponseDto.js';
 
 /**
  * Cars 객체와 관련 carModel(제조사, 모델명, 타입) 정보를 받아
@@ -11,7 +11,7 @@ import type { CreateCarsResponseDto } from "../dtos/createCarsResponseDto.js";
 export const createCarsSerialize = (
   car: Cars & {
     carModel: { id: number; type: string; manufacturer: string; model: string };
-  }
+  },
 ): z.infer<typeof CreateCarsResponseDto> => ({
   id: car.id,
   carNumber: car.carNumber,

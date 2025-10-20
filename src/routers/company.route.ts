@@ -1,44 +1,48 @@
-import express from "express";
-import passport from "passport";
-
-import postCompany from "../companies/controllers/postCompany.js";
-import getCompany from "../companies/controllers/getCompany.js";
-import patchCompany from "../companies/controllers/patchCompany.js";
-import deleteCompany from "../companies/controllers/deleteCompany.js";
-import getCompanyUsers from "../companies/controllers/getCompanyUsers.js";
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from 'express';
+import passport from 'passport';
+import companyController from '../companies/controllers/index.js';
 
 const router = express.Router();
 
-// 회사 등록
+//console.log("companyController 확인:", companyController);
+
+// 회사 등록 (POST /companies)1
 router.post(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  postCompany.createCompany
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  companyController.createCompany,
 );
 
-// 회사 목록 조회
+// 회사 목록 조회 (GET /companies)
 router.get(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  getCompany.getCompany
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  companyController.getCompany,
 );
 
+// 회사별 유저 조회 (GET /companies/users)
 router.get(
-  "/:companyId/users",
-  passport.authenticate("jwt", { session: false }),
-  getCompanyUsers.getCompanyUsers
+  '/users',
+  passport.authenticate('jwt', { session: false }),
+  companyController.getCompanyUsers,
 );
 
-// 회사 수정 & 삭제 (체인으로)
-router
-  .route("/:companyId")
-  .patch(
-    passport.authenticate("jwt", { session: false }),
-    patchCompany.updateCompany
-  )
-  .delete(
-    passport.authenticate("jwt", { session: false }),
-    deleteCompany.deleteCompany
-  );
+// 회사 수정 (PATCH /companies/:companyId)
+router.patch(
+  '/:companyId',
+  passport.authenticate('jwt', { session: false }),
+  companyController.updateCompany,
+);
+
+// 회사 삭제 (DELETE /companies/:companyId)
+router.delete(
+  '/:companyId',
+  passport.authenticate('jwt', { session: false }),
+  companyController.deleteCompany,
+);
 
 export default router;
