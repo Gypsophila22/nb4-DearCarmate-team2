@@ -18,7 +18,7 @@ export async function getDocumentsService({
   searchBy,
   keyword,
 }: GetContractDocumentsArgs) {
-  // 회사 경계
+  // 회사
   const baseWhere: Prisma.ContractsWhereInput = {
     user: { companyId: actor.companyId },
   };

@@ -19,7 +19,7 @@ function absPathOrDefault(relPath: string | null | undefined, stored: string) {
 
 export async function downloadDocumentService(args: {
   actor: Actor;
-  contractDocumentId: number; // ← 이름 통일
+  contractDocumentId: number;
   wantsJson: boolean;
   res: Response;
 }) {
@@ -59,6 +59,6 @@ export async function downloadDocumentService(args: {
   res.setHeader('Content-Disposition', contentDisposition(filename));
 
   const stream = createReadStream(full);
-  stream.on('error', (e) => res.destroy(e as Error));
+  stream.on('error', (e) => res.destroy(e));
   stream.pipe(res);
 }
