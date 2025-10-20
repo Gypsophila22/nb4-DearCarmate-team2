@@ -10,47 +10,46 @@ export const getCustomers = async (req: Request, res: Response) => {
         }
 
         // 페이지네이션 추가
-        const page = parseInt(req.query.page as string) || 1;
-        const limit = parseInt(req.query.limit as string) || 10;
-        const skip = (page - 1) * limit;
-        const { name, email } = req.query;
-        
+        const page = parseInt(String(req.query.page) || '1');
+        const pageSize = parseInt(String(req.query.pageSize) || '10', 10);
+        const skip = (page - 1) * pageSize;
+        const { searchBy, keyword } = req.query;
+
         const where: Prisma.CustomersWhereInput = {
             companyId: companyId,
         };
 
-        if (name) {
-            where.name = {
-                contains: name as string,
-            };
-        }
-        
-        if (email) {
-            where.email = {
-                contains: email as string,
-            };
+        if (searchBy && keyword) {
+            const searchByString = String(searchBy);
+            const keywordString = String(keyword);
+            if (searchByString === 'name') {
+                where.name = {
+                    contains: keywordString,
+                };
+            } else if (searchByString === 'email') {
+                where.email = {
+                    contains: keywordString,
+                };
+            }
         }
 
         const customers = await prisma.customers.findMany({
             where,
-            take: limit,
+            take: pageSize,
             skip: skip,
         });
-        // 전체 데이터를 조회하여 총 페이지 수 계산
+
         const totalCustomers = await prisma.customers.count({
             where,
         });
 
-        const totalPages = Math.ceil(totalCustomers / limit);
-        // 페이지네이션 정보를 포함하여 응답
+        const totalPages = Math.ceil(totalCustomers / pageSize);
+
         res.status(200).json({
-            customers,
-            pagination: {
-                totalItems: totalCustomers,
-                totalPages,
-                currentPage: page,
-                pageSize: limit,
-            },
+            data: customers,
+            currentPage: page,
+            totalPages,
+
         });
 
     }   catch (error) {
@@ -58,4 +57,3 @@ export const getCustomers = async (req: Request, res: Response) => {
         res.status(500).json({ message: '서버 내부 오류가 발생하였습니다.' });
     }
 };
-  
