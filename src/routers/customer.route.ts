@@ -23,7 +23,7 @@ customersRouter.get("/", validate(customerValidation.getCustomersSchema), getCus
 customersRouter.post("/", createCustomer);
 
 // 고객 상세 정보 조회
-customersRouter.get("/:id", getCustomerById);
+customersRouter.get("/:id", validate(customerValidation.getCustomerByIdSchema), getCustomerById);
 
 // 고객 수정
 customersRouter.patch("/:id", updateCustomer);
