@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import prisma from "../../config/prisma.js";
+import prisma from "../../lib/prisma.js";
 import createHttpError from "http-errors";
 
 async function createCompany(req: Request, res: Response, next: NextFunction) {

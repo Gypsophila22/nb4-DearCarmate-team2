@@ -23,12 +23,6 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(requestLogger);
 
-<<<<<<< HEAD
-app.use("/auth", routers.authRotuer);
-app.use("/users", routers.userRouter);
-app.use("/cars", routers.carRouter);
-app.use("/companies", routers.companyRouter);
-=======
 //테스트 용으로 만들어놓은 cors입니다.
 app.use(
   cors({

@@ -1,4 +1,4 @@
-import prisma from "../../config/prisma.js";
+import prisma from "../../lib/prisma.js";
 import { companyRepository } from "../repositories/companyRepository.js";
 import createHttpError from "http-errors";
 
