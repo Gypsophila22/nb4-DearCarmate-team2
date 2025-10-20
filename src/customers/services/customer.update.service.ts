@@ -3,7 +3,11 @@ import type { UpdateCustomerBody } from '../schemas/customers.schema.js';
 import createError from 'http-errors';
 
 export const customerUpdateService = {
-  updateCustomer: async (id: number, data: UpdateCustomerBody, companyId: number) => {
+  updateCustomer: async (
+    id: number,
+    data: UpdateCustomerBody,
+    companyId: number,
+  ) => {
     const updated = await customerRepository.update(id, data, companyId);
 
     if (updated.count === 0) {

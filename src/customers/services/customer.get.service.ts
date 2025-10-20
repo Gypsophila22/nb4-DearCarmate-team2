@@ -7,19 +7,19 @@ export const customerGetService = {
     page: number,
     pageSize: number,
     searchBy?: 'name' | 'email',
-    keyword?: string
+    keyword?: string,
   ) => {
     const { customers, totalCustomers } = await customerRepository.findMany(
       companyId,
       page,
       pageSize,
       searchBy,
-      keyword
+      keyword,
     );
 
     const totalPages = Math.ceil(totalCustomers / pageSize);
 
-    const mappedCustomers = customers.map(customer => ({
+    const mappedCustomers = customers.map((customer) => ({
       ...customer,
       ageGroup: mapAgeGroupToKorean(customer.ageGroup),
     }));

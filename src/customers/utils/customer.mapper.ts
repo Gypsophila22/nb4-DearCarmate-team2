@@ -11,7 +11,9 @@ export const ageGroupMap: Record<AgeGroup, string> = {
   [AgeGroup.GENERATION_80]: '80대',
 };
 
-export function mapAgeGroupToKorean(ageGroup: AgeGroup | null | undefined): string | null {
+export function mapAgeGroupToKorean(
+  ageGroup: AgeGroup | null | undefined,
+): string | null {
   if (!ageGroup) {
     return null;
   }

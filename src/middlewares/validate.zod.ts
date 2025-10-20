@@ -10,7 +10,7 @@ export const validate =
         params: req.params,
         query: req.query,
       });
-      (req as any).validated = parsed;
+      req.validated = parsed;
       next();
     } catch (e) {
       if (e instanceof ZodError) {

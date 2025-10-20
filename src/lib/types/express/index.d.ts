@@ -5,6 +5,11 @@ declare global {
       email: string;
       name: string;
       isAdmin: boolean;
+      companyId: number;
+    }
+
+    interface Request {
+      validated: any;
     }
   }
 }

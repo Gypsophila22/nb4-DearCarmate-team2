@@ -1,6 +1,10 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../../lib/prisma.ts';
-import type { CreateCustomerBody, UpdateCustomerBody, CustomerCsvRow } from '../schemas/customers.schema.js';
+import type {
+  CreateCustomerBody,
+  UpdateCustomerBody,
+  CustomerCsvRow,
+} from '../schemas/customers.schema.js';
 
 export const customerRepository = {
   findMany: async (
@@ -8,7 +12,7 @@ export const customerRepository = {
     page: number,
     pageSize: number,
     searchBy?: 'name' | 'email',
-    keyword?: string
+    keyword?: string,
   ) => {
     const where: Prisma.CustomersWhereInput = {
       companyId,

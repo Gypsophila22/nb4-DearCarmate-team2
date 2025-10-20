@@ -1,4 +1,11 @@
-import { getCustomersSchema, createCustomerSchema, updateCustomerSchema, deleteCustomerSchema, getCustomerByIdSchema, customerCsvRowSchema } from './customers.schema.js';
+import {
+  getCustomersSchema,
+  createCustomerSchema,
+  updateCustomerSchema,
+  deleteCustomerSchema,
+  getCustomerByIdSchema,
+  customerCsvRowSchema,
+} from './customers.schema.js';
 
 export const customerValidation = {
   getCustomersSchema,

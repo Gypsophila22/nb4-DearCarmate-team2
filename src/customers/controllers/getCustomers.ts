@@ -6,7 +6,7 @@ import type { GetCustomersQuery } from '../schemas/customers.schema.js';
 export const getCustomers = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const companyId = req.user?.companyId;
@@ -14,14 +14,14 @@ export const getCustomers = async (
       throw createError(401, '인증된 사용자 정보가 없습니다.');
     }
 
-    const { query } = (req as any).validated as { query: GetCustomersQuery };
+    const { query } = req.validated as { query: GetCustomersQuery };
 
     const result = await customerGetService.getCustomers(
       companyId,
       query.page,
       query.pageSize,
       query.searchBy,
-      query.keyword
+      query.keyword,
     );
 
     return res.status(200).json(result);

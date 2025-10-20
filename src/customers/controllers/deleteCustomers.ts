@@ -6,7 +6,7 @@ import type { DeleteCustomerParams } from '../schemas/customers.schema.js';
 export const deleteCustomer = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const companyId = req.user?.companyId;
@@ -14,9 +14,14 @@ export const deleteCustomer = async (
       throw createError(401, '인증된 사용자 정보가 없습니다.');
     }
 
-    const { params } = (req as any).validated as { params: DeleteCustomerParams };
+    const { params } = req.validated as {
+      params: DeleteCustomerParams;
+    };
 
-    const result = await customerDeleteService.deleteCustomer(params.id, companyId);
+    const result = await customerDeleteService.deleteCustomer(
+      params.id,
+      companyId,
+    );
 
     return res.status(200).json(result);
   } catch (error) {

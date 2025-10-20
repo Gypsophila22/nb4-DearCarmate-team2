@@ -6,7 +6,7 @@ import type { GetCustomerByIdParams } from '../schemas/customers.schema.js';
 export const getCustomerById = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const companyId = req.user?.companyId;
@@ -14,9 +14,14 @@ export const getCustomerById = async (
       throw createError(401, '인증된 사용자 정보가 없습니다.');
     }
 
-    const { params } = (req as any).validated as { params: GetCustomerByIdParams };
+    const { params } = req.validated as {
+      params: GetCustomerByIdParams;
+    };
 
-    const customer = await customerGetByIdService.getCustomerById(params.id, companyId);
+    const customer = await customerGetByIdService.getCustomerById(
+      params.id,
+      companyId,
+    );
 
     return res.status(200).json(customer);
   } catch (error) {

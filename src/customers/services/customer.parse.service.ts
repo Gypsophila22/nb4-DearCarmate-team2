@@ -7,7 +7,11 @@ import { customerCsvRowSchema } from '../schemas/customers.schema.js';
 export const customerParseService = {
   async parseAndValidateCsv(buffer: Buffer) {
     const results: z.infer<typeof customerCsvRowSchema>[] = [];
-    const errors: { row: number; data: any; errors: z.ZodIssue[] }[] = [];
+    const errors: {
+      row: number;
+      data: Record<string, string>;
+      errors: z.ZodIssue[];
+    }[] = [];
     let rowNumber = 1;
 
     const stream = Readable.from(buffer);
@@ -33,5 +37,5 @@ export const customerParseService = {
     });
 
     return { results, errors };
-  }
+  },
 };
