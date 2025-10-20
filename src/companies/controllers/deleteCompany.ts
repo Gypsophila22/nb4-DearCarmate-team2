@@ -1,9 +1,11 @@
+import type { Request, Response, NextFunction } from "express";
 import prisma from '../../lib/prisma.js';
 import { companyRepository } from '../repositories/companyRepository.js';
 import createHttpError from 'http-errors';
+import type { responseEncoding } from "axios";
 
 // ----- 컨트롤러 -----
-const deleteCompany = async (req, res, next) => {
+const deleteCompany = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { companyId } = req.params;
 

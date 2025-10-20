@@ -1,8 +1,9 @@
+import type { Request, Response, NextFunction } from "express";
 import prisma from '../../lib/prisma.js';
 import { companyRepository } from '../repositories/companyRepository.js';
 import createHttpError from 'http-errors';
 
-const patchCompany = async (req, res, next) => {
+const patchCompany = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { companyId } = req.params;
     const { companyName, companyCode } = req.body;
