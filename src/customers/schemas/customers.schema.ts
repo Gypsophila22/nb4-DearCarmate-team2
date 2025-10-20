@@ -49,6 +49,15 @@ export const getCustomerByIdSchema = z.object({
   }),
 });
 
+export const customerCsvRowSchema = z.object({
+    고객명: z.string().min(1, '고객명은 필수입니다.'),
+    성별: z.enum(['MALE', 'FEMALE'], { message: '성별은 MALE 또는 FEMALE이어야 합니다.'}),
+    연락처: z.string().regex(/^\d{2,4}-\d{3,4}-\d{4}$|^\d{9,11}$/, '유효한 연락처 형식이 아닙니다.'),
+    연령대: z.string().optional(), // '20대', '30대' 등등
+    이메일: z.string().email('유효한 이메일 형식이 아닙니다.').optional(),
+    메모: z.string().optional(),
+});
+
 
 export type GetCustomersQuery = z.infer<typeof getCustomersSchema>['query'];
 export type CreateCustomerBody = z.infer<typeof createCustomerSchema>['body'];
@@ -56,3 +65,4 @@ export type UpdateCustomerParams = z.infer<typeof updateCustomerSchema>['params'
 export type UpdateCustomerBody = z.infer<typeof updateCustomerSchema>['body'];
 export type DeleteCustomerParams = z.infer<typeof deleteCustomerSchema>['params'];
 export type GetCustomerByIdParams = z.infer<typeof getCustomerByIdSchema>['params'];
+export type CustomerCsvRow = z.infer<typeof customerCsvRowSchema>;
