@@ -20,16 +20,16 @@ customersRouter.use(protect);
 customersRouter.get("/", validate(customerValidation.getCustomersSchema), getCustomers);
 
 // 고객 등록
-customersRouter.post("/", createCustomer);
+customersRouter.post("/", validate(customerValidation.createCustomerSchema), createCustomer);
 
 // 고객 상세 정보 조회
 customersRouter.get("/:id", validate(customerValidation.getCustomerByIdSchema), getCustomerById);
 
 // 고객 수정
-customersRouter.patch("/:id", updateCustomer);
+customersRouter.patch("/:id", validate(customerValidation.updateCustomerSchema), updateCustomer);
 
 // 고객 삭제
-customersRouter.delete("/:id", deleteCustomer);
+customersRouter.delete("/:id", validate(customerValidation.deleteCustomerSchema), deleteCustomer);
 
 // 고객 CSV 대용량 업로드
 customersRouter.post("/upload", upload.single('csvfile'), uploadCustomers);
