@@ -43,9 +43,16 @@ export const deleteCustomerSchema = z.object({
   }),
 });
 
+export const getCustomerByIdSchema = z.object({
+  params: z.object({
+    id: z.string().transform(val => parseInt(val, 10)),
+  }),
+});
+
 
 export type GetCustomersQuery = z.infer<typeof getCustomersSchema>['query'];
 export type CreateCustomerBody = z.infer<typeof createCustomerSchema>['body'];
 export type UpdateCustomerParams = z.infer<typeof updateCustomerSchema>['params'];
 export type UpdateCustomerBody = z.infer<typeof updateCustomerSchema>['body'];
 export type DeleteCustomerParams = z.infer<typeof deleteCustomerSchema>['params'];
+export type GetCustomerByIdParams = z.infer<typeof getCustomerByIdSchema>['params'];
