@@ -8,6 +8,8 @@ import {
 } from "../customers/controllers/index.js";
 import { protect } from "../middlewares/auth.js"; // 인증 미들웨어
 import { uploadCustomers, upload } from "../customers/controllers/uploadCustomers.js";
+import { validate } from '../middlewares/validate.zod.js';
+import customerValidation from '../customers/schemas/index.js';
 
 const customersRouter = Router();
 
@@ -15,7 +17,7 @@ const customersRouter = Router();
 customersRouter.use(protect);
 
 // 고객 목록 조회
-customersRouter.get("/", getCustomers);
+customersRouter.get("/", validate(customerValidation.getCustomersSchema), getCustomers);
 
 // 고객 등록
 customersRouter.post("/", createCustomer);
