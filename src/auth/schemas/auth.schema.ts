@@ -9,16 +9,16 @@ const authLogin = z
   })
   .strict();
 
-export function authLoginSchema(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  const result = authLogin.safeParse(req.body);
+class AuthSchema {
+  authLoginSchema(req: Request, res: Response, next: NextFunction) {
+    const result = authLogin.safeParse(req.body);
 
-  if (result.success) {
-    return next();
-  } else {
-    return next(createError(400, `잘못된 입력값입니다.`));
+    if (result.success) {
+      return next();
+    } else {
+      return next(createError(400, `잘못된 입력값입니다.`));
+    }
   }
 }
+
+export const authSchema = new AuthSchema();

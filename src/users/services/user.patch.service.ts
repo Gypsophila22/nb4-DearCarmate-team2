@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import createError from 'http-errors';
 import { Prisma } from '@prisma/client';
-import { userPatchRepository } from '../repositories/user.patch.repository.js';
+import { userRepository } from '../repositories/user.repository.js';
 
 type UserPatchFields = Partial<
   Pick<
@@ -23,7 +23,7 @@ export const userPatchService = {
     }
   ) {
     // 유저 조회
-    const user = await userPatchRepository.findById(userId);
+    const user = await userRepository.findById(userId);
     if (!user) throw createError(404, '존재하지 않는 유저입니다.');
 
     // 현재 비밀번호 검증 (항상 요구)
@@ -48,7 +48,7 @@ export const userPatchService = {
       ...(hashedPassword ? { password: hashedPassword } : {}),
     } satisfies UserPatchFields;
 
-    const updated = await userPatchRepository.updateById(user.id, dataToUpdate);
+    const updated = await userRepository.updateById(user.id, dataToUpdate);
     const { password: _pw, ...safeUser } = updated;
     return safeUser;
   },

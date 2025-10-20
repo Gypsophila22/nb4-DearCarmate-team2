@@ -1,6 +1,6 @@
 import createError from 'http-errors';
 import { Prisma } from '@prisma/client';
-import { userDeleteRepository } from '../repositories/user.delete.repository.js';
+import { userRepository } from '../repositories/user.repository.js';
 
 function mapPrismaDeleteError(e: unknown) {
   if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -15,11 +15,11 @@ function mapPrismaDeleteError(e: unknown) {
 export const userDeleteService = {
   /** 본인 삭제 */
   async deleteMe(userId: number) {
-    const user = await userDeleteRepository.findById(userId);
+    const user = await userRepository.findById(userId);
     if (!user) throw createError(404, '존재하지 않는 유저입니다.');
 
     try {
-      await userDeleteRepository.deleteById(user.id);
+      await userRepository.deleteById(user.id);
     } catch (e: unknown) {
       mapPrismaDeleteError(e);
     }
@@ -28,11 +28,11 @@ export const userDeleteService = {
 
   /** 관리자에 의한 타 사용자 삭제 */
   async deleteByAdmin(targetUserId: number) {
-    const user = await userDeleteRepository.findById(targetUserId);
+    const user = await userRepository.findById(targetUserId);
     if (!user) throw createError(404, '존재하지 않는 유저입니다.');
 
     try {
-      await userDeleteRepository.deleteById(targetUserId);
+      await userRepository.deleteById(targetUserId);
     } catch (e: unknown) {
       mapPrismaDeleteError(e);
     }

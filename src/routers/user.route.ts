@@ -1,19 +1,28 @@
 import express from 'express';
 import passports from '../lib/passport/index.js';
 
-import C from '../users/controllers/index.js';
-import V from '../users/schemas/index.js';
+import { userController } from '../users/controllers/user.controller.js';
+import { userSchema } from '../users/schemas/user.schema.js';
 
 const router = express.Router();
 
-router.post('/', V.userRegisterSchema, C.postRegister);
+router.post('/', userSchema.userRegisterSchema, userController.postRegister);
 
 router
   .route('/me')
-  .get(passports.jwtAuth, C.getMe)
-  .patch(passports.jwtAuth, V.userPatchSchema, C.patchUser)
-  .delete(passports.jwtAuth, C.deleteMe);
+  .get(passports.jwtAuth, userController.getMe)
+  .patch(
+    passports.jwtAuth,
+    userSchema.userPatchSchema,
+    userController.patchUser
+  )
+  .delete(passports.jwtAuth, userController.deleteMe);
 
-router.delete('/:id', passports.jwtAuth, V.userDeleteParamSchema, C.deleteUser);
+router.delete(
+  '/:id',
+  passports.jwtAuth,
+  userSchema.userDeleteParamSchema,
+  userController.deleteUser
+);
 
 export default router;

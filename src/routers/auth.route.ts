@@ -1,6 +1,6 @@
 import express from 'express';
-import authController from '../auth/controllers/index.js';
-import authSchema from '../auth/schemas/index.js';
+import { authController } from '../auth/controllers/auth.controller.js';
+import { authSchema } from '../auth/schemas/auth.schema.js';
 
 const router = express.Router();
 
