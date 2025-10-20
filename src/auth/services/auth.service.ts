@@ -20,7 +20,7 @@ export const authService = {
     const accessToken = jwt.sign(
       { id: user.id, email: user.email },
       ACCESS_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '1h' },
     );
     const refreshToken = jwt.sign({ id: user.id }, REFRESH_SECRET, {
       expiresIn: '7d',

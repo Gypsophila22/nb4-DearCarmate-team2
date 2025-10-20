@@ -5,7 +5,7 @@ import { userPatchService } from '../services/user.patch.service.js';
 export async function patchUser(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     if (!req.user) throw createError(401, '로그인이 필요합니다.');

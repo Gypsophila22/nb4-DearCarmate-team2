@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 function fileFilter(
   _req: Express.Request,
   file: Express.Multer.File,
-  cb: multer.FileFilterCallback
+  cb: multer.FileFilterCallback,
 ) {
   // 허용 확장자 (jpeg, png, webp, gif)
   const ok = /image\/(jpeg|png|webp|gif)/.test(file.mimetype);

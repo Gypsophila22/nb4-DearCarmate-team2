@@ -11,7 +11,7 @@ export const userPatchRepository = {
       phoneNumber: string;
       imageUrl: string | null;
       password: string;
-    }>
+    }>,
   ) {
     return prisma.users.update({
       where: { id },

@@ -5,9 +5,9 @@ import { deleteCustomer } from './deleteCustomers.js';
 import { getCustomerById } from './getCustomerById.js';
 
 export {
-    createCustomer,
-    getCustomers,
-    updateCustomer,
-    deleteCustomer,
-    getCustomerById
+  createCustomer,
+  getCustomers,
+  updateCustomer,
+  deleteCustomer,
+  getCustomerById,
 };

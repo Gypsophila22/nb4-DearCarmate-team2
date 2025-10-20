@@ -77,7 +77,7 @@ const userPatchSchema = z
 export function validatedUserPatch(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const result = userPatchSchema.safeParse(req.body);
 

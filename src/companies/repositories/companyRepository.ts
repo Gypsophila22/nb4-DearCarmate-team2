@@ -1,14 +1,21 @@
+<<<<<<< HEAD
 import prisma from "../../lib/prisma.js";
+=======
+import prisma from '../../lib/prisma.js';
+>>>>>>> develop
 
 export const companyRepository = {
   // 회사 수정
-  async updateCompanyById(companyId: number, data: { companyName: string; companyCode: string }) {
+  async updateCompanyById(
+    companyId: number,
+    data: { companyName: string; companyCode: string },
+  ) {
     // 1️⃣ 존재 여부 확인
     const exist = await prisma.companies.findUnique({
       where: { id: companyId },
     });
     if (!exist) {
-      throw new Error("존재하지 않는 회사입니다");
+      throw new Error('존재하지 않는 회사입니다');
     }
 
     // 2️⃣ 실제 수정 실행
@@ -40,6 +47,6 @@ export const companyRepository = {
       where: { id: companyId },
     });
 
-    return { message: "회사 삭제 성공" };
+    return { message: '회사 삭제 성공' };
   },
 };
