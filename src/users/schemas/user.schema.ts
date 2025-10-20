@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 export const userDeleteParamSchema = z
   .object({
-    id: z.coerce.number(),
+    id: z.coerce.number().min(1, { message: 'id는 1 이상의 정수여야 합니다.' }),
   })
   .strict();
 
