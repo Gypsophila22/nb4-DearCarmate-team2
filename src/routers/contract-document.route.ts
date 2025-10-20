@@ -1,6 +1,6 @@
 import express from 'express';
 import passports from '../lib/passport/index.js';
-import { uploadContract } from '../lib/document.upload.js';
+import { uploadContract } from '../lib/contract-document.upload.js';
 
 import { contractDocumentSchema } from '../contractDocuments/schemas/contract-document.schema.js';
 import { contractDocumentController } from '../contractDocuments/controllers/contract-document.controller.js';

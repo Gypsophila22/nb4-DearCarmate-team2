@@ -9,7 +9,7 @@ export function addPendingUpload(userId: number, docId: number) {
 }
 export function takeRecentPendingUploads(
   userId: number,
-  ttlMs = 2 * 60 * 1000
+  ttlMs = 2 * 60 * 1000,
 ): number[] {
   const now = Date.now();
   const list = pendingByUser.get(userId) ?? [];

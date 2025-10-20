@@ -1,6 +1,7 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import createError from 'http-errors';
 
 const contractsDir = path.join(process.cwd(), 'uploads', 'contractDocuments');
 fs.mkdirSync(contractsDir, { recursive: true });
@@ -19,7 +20,11 @@ export const uploadContract = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
   fileFilter: (_req, file, cb) => {
     if (file.mimetype === 'application/pdf') return cb(null, true);
-    if (file.mimetype.startsWith('image/')) return cb(null, true);
-    cb(new Error('허용되지 않는 파일 형식입니다. (pdf, image/*)'));
+    cb(
+      createError(
+        400,
+        '허용되지 않는 파일 형식입니다. pdf파일을 업로드해 주세요.',
+      ),
+    );
   },
 });
