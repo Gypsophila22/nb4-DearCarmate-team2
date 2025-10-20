@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../../lib/prisma.js';
-import type { CreateCustomerBody, UpdateCustomerBody } from '../schemas/customers.schema.js';
+import type { CreateCustomerBody, UpdateCustomerBody, CustomerCsvRow } from '../schemas/customers.schema.js';
 
 export const customerRepository = {
   findMany: async (
@@ -77,6 +77,44 @@ export const customerRepository = {
       where: {
         id,
         companyId,
+      },
+    });
+  },
+
+  findByEmail: async (email: string) => {
+    return prisma.customers.findUnique({ where: { email } });
+  },
+
+  findByPhoneNumber: async (phoneNumber: string) => {
+    return prisma.customers.findUnique({ where: { phoneNumber } });
+  },
+
+  createFromCsv: async (data: CustomerCsvRow, companyId: number) => {
+    return prisma.customers.create({
+      data: {
+        name: data.고객명,
+        gender: data.성별,
+        phoneNumber: data.연락처,
+        ageGroup: data.연령대,
+        email: data.이메일,
+        memo: data.메모,
+        company: {
+          connect: { id: companyId },
+        },
+      },
+    });
+  },
+
+  updateFromCsv: async (id: number, data: CustomerCsvRow) => {
+    return prisma.customers.update({
+      where: { id },
+      data: {
+        name: data.고객명,
+        gender: data.성별,
+        phoneNumber: data.연락처,
+        ageGroup: data.연령대,
+        email: data.이메일,
+        memo: data.메모,
       },
     });
   },
