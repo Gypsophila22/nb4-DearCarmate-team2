@@ -32,11 +32,11 @@ app.use(
 );
 app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 
-app.use('/auth', routers.authRotuer);
+app.use('/auth', routers.authRouter);
 app.use('/users', routers.userRouter);
 app.use('/cars', routers.carRouter);
 app.use('/admin', routers.companyRouter);
-app.use('/images', routers.imgaeRouter);
+app.use('/images', routers.imageRouter);
 
 // customer 라우터는 별도로 추가합니다.
 app.use('/customers', routers.customersRouter);
