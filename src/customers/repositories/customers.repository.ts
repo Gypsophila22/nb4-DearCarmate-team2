@@ -40,4 +40,13 @@ export const customerRepository = {
 
     return { customers, totalCustomers };
   },
+
+  findById: async (id: number, companyId: number) => {
+    return prisma.customers.findFirst({
+      where: {
+        id,
+        companyId,
+      },
+    });
+  },
 };
