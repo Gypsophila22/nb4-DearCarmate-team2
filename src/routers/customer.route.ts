@@ -6,8 +6,11 @@ import {
   deleteCustomer,
   getCustomerById,
 } from "../customers/controllers/index.js";
-import { uploadCustomers, upload } from "../customers/controllers/uploadCustomers.js";
-import passports from '../lib/passport/index.js';
+import {
+  uploadCustomers,
+  upload,
+} from "../customers/controllers/uploadCustomers.js";
+import passports from "../lib/passport/index.js";
 
 const customersRouter = Router();
 
@@ -30,6 +33,6 @@ customersRouter.patch("/:id", updateCustomer);
 customersRouter.delete("/:id", deleteCustomer);
 
 // 고객 CSV 대용량 업로드
-customersRouter.post("/upload", upload.single('csvfile'), uploadCustomers);
+customersRouter.post("/upload", upload.single("csvfile"), uploadCustomers);
 
 export default customersRouter;
