@@ -8,12 +8,12 @@ export const getCustomers = async (req: Request, res: Response) => {
     if (!companyId) {
       return res
         .status(401)
-        .json({ message: "인증된 사용자 정보가 없습니다." });
+        .json({ message: '인증된 사용자 정보가 없습니다.' });
     }
 
     // 페이지네이션 추가
-    const page = parseInt(String(req.query.page) || "1");
-    const pageSize = parseInt(String(req.query.pageSize) || "10", 10);
+    const page = parseInt(String(req.query.page) || '1');
+    const pageSize = parseInt(String(req.query.pageSize) || '10', 10);
     const skip = (page - 1) * pageSize;
     const { searchBy, keyword } = req.query;
 
@@ -24,11 +24,11 @@ export const getCustomers = async (req: Request, res: Response) => {
     if (searchBy && keyword) {
       const searchByString = String(searchBy);
       const keywordString = String(keyword);
-      if (searchByString === "name") {
+      if (searchByString === 'name') {
         where.name = {
           contains: keywordString,
         };
-      } else if (searchByString === "email") {
+      } else if (searchByString === 'email') {
         where.email = {
           contains: keywordString,
         };
@@ -54,6 +54,6 @@ export const getCustomers = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "서버 내부 오류가 발생하였습니다." });
+    res.status(500).json({ message: '서버 내부 오류가 발생하였습니다.' });
   }
 };

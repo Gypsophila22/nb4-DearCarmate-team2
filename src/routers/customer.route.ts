@@ -1,16 +1,16 @@
-import { Router } from "express";
+import { Router } from 'express';
 import {
   createCustomer,
   getCustomers,
   updateCustomer,
   deleteCustomer,
   getCustomerById,
-} from "../customers/controllers/index.js";
+} from '../customers/controllers/index.js';
 import {
   uploadCustomers,
   upload,
-} from "../customers/controllers/uploadCustomers.js";
-import passports from "../lib/passport/index.js";
+} from '../customers/controllers/uploadCustomers.js';
+import passports from '../lib/passport/index.js';
 
 const customersRouter = Router();
 
@@ -18,21 +18,21 @@ const customersRouter = Router();
 customersRouter.use(passports.jwtAuth);
 
 // 고객 목록 조회
-customersRouter.get("/", getCustomers);
+customersRouter.get('/', getCustomers);
 
 // 고객 등록
-customersRouter.post("/", createCustomer);
+customersRouter.post('/', createCustomer);
 
 // 고객 상세 정보 조회
-customersRouter.get("/:id", getCustomerById);
+customersRouter.get('/:id', getCustomerById);
 
 // 고객 수정
-customersRouter.patch("/:id", updateCustomer);
+customersRouter.patch('/:id', updateCustomer);
 
 // 고객 삭제
-customersRouter.delete("/:id", deleteCustomer);
+customersRouter.delete('/:id', deleteCustomer);
 
 // 고객 CSV 대용량 업로드
-customersRouter.post("/upload", upload.single("csvfile"), uploadCustomers);
+customersRouter.post('/upload', upload.single('csvfile'), uploadCustomers);
 
 export default customersRouter;

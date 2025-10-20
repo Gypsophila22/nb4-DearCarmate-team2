@@ -18,7 +18,7 @@ router.delete(
   '/:id',
   passports.jwtAuth,
   V.validatedserDeleteParam,
-  C.deleteUser
+  C.deleteUser,
 );
 
 export default router;

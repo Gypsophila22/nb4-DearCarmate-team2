@@ -15,7 +15,7 @@ const userDeleteParamSchema = z
 export function validatedserDeleteParam(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const result = userDeleteParamSchema.safeParse(req.params);
 

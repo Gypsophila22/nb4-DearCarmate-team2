@@ -25,5 +25,5 @@ export const jwtStrategy = new JwtStrategy(
     } catch (err) {
       return done(err, false);
     }
-  }
+  },
 );

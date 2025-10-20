@@ -8,7 +8,7 @@ const { EMAIL_SERVICE, EMAIL_USER, EMAIL_PASS, MAIL_FROM, MAIL_TO } =
 // 테스트용 개인 이메일 > 개인 이메일
 if (!EMAIL_SERVICE || !EMAIL_USER || !EMAIL_PASS || !MAIL_TO) {
   throw new Error(
-    'ENV가 부족해요: EMAIL_SERVICE, EMAIL_USER, EMAIL_PASS, MAIL_TO 확인'
+    'ENV가 부족해요: EMAIL_SERVICE, EMAIL_USER, EMAIL_PASS, MAIL_TO 확인',
   );
 }
 
