@@ -14,21 +14,22 @@ datasource db {
 }
 
 model Users {
-  id             Int     @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   name           String
-  email          String  @unique
+  email          String   @unique
   employeeNumber String
   phoneNumber    String
   imageUrl       String?
   password       String
-  isAdmin        Boolean @default(false)
+  isAdmin        Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
 
   company   Companies @relation(fields: [companyId], references: [id])
   companyId Int
 }
 
 model Companies {
-<<<<<<< HEAD
   id        Int         @id @default(autoincrement())
   name      String
   code      String      @unique
@@ -36,18 +37,6 @@ model Companies {
   updatedAt DateTime    @default(now()) @updatedAt
   user      Users[]
   customer  Customers[]
-=======
-  id          Int         @id @default(autoincrement())
-  companyName String
-  companyCode String      @unique
-  Customers   Customers[]
-<<<<<<< HEAD
->>>>>>> 3f31d5b (fix : develop 변경 사항 최신화)
-=======
-  user        Users[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @default(now()) @updatedAt
->>>>>>> 031884b (fix(company) : 회사 등록&수정&삭제 기능 오류 확인)
 }
 
 model Cars {
@@ -150,8 +139,4 @@ model Contracts {
 
   customer   Customers @relation(fields: [customerId], references: [id])
   customerId Int
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 031884b (fix(company) : 회사 등록&수정&삭제 기능 오류 확인)
