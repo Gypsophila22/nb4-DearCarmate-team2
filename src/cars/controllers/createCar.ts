@@ -1,8 +1,8 @@
-import { CreateCarsRequestDto } from "../dtos/createCarsRequestDto.js";
-import { createCarsSerialize } from "../serializers/car.serializer.create.js";
-import { createCarsService } from "../services/car.service.create.js";
+import { CreateCarsRequestDto } from '../dtos/createCarsRequestDto.js';
+import { createCarsSerialize } from '../serializers/car.serializer.create.js';
+import { createCarsService } from '../services/car.service.create.js';
 
-import type { Request, Response } from "express";
+import type { Request, Response } from 'express';
 
 export const createCarsController = async (req: Request, res: Response) => {
   try {
@@ -10,7 +10,7 @@ export const createCarsController = async (req: Request, res: Response) => {
     //다른 파일도 검증이 있는데, 코멘트는 여기만 남기도록 할게요
     //FIXME: 로그인을 안 할 경우 컨트롤러 실행 전에 끝남 (에러 메시지 로그인이 필요합니다가 아닌 Unauthorized 응답됨)
     if (!req.user) {
-      return res.status(401).json({ message: "로그인이 필요합니다." });
+      return res.status(401).json({ message: '로그인이 필요합니다.' });
     }
     //저 개인적으론 검증이 미들웨어에 따로 붙어있는 쪽이 나을 것 같습니다. 다른 분들한테도 그렇게 설명해드리고 있어요
     const dto = CreateCarsRequestDto.parse(req.body); // 요청 바디 DTO 검증
@@ -22,7 +22,7 @@ export const createCarsController = async (req: Request, res: Response) => {
     return res.status(201).json(createCarsSerialize(car)); // 생성된 차량 데이터 반환
   } catch (err) {
     return res.status(400).json({
-      message: "잘못된 요청입니다",
+      message: '잘못된 요청입니다',
     });
   }
 };

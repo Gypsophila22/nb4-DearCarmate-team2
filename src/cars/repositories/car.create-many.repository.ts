@@ -1,6 +1,6 @@
-import prisma from "../../lib/prisma.js";
+import prisma from '../../lib/prisma.js';
 
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from '@prisma/client';
 
 export const carCreateManyRepository = (data: Prisma.CarsCreateManyInput[]) => {
   return prisma.cars.createMany({
