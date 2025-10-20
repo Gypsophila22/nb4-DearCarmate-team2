@@ -7,7 +7,7 @@ const router = express.Router();
 router.post(
   '/login',
   authSchema.authLoginSchema,
-  authController.authLoginController
+  authController.authLoginController,
 );
 router.post('/refresh', authController.authRefreshController);
 

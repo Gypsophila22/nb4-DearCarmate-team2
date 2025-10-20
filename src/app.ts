@@ -9,9 +9,13 @@ import cors from 'cors';
 import path from 'path';
 import passport from 'passport';
 
-import errorHandler from './src/middlewares/errorHandler.js';
-import { requestLogger } from './src/middlewares/logger.js';
-import routers from './src/routers/index.js';
+import errorHandler from './middlewares/errorHandler.js';
+import { requestLogger } from './middlewares/logger.js';
+import routers from './routers/index.js';
+
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
@@ -26,19 +30,15 @@ app.use(
   cors({
     origin: 'http://localhost:3000',
     credentials: true,
-  })
+  }),
 );
 app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 
 app.use('/auth', routers.authRouter);
 app.use('/users', routers.userRouter);
 app.use('/cars', routers.carRouter);
-app.use('/admin', routers.companyRouter);
 app.use('/images', routers.imageRouter);
-
-// customer 라우터는 별도로 추가합니다.
 app.use('/customers', routers.customersRouter);
-
 app.use('/companies', routers.companyRouter);
 
 const testrouter = Router();

@@ -18,7 +18,7 @@ router.delete(
   '/:id',
   passports.jwtAuth,
   userSchema.userDeleteParam,
-  userController.deleteUser
+  userController.deleteUser,
 );
 
 export default router;
