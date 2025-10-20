@@ -5,6 +5,7 @@ import express, {
 } from 'express';
 import passport from 'passport';
 import companyController from '../companies/controllers/index.js';
+import { checkAdmin } from '../middlewares/checkAdmin.js';
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ const router = express.Router();
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
+  checkAdmin,
   companyController.createCompany,
 );
 
@@ -21,6 +23,7 @@ router.post(
 router.get(
   '/',
   passport.authenticate('jwt', { session: false }),
+  checkAdmin,
   companyController.getCompany,
 );
 
@@ -28,6 +31,7 @@ router.get(
 router.get(
   '/users',
   passport.authenticate('jwt', { session: false }),
+  checkAdmin,
   companyController.getCompanyUsers,
 );
 
