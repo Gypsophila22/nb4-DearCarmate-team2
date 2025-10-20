@@ -1,0 +1,11 @@
+npm verb cli /usr/bin/node /usr/bin/npm
+npm info using npm@9.2.0
+npm info using node@v18.19.1
+npm verb title npm i
+npm verb argv "i" "--no-audit" "--no-fund" "--foreground-scripts" "--loglevel" "verbose"
+npm verb logfile logs-max:10 dir:/home/simhawon/.npm/_logs/2025-10-20T09_20_17_187Z-
+npm verb logfile /home/simhawon/.npm/_logs/2025-10-20T09_20_17_187Z-debug-0.log
+
+up to date in 375ms
+npm verb exit 0
+npm info ok 

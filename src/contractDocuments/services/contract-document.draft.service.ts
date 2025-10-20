@@ -4,7 +4,7 @@ type Actor = { id: number; companyId: number; isAdmin?: boolean };
 
 export async function getDocumentDraftsService(actor: Actor) {
   const contracts = await contractDocumentRepository.findDraftableContracts(
-    actor.companyId
+    actor.companyId,
   );
 
   const items = contracts.map((c) => {

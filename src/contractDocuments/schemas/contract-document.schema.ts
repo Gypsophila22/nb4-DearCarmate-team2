@@ -15,7 +15,7 @@ const getContractDocumentQuerySchema = z
         (v) =>
           v === undefined ||
           (Number.isFinite(+v) && Number.isInteger(+v) && +v >= 1),
-        'page는 1 이상의 정수여야 합니다.'
+        'page는 1 이상의 정수여야 합니다.',
       ),
     pageSize: z
       .union([z.string(), z.number()])
@@ -24,7 +24,7 @@ const getContractDocumentQuerySchema = z
         (v) =>
           v === undefined ||
           (Number.isFinite(+v) && Number.isInteger(+v) && +v >= 1 && +v <= 100),
-        'pageSize는 1~100 사이의 정수여야 합니다.'
+        'pageSize는 1~100 사이의 정수여야 합니다.',
       ),
     searchBy: z.enum(['contractName']).optional(),
     keyword: z.string().optional(),
@@ -35,7 +35,7 @@ class ContractDocumentSchema {
   getContractDocumentDownload(
     req: Request,
     _res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     const result = getContractDocumentDownloadSchema.safeParse(req.params);
     if (!result.success) {

@@ -14,9 +14,10 @@ export const jwtStrategy = new JwtStrategy(
         where: { id: payload.id },
         select: {
           id: true,
-          email: true,
-          name: true,
+          // email: true,
+          // name: true,
           isAdmin: true,
+          companyId: true,
         },
       });
       if (!user) return done(null, false);
