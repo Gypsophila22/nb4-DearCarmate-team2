@@ -10,8 +10,8 @@ export const getCustomers = async (req: Request, res: Response) => {
         }
 
         // 페이지네이션 추가
-        const page = parseInt(req.query.page as string) || 1;
-        const pageSize = parseInt(req.query.pageSize as string, 10) || 10;
+        const page = parseInt(String(req.query.page) || '1');
+        const pageSize = parseInt(String(req.query.pageSize) || '10', 10);
         const skip = (page - 1) * pageSize;
         const { searchBy, keyword } = req.query;
 
@@ -20,8 +20,8 @@ export const getCustomers = async (req: Request, res: Response) => {
         };
 
         if (searchBy && keyword) {
-            const searchByString = searchBy as string;
-            const keywordString = keyword as string;
+            const searchByString = String(searchBy);
+            const keywordString = String(keyword);
             if (searchByString === 'name') {
                 where.name = {
                     contains: keywordString,
