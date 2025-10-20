@@ -3,19 +3,11 @@ import prisma from '../../lib/prisma.js';
 
 // ✅ 열거형 형태로 검색 키 정의
 const SEARCHABLE_FIELDS = {
-<<<<<<< HEAD
-  NAME: "name",
-  EMAIL: "email",
-  EMPLOYEENUMBER: "employeeNumber",
-  PHONENUMBER: "phoneNumber",
-  COMPANYNAME: "companyName",
-=======
   NAME: 'name',
   EMAIL: 'email',
   EMPLOYEENUMBER: 'employeeNumber',
   PHONENUMBER: 'phoneNumber',
   COMPANYNAME: 'companyName',
->>>>>>> develop
 } as const;
 type SearchBy = (typeof SEARCHABLE_FIELDS)[keyof typeof SEARCHABLE_FIELDS];
 
@@ -30,14 +22,10 @@ async function getCompanyUsers(
       ? Number(req.params.companyId)
       : undefined;
 
-<<<<<<< HEAD
-    if (companyIdNum !== undefined && (!Number.isInteger(companyIdNum) || companyIdNum <= 0)) {
-=======
     if (
       companyIdNum !== undefined &&
       (!Number.isInteger(companyIdNum) || companyIdNum <= 0)
     ) {
->>>>>>> develop
       return res.status(400).json({ message: '잘못된 회사 ID입니다.' });
     }
 
@@ -65,11 +53,6 @@ async function getCompanyUsers(
       ...(companyIdNum ? { companyId: companyIdNum } : {}), // 선택적 회사 필터
       ...(keyword
         ? searchBy === 'companyName'
-<<<<<<< HEAD
-        ? { company: { companyName: { contains: keyword, mode: 'insensitive' as const } } }
-        : { [searchBy]: { contains: keyword, mode: 'insensitive' as const } }
-      : {}),
-=======
           ? {
               company: {
                 companyName: {
@@ -80,7 +63,6 @@ async function getCompanyUsers(
             }
           : { [searchBy]: { contains: keyword, mode: 'insensitive' as const } }
         : {}),
->>>>>>> develop
     };
 
     // ✅ 총 개수 & 목록 병렬 조회

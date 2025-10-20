@@ -54,10 +54,6 @@ async function main() {
     });
   }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> develop
   // 어드민 계정 비밀번호 해시
   const hashedPassword = await bcrypt.hash('AdminPass123!', 10);
   const userHashed = await bcrypt.hash('aaaa1234', 10);
@@ -302,17 +298,6 @@ async function main() {
 
   // 회사 데이터 임시 추가.
   const companies = [
-<<<<<<< HEAD
-  { companyName: "햇살카", companyCode: "sunshine" },
-  { companyName: "케이카", companyCode: "kcar" },
-  { companyName: "굿모닝카", companyCode: "goodmorning" },
-  { companyName: "행복카", companyCode: "happy" },
-  { companyName: "믿음카", companyCode: "trust" },
-  { companyName: "신뢰카", companyCode: "reliable" },
-  { companyName: "우리카", companyCode: "ourcar" },
-  { companyName: "미래카", companyCode: "future" },
-];
-=======
     { companyName: '햇살카', companyCode: 'sunshine' },
     { companyName: '케이카', companyCode: 'kcar' },
     { companyName: '굿모닝카', companyCode: 'goodmorning' },
@@ -322,7 +307,6 @@ async function main() {
     { companyName: '우리카', companyCode: 'ourcar' },
     { companyName: '미래카', companyCode: 'future' },
   ];
->>>>>>> develop
 
   console.log('✅ Seeding 완료');
 }

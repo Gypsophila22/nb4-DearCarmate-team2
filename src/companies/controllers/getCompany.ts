@@ -3,11 +3,7 @@ import prisma from '../../lib/prisma.js';
 
 async function getCompany(req: Request, res: Response, next: NextFunction) {
   try {
-<<<<<<< HEAD
-    res.setHeader("Cache-Control", "no-store");
-=======
     res.setHeader('Cache-Control', 'no-store');
->>>>>>> develop
 
     const DEFAULT_PAGE_NUM = 1;
     const DEFAULT_PAGE_SIZE = 10;

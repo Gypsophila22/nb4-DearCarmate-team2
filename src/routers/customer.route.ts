@@ -5,16 +5,11 @@ import {
   updateCustomer,
   deleteCustomer,
   getCustomerById,
-<<<<<<< HEAD
-} from "../customers/controllers/index.js";
-import { uploadCustomers, upload } from "../customers/controllers/uploadCustomers.js";
-=======
 } from '../customers/controllers/index.js';
 import {
   uploadCustomers,
   upload,
 } from '../customers/controllers/uploadCustomers.js';
->>>>>>> develop
 import passports from '../lib/passport/index.js';
 
 const customersRouter = Router();

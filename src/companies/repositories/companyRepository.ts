@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import prisma from "../../lib/prisma.js";
-=======
 import prisma from '../../lib/prisma.js';
->>>>>>> develop
 
 export const companyRepository = {
   // 회사 수정

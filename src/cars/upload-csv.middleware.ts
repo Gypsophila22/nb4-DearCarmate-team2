@@ -1,14 +1,7 @@
-<<<<<<< HEAD
-import multer from "multer";
-import path from "path";
-
-import type { Request } from "express";
-=======
 import multer from 'multer';
 import path from 'path';
 
 import type { Request } from 'express';
->>>>>>> develop
 
 /**
  * Multer 메모리 스토리지 설정
@@ -22,14 +15,6 @@ const fileFilter = (
   cb: multer.FileFilterCallback,
 ) => {
   const ext = path.extname(file.originalname).toLowerCase(); // 파일 확장자 추출
-<<<<<<< HEAD
-  if (ext === ".csv") cb(null, true); // CSV 파일이면 허용
-  else cb(new Error("잘못된 요청입니다")); // 그 외는 에러 처리
-};
-
-export const uploadCsvMiddleware = multer({ storage, fileFilter }).single(
-  "file",
-=======
   if (ext === '.csv')
     cb(null, true); // CSV 파일이면 허용
   else cb(new Error('잘못된 요청입니다')); // 그 외는 에러 처리
@@ -37,5 +22,4 @@ export const uploadCsvMiddleware = multer({ storage, fileFilter }).single(
 
 export const uploadCsvMiddleware = multer({ storage, fileFilter }).single(
   'file',
->>>>>>> develop
 );
