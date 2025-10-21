@@ -39,6 +39,7 @@ router.get(
 router.patch(
   '/:companyId',
   passport.authenticate('jwt', { session: false }),
+  checkAdmin,
   companyController.updateCompany,
 );
 
@@ -46,6 +47,7 @@ router.patch(
 router.delete(
   '/:companyId',
   passport.authenticate('jwt', { session: false }),
+  checkAdmin,
   companyController.deleteCompany,
 );
 
