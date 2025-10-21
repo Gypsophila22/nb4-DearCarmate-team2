@@ -175,7 +175,7 @@ model ContractDocuments {
   id           Int      @id @default(autoincrement())
   companyId    Int
   contractId   Int? // ← nullable (임시 업로드 허용)
-  uploaderId   Int
+  userId       Int
   originalName String
   storedName   String
   mimeType     String
@@ -186,7 +186,7 @@ model ContractDocuments {
 
   company  Companies  @relation(fields: [companyId], references: [id])
   contract Contracts? @relation(fields: [contractId], references: [id])
-  uploader Users      @relation(fields: [uploaderId], references: [id])
+  user Users      @relation(fields: [userId], references: [id])
 
   @@index([companyId])
   @@index([contractId])

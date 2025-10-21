@@ -8,7 +8,7 @@ export const deleteContractsController = async (
   next: NextFunction,
 ) => {
   try {
-    const { contractId } = req.dto as { contractId: number };
+    const { contractId } = req.paramsDto as { contractId: number };
     // 서비스 호출
     await contractService.delete(contractId);
     return res.status(200).json({ message: '계약 삭제 성공' });

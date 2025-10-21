@@ -1,27 +1,27 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import prisma from '../../lib/prisma.js';
+
+import type { Prisma } from '@prisma/client';
 
 export const updateContractsRepository = {
   // 계약 조회
-  findById: async (prisma: PrismaClient, contractId: number) => {
+  findById: async (contractId: number) => {
     return prisma.contracts.findUnique({
       where: { id: contractId },
       include: { meetings: true, documents: true },
     });
   },
 
-  // 계약 정보 업데이트
-
-  //TODO
-  // 업데이트 하려는 정보 검증하기
-  // 유저 조회해서 없으면 에러
-  // 차량 조회해서 없으면 에러
-  // 고객 조회해서 없으면 에러
-
+  // 계약 수정
   updateContract: async (
-    prisma: PrismaClient,
     contractId: number,
     data: Prisma.ContractsUpdateInput,
   ) => {
+    // car정보가 안 넘어오면 prisma에 안 보냄
+    const cleanData = { ...data };
+    if (!data.car) {
+      delete (cleanData as any).car;
+    }
+
     return prisma.contracts.update({
       where: { id: contractId },
       data,
@@ -42,7 +42,6 @@ export const updateContractsRepository = {
 
   // 미팅 업데이트
   updateMeetings: async (
-    prisma: PrismaClient,
     contractId: number,
     meetings: { id?: number; date: string; alarms: string[] }[],
   ) => {
@@ -71,7 +70,6 @@ export const updateContractsRepository = {
 
   // 계약 문서 업데이트
   updateContractDocuments: async (
-    prisma: PrismaClient,
     contractId: number, // 연결할 계약 id
     documents: { id: number; originalName: string }[], // 변경할 계약서 (이미 DB에 들어있음)
   ) => {
@@ -84,8 +82,6 @@ export const updateContractsRepository = {
         id: { notIn: newDocIds },
       },
     });
-
-    // 계약서 조회해서 없으면 에러 추가필요
 
     // 새로 추가된 계약서를 계약에 연결
     for (const doc of documents) {

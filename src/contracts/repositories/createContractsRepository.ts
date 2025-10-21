@@ -1,8 +1,10 @@
-import { CarStatus, ContractsStatus, PrismaClient } from '@prisma/client';
+import { CarStatus, ContractsStatus } from '@prisma/client';
+
+import prisma from '../../lib/prisma.js';
 
 export const createContractsRepository = {
   // 차량 정보 조회
-  findCarByIdForContract: async (prisma: PrismaClient, carId: number) => {
+  findCarByIdForContract: async (carId: number) => {
     const car = await prisma.cars.findUnique({
       where: { id: carId },
       select: {
@@ -22,10 +24,7 @@ export const createContractsRepository = {
   },
 
   // 고객 정보 조회
-  findCustomerByIdForContract: async (
-    prisma: PrismaClient,
-    customerId: number,
-  ) => {
+  findCustomerByIdForContract: async (customerId: number) => {
     const customer = await prisma.customers.findUnique({
       where: { id: customerId },
       select: { id: true, name: true },
@@ -36,7 +35,6 @@ export const createContractsRepository = {
 
   // 미팅 및 알람 생성
   createMeetingsAndAlarms: async (
-    prisma: PrismaClient,
     contractId: number,
     meetings: { date: string; alarms: string[] }[],
   ) => {
@@ -63,31 +61,24 @@ export const createContractsRepository = {
   },
 
   // 차량 상태 업데이트 (보유 중 -> 계약 진행 중)
-  updateCarStatus: async (
-    prisma: PrismaClient,
-    carId: number,
-    status: CarStatus,
-  ) => {
+  updateCarStatus: async (carId: number) => {
+    const status = CarStatus.contractProceeding; // 계약 진행 중
     return prisma.cars.update({ where: { id: carId }, data: { status } });
   },
 
   // 계약 생성
-  create: async (
-    prisma: PrismaClient,
-    data: {
-      carId: number; // 차량
-      customerId: number; // 고객
-      contractPrice: number; // 계약 가격
-      userId: number; // 계약 담당자
-    },
-  ) => {
+  createContract: async (data: {
+    carId: number; // 차량
+    customerId: number; // 고객
+    contractPrice: number; // 계약 가격
+    userId: number; // 계약 담당자
+  }) => {
     return prisma.contracts.create({
       data: {
         carId: data.carId, // 차량
         customerId: data.customerId, // 고객
         userId: data.userId, // 로그인 사용자 (계약 담당자))
         status: ContractsStatus.carInspection, // 계약 상태: 차량 확인
-        date: new Date(), // 계약 생성일
         resolutionDate: new Date(), // 계약 완료 시간
         contractPrice: data.contractPrice, // 차량 가격 기본값
       },

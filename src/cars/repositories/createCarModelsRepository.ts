@@ -1,4 +1,5 @@
 import { CarType } from '@prisma/client';
+
 import prisma from '../../lib/prisma.js';
 
 /**
