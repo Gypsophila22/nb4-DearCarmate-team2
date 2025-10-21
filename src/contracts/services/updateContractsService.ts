@@ -118,7 +118,7 @@ export const updateContractsService = async (data: UpdateContractInput) => {
             return was === null && now === data.contractId; // 이번 PATCH로 null → 이 계약 id
           })
           .map((r) => r.id);
-        await sendContractDocsLinkedEmail(newlyLinked);
+        sendContractDocsLinkedEmail(newlyLinked).catch(console.error);
       }
     }
   }

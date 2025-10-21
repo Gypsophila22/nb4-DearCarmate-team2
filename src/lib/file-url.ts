@@ -12,13 +12,3 @@ export function resolveUploadAbsPath(relativePath: string) {
   // /app/uploads/<relativePath>
   return path.join(process.cwd(), 'uploads', relativePath);
 }
-
-/** 만약 DB에 실수로 절대경로를 저장했다면 상대경로만 추출 */
-export function toRelativeFromAbsolute(absPath: string) {
-  // 예: absPath = "/home/user/project/uploads/contract-documents/1761-abc.pdf"
-  const uploadsDir = path.join(process.cwd(), 'uploads') + path.sep;
-  if (absPath.startsWith(uploadsDir)) {
-    return absPath.slice(uploadsDir.length).replace(/\\/g, '/');
-  }
-  return absPath.replace(/\\/g, '/');
-}
