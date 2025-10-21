@@ -36,10 +36,11 @@ export const updateContractsService = async (
     if (!car) {
       throw new Error('존재하지 않는 차량입니다');
     }
-    if (car.status !== 'possession') {
-      // 보유 중인 차량만 계약 가능
-      throw new Error('보유 중인 차량이 아닙니다');
-    }
+    // 기존 보유중 상태로 조회 -> 계약 연결 없는 차량 조회로 변경되면서 필요없어짐
+    // if (car.status !== 'possession') {
+    //   // 보유 중인 차량만 계약 가능
+    //   throw new Error('보유 중인 차량이 아닙니다');
+    // }
   }
 
   // 계약 정보 업데이트 (undefined인 필드를 data 객체에서 제외)
