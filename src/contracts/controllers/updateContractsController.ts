@@ -1,9 +1,9 @@
-import createError from "http-errors";
+import createError from 'http-errors';
 
-import { ContractIdParamSchema } from "../contract.schema.js";
-import contractsService from "../services/index.js";
+import { ContractIdParamSchema } from '../contract.schema.js';
+import contractsService from '../services/index.js';
 
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from 'express';
 
 /**
  * 계약 업데이트
@@ -14,11 +14,11 @@ export const updateContractsController = async (
   next: NextFunction,
 ) => {
   try {
-    if (!req.user) throw createError(401, "로그인이 필요합니다.");
+    if (!req.user) throw createError(401, '로그인이 필요합니다.');
 
     const paramResult = ContractIdParamSchema.safeParse(req.params);
     if (!paramResult.success)
-      throw createError(404, "존재하지 않는 계약입니다");
+      throw createError(404, '존재하지 않는 계약입니다');
 
     const contractId = Number(paramResult.data.contractId);
 

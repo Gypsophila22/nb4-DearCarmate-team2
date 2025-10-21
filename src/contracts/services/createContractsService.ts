@@ -1,6 +1,6 @@
-import createError from "http-errors";
+import createError from 'http-errors';
 
-import contractRepository from "../repositories/index.js";
+import contractRepository from '../repositories/index.js';
 
 interface CreateContractInput {
   carId: number;
@@ -22,25 +22,25 @@ export const createContractsService = async (data: CreateContractInput) => {
   // 차량 존재 확인 및 보유중인지 상태 체크
   const car = await contractRepository.findCar(data.carId);
   if (!car) {
-    throw createError(404, "존재하지 않는 차량입니다");
+    throw createError(404, '존재하지 않는 차량입니다');
   }
   const contractExisting = await contractRepository.contractFindExisting(
     data.carId,
   );
   if (contractExisting) {
-    throw createError(409, "이미 계약이 존재하는 차량입니다");
+    throw createError(409, '이미 계약이 존재하는 차량입니다');
   }
 
   // 고객 존재 확인
   const customer = await contractRepository.findCustomer(data.customerId);
   if (!customer) {
-    throw createError(404, "존재하지 않는 고객입니다");
+    throw createError(404, '존재하지 않는 고객입니다');
   }
 
   // 유저(계약 담당자) 존재 확인
   const user = await contractRepository.findUser(data.userId);
   if (!user) {
-    throw createError(400, "잘못된 요청입니다");
+    throw createError(400, '잘못된 요청입니다');
   }
 
   // 계약 생성

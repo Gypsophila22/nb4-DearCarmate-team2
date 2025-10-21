@@ -1,7 +1,7 @@
-import createError from "http-errors";
-import { z } from "zod";
+import createError from 'http-errors';
+import { z } from 'zod';
 
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from 'express';
 
 // 계약 id 파라미터
 export const ContractIdParamSchema = z
@@ -27,11 +27,11 @@ export const ContractUpdateBodySchema = z
   .object({
     status: z
       .enum([
-        "carInspection", // 차량 확인
-        "priceNegotiation", // 가격 협의
-        "contractDraft", // 계약서 작성 중
-        "contractSuccessful", // 계약 성공
-        "contractFailed", // 계약 실패
+        'carInspection', // 차량 확인
+        'priceNegotiation', // 가격 협의
+        'contractDraft', // 계약서 작성 중
+        'contractSuccessful', // 계약 성공
+        'contractFailed', // 계약 실패
       ])
       .optional(),
     resolutionDate: z.string().optional(),
@@ -63,7 +63,7 @@ class ContractSchema {
     const result = ContractCreateBodySchema.safeParse(req.body);
 
     if (!result.success) {
-      return next(createError(400, "잘못된 요청입니다"));
+      return next(createError(400, '잘못된 요청입니다'));
     } else {
       req.body = result.data;
       return next();
@@ -76,7 +76,7 @@ class ContractSchema {
     const bodyResult = ContractUpdateBodySchema.safeParse(req.body);
 
     if (!paramResult.success || !bodyResult.success) {
-      return next(createError(400, "잘못된 요청입니다"));
+      return next(createError(400, '잘못된 요청입니다'));
     } else {
       req.body = bodyResult.data;
       return next();
@@ -88,7 +88,7 @@ class ContractSchema {
     const result = ContractIdParamSchema.safeParse(req.params);
 
     if (!result.success) {
-      return next(createError(400, "잘못된 요청입니다"));
+      return next(createError(400, '잘못된 요청입니다'));
     } else {
       return next();
     }

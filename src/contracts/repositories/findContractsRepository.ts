@@ -1,4 +1,4 @@
-import prisma from "../../lib/prisma.js";
+import prisma from '../../lib/prisma.js';
 
 /**
  * 계약 존재 확인 레포지토리

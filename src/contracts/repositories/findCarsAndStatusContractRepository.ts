@@ -1,4 +1,4 @@
-import prisma from "../../lib/prisma.js";
+import prisma from '../../lib/prisma.js';
 
 /**
  * 차량 존재 확인 및 상테 체크 레포지토리

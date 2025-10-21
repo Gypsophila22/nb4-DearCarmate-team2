@@ -1,6 +1,6 @@
-import contractRepository from "../repositories/index.js";
+import contractRepository from '../repositories/index.js';
 
-import type { ContractsStatus } from "@prisma/client";
+import type { ContractsStatus } from '@prisma/client';
 
 interface Contract {
   id: number;
@@ -16,15 +16,15 @@ interface Contract {
   status: ContractsStatus;
 }
 export const getContractsListService = async (
-  searchBy?: "customerName" | "userName",
+  searchBy?: 'customerName' | 'userName',
   keyword?: string,
 ) => {
   const statuses: ContractsStatus[] = [
-    "carInspection",
-    "priceNegotiation",
-    "contractDraft",
-    "contractSuccessful",
-    "contractFailed",
+    'carInspection',
+    'priceNegotiation',
+    'contractDraft',
+    'contractSuccessful',
+    'contractFailed',
   ];
 
   // 상태별 계약 목록과 총 아이템 수
@@ -46,7 +46,7 @@ export const getContractsListService = async (
         customer: { id: c.customer.id, name: c.customer.name }, // 고객 정보
         user: { id: c.user.id, name: c.user.name }, // 담당자 정보
         meetings: c.meetings.map((m) => ({
-          date: m.date.toISOString().split("T")[0], // 미팅 날짜
+          date: m.date.toISOString().split('T')[0], // 미팅 날짜
           alarms: m.alarms.map((a) => a.time.toISOString()), // 알람 시간
         })),
         contractPrice: c.contractPrice, // 계약 금액

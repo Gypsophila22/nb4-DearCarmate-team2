@@ -1,4 +1,4 @@
-import prisma from "../../lib/prisma.js";
+import prisma from '../../lib/prisma.js';
 
 export const findUsersForContractRepository = async (userId: number) => {
   const user = await prisma.users.findUnique({

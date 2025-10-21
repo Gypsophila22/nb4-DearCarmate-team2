@@ -1,6 +1,6 @@
-import { CarStatus, ContractsStatus } from "@prisma/client";
+import { CarStatus, ContractsStatus } from '@prisma/client';
 
-import prisma from "../../lib/prisma.js";
+import prisma from '../../lib/prisma.js';
 
 export const createContractsRepository = {
   // 차량 정보 조회

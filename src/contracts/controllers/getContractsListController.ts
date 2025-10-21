@@ -1,6 +1,6 @@
-import contractService from "../services/index.js";
+import contractService from '../services/index.js';
 
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from 'express';
 
 // 계약 목록 조회 컨트롤러
 export const getContractsListController = async (
@@ -10,7 +10,7 @@ export const getContractsListController = async (
 ) => {
   try {
     const { searchBy, keyword } = req.query as {
-      searchBy?: "customerName" | "userName"; // 고객 이름 | 담당자 이름 (검색 기준)
+      searchBy?: 'customerName' | 'userName'; // 고객 이름 | 담당자 이름 (검색 기준)
       keyword?: string; // 검색어
     };
 

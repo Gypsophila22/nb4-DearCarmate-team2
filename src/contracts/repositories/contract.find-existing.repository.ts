@@ -1,4 +1,4 @@
-import prisma from "../../lib/prisma.js";
+import prisma from '../../lib/prisma.js';
 
 /**
  * 차량으로 이미 존재하는 계약 조회

@@ -1,9 +1,9 @@
-import createError from "http-errors";
+import createError from 'http-errors';
 
-import { ContractsStatus } from "@prisma/client";
+import { ContractsStatus } from '@prisma/client';
 
-import prisma from "../../lib/prisma.js";
-import contractRepository from "../repositories/index.js";
+import prisma from '../../lib/prisma.js';
+import contractRepository from '../repositories/index.js';
 
 // 계약 상태 변경
 interface UpdateContractInput {
@@ -25,20 +25,20 @@ export const updateContractsService = async (
   // 계약 존재 여부 확인
   const contract = await contractRepository.findContract(data.contractId);
   if (!contract) {
-    throw createError(404, "존재하지 않는 계약입니다");
+    throw createError(404, '존재하지 않는 계약입니다');
   }
   if (contract.userId !== userId) {
-    throw createError(403, "담당자만 수정이 가능합니다");
+    throw createError(403, '담당자만 수정이 가능합니다');
   }
   if (data.carId) {
     // 차량 존재 확인 및 보유중인지 체크
     const car = await contractRepository.findCar(data.carId);
     if (!car) {
-      throw new Error("존재하지 않는 차량입니다");
+      throw new Error('존재하지 않는 차량입니다');
     }
-    if (car.status !== "possession") {
+    if (car.status !== 'possession') {
       // 보유 중인 차량만 계약 가능
-      throw new Error("보유 중인 차량이 아닙니다");
+      throw new Error('보유 중인 차량이 아닙니다');
     }
   }
 
@@ -91,7 +91,7 @@ export const updateContractsService = async (
   if (data.contractDocuments !== undefined) {
     const touchingIds = data.contractDocuments
       .map((d) => d?.id)
-      .filter((v): v is number => typeof v === "number");
+      .filter((v): v is number => typeof v === 'number');
     const beforeRows = touchingIds.length
       ? await prisma.contractDocuments.findMany({
           where: { id: { in: touchingIds } },
@@ -142,7 +142,7 @@ export const updateContractsService = async (
   );
 
   if (!contractResponse) {
-    throw createError(404, "계약을 찾을 수 없습니다.");
+    throw createError(404, '계약을 찾을 수 없습니다.');
   }
 
   const response = {
@@ -151,7 +151,7 @@ export const updateContractsService = async (
     resolutionDate: contractResponse.resolutionDate.toISOString(),
     contractPrice: contractResponse.contractPrice,
     meetings: contractResponse.meetings.map((m) => ({
-      date: m.date.toISOString().split("T")[0], // YYYY-MM-DD
+      date: m.date.toISOString().split('T')[0], // YYYY-MM-DD
       alarms: m.alarms.map((a) => a.time.toISOString()),
     })),
     user: {

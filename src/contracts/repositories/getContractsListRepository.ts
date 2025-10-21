@@ -1,11 +1,11 @@
-import prisma from "../../lib/prisma.js";
+import prisma from '../../lib/prisma.js';
 
-import type { ContractsStatus } from "@prisma/client";
+import type { ContractsStatus } from '@prisma/client';
 
 export const getContractsListRepository = {
   findByStatus: async (
     status: ContractsStatus,
-    searchBy?: "customerName" | "userName",
+    searchBy?: 'customerName' | 'userName',
     keyword?: string,
   ) => {
     // 계약 조회
@@ -13,9 +13,9 @@ export const getContractsListRepository = {
       where: {
         status,
         ...(searchBy && keyword
-          ? searchBy === "customerName"
-            ? { customer: { name: { contains: keyword, mode: "insensitive" } } }
-            : { user: { name: { contains: keyword, mode: "insensitive" } } }
+          ? searchBy === 'customerName'
+            ? { customer: { name: { contains: keyword, mode: 'insensitive' } } }
+            : { user: { name: { contains: keyword, mode: 'insensitive' } } }
           : {}),
       },
       include: {
@@ -24,7 +24,7 @@ export const getContractsListRepository = {
         user: { select: { id: true, name: true } }, // 담당자
         meetings: { include: { alarms: true } }, // 미팅 및 알람 정보
       },
-      orderBy: { date: "desc" }, // 최신순 정렬
+      orderBy: { date: 'desc' }, // 최신순 정렬
     });
   },
 };
