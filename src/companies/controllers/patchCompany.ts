@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import prisma from '../../lib/prisma.js';
-import { companyRepository } from '../repositories/companyRepository.js';
+import { companyRepository } from '../repositories/company.repository.js';
 import createHttpError from 'http-errors';
 
 export const patchCompany = async (req: Request, res: Response, next: NextFunction) => {

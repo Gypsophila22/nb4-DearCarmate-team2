@@ -4,12 +4,10 @@ import express, {
   type Response,
 } from 'express';
 import passport from 'passport';
-import companyController from '../companies/controllers/index.js';
+import { companyController } from '../companies/controllers/index.js';
 import { checkAdmin } from '../middlewares/checkAdmin.js';
 
 const router = express.Router();
-
-//console.log("companyController 확인:", companyController);
 
 // 회사 등록 (POST /companies)1
 router.post(
@@ -40,7 +38,7 @@ router.patch(
   '/:companyId',
   passport.authenticate('jwt', { session: false }),
   checkAdmin,
-  companyController.updateCompany,
+  companyController.patchCompany,
 );
 
 // 회사 삭제 (DELETE /companies/:companyId)

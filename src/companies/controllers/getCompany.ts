@@ -1,48 +1,29 @@
-import type { Request, Response, NextFunction } from 'express';
-import prisma from '../../lib/prisma.js';
+import type { Request, Response, NextFunction } from "express";
+import createHttpError from "http-errors";
+import { getCompanyService } from "../services/company.get.service.js";
 
-export async function getCompany(req: Request, res: Response, next: NextFunction) {
+export const getCompany = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    res.setHeader('Cache-Control', 'no-store');
+    // ✅ 쿼리 파라미터 파싱
+    const page = parseInt(req.query.page as string) || 1;
+    const pageSize = parseInt(req.query.pageSize as string) || 10;
+    const searchBy = req.query.searchBy as string | undefined;
+    const keyword = req.query.keyword as string | undefined;
 
-    const DEFAULT_PAGE_NUM = 1;
-    const DEFAULT_PAGE_SIZE = 10;
+    // ⚠️ 유효성 검증
+    if (page < 1 || pageSize < 1) {
+      throw createHttpError(400, "잘못된 요청입니다");
+    }
 
-    const page = Number(req.query.page) || DEFAULT_PAGE_NUM;
-    const pageSize = Number(req.query.pageSize) || DEFAULT_PAGE_SIZE;
-    const skip = (page - 1) * pageSize;
+    // 🔐 관리자 권한 (추후 passport 연결 시 복원)
+    if (!req.user?.isAdmin) throw createHttpError(401, "관리자 권한이 필요합니다");
 
-    const totalItemCount = await prisma.companies.count();
+    // 🚀 서비스 호출
+    const result = await getCompanyService(page, pageSize, searchBy, keyword);
 
-    const companies = await prisma.companies.findMany({
-      skip,
-      take: pageSize,
-      orderBy: { createdAt: 'desc' },
-      include: {
-        _count: { select: { user: true } },
-      },
-    });
-
-    // ✅ _count.user -> userCount 로 변환
-    const items = companies.map((c) => ({
-      id: c.id,
-      companyName: c.companyName,
-      companyCode: c.companyCode,
-      userCount: c._count.user ?? 0,
-    }));
-
-    // ✅ 프론트 명세서 형식에 맞게 메타데이터 필드 구성
-    const totalPages = Math.ceil(totalItemCount / pageSize);
-    const currentPage = page;
-
-    // ✅ 응답 형식 수정
-    return res.status(200).json({
-      currentPage,
-      totalPages,
-      totalItemCount,
-      data: items,
-    });
+    // 🎯 응답
+    res.status(200).json(result);
   } catch (err) {
     next(err);
   }
-}
+};
