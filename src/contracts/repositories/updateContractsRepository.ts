@@ -1,6 +1,6 @@
-import prisma from '../../lib/prisma.js';
+import prisma from "../../lib/prisma.js";
 
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client";
 
 export const updateContractsRepository = {
   // 계약 조회
@@ -11,20 +11,34 @@ export const updateContractsRepository = {
     });
   },
 
+  // 업데이트 response 계약 조회
+  findByIdForResponse: async (contractId: number) => {
+    return prisma.contracts.findUnique({
+      where: { id: contractId },
+      include: {
+        user: true,
+        customer: true,
+        car: { include: { carModel: true } },
+        meetings: { include: { alarms: true } },
+      },
+    });
+  },
+
   // 계약 수정
   updateContract: async (
     contractId: number,
     data: Prisma.ContractsUpdateInput,
   ) => {
-    // car정보가 안 넘어오면 prisma에 안 보냄
-    const cleanData = { ...data };
-    if (!data.car) {
-      delete (cleanData as any).car;
-    }
+    const { car, ...rest } = data;
+
+    const updateData: Prisma.ContractsUpdateInput = {
+      ...rest,
+      ...(car ? { car } : {}), // car가 있을 때만 포함
+    };
 
     return prisma.contracts.update({
       where: { id: contractId },
-      data,
+      data: updateData,
       include: {
         user: true,
         customer: true,

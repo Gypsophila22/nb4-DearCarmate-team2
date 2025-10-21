@@ -1,6 +1,6 @@
-import { CarStatus, ContractsStatus } from '@prisma/client';
+import { CarStatus, ContractsStatus } from "@prisma/client";
 
-import prisma from '../../lib/prisma.js';
+import prisma from "../../lib/prisma.js";
 
 export const createContractsRepository = {
   // 차량 정보 조회
@@ -38,26 +38,31 @@ export const createContractsRepository = {
     contractId: number,
     meetings: { date: string; alarms: string[] }[],
   ) => {
-    const createdMeetings = [];
-    for (const m of meetings) {
-      // 미팅 생성
-      const meeting = await prisma.meetings.create({
-        data: { date: new Date(m.date), contractId },
-      });
+    // 미팅 생성 병렬 처리
+    const createMeetings = await Promise.all(
+      meetings.map((m) =>
+        prisma.meetings.create({
+          data: { date: new Date(m.date), contractId },
+        }),
+      ),
+    );
 
-      // 미팅별 알람 생성
-      for (const a of m.alarms) {
-        await prisma.alarms.create({
+    // 알람 생성 병렬 처리
+    const alarmPromises = createMeetings.flatMap((meeting, i) => {
+      const alarms = meetings[i]?.alarms;
+      if (!alarms || alarms.length === 0) return []; // alarms 없으면 건너뜀
+      return alarms.map((a) =>
+        prisma.alarms.create({
           data: { time: new Date(a), meetingId: meeting.id },
-        });
-      }
+        }),
+      );
+    });
+    await Promise.all(alarmPromises);
 
-      createdMeetings.push({
-        ...meeting,
-        alarms: m.alarms.map((time) => ({ time: new Date(time) })),
-      });
-    }
-    return createdMeetings;
+    return createMeetings.map((meeting, i) => ({
+      ...meeting,
+      alarms: meetings[i]?.alarms.map((time) => ({ time: new Date(time) })),
+    }));
   },
 
   // 차량 상태 업데이트 (보유 중 -> 계약 진행 중)

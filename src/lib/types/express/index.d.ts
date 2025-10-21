@@ -6,10 +6,6 @@ declare global {
       name: string;
       isAdmin: boolean;
     }
-    interface Request {
-      paramsDto?: unknown;
-      bodyDto?: unknown;
-    }
   }
 }
 export {};

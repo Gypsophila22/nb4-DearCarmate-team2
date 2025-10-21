@@ -6,7 +6,7 @@ import type { Request, Response, NextFunction } from 'express';
  * 계약용 유저 조회 컨트롤러
  */
 export const getUsersListForContractController = async (
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ) => {
