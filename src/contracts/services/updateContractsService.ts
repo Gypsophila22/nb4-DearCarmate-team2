@@ -28,7 +28,7 @@ export const updateContractsService = async (
     throw createError(404, "존재하지 않는 계약입니다");
   }
   if (contract.userId !== userId) {
-    throw createError(403, "담당자만 삭제가 가능합니다");
+    throw createError(403, "담당자만 수정이 가능합니다");
   }
   if (data.carId) {
     // 차량 존재 확인 및 보유중인지 체크
@@ -87,53 +87,51 @@ export const updateContractsService = async (
     }
   }
 
-  // 계약 문서 업데이트
+  // 계약 문서 업데이트 수정(업로드>계약 수정 흐름이라 불가피하게 변경했습니다)
   if (data.contractDocuments !== undefined) {
+    const touchingIds = data.contractDocuments
+      .map((d) => d?.id)
+      .filter((v): v is number => typeof v === "number");
+    const beforeRows = touchingIds.length
+      ? await prisma.contractDocuments.findMany({
+          where: { id: { in: touchingIds } },
+          select: { id: true, contractId: true },
+        })
+      : [];
+    const beforeMap = new Map(beforeRows.map((r) => [r.id, r.contractId]));
+
     if (data.contractDocuments.length === 0) {
-      // 빈 배열이면 이 계약의 모든 문서 삭제
-      await prisma.contractDocuments.deleteMany({
+      // 빈 배열이면 이 계약의 모든 문서 연결 해제
+      await prisma.contractDocuments.updateMany({
         where: { contractId: data.contractId },
+        data: { contractId: null },
       });
     } else {
-      // 빈 배열이 아닐 때 (유효한 것 필터링)
       const validDocs = data.contractDocuments.filter(
         (doc): doc is { id: number; fileName: string } =>
           !!doc.id && !!doc.fileName,
       );
 
       if (validDocs.length > 0) {
-        // 기존 계약에 연결된 문서 조회
-        const existingDocs = await prisma.contractDocuments.findMany({
-          where: { contractId: data.contractId },
-          select: { id: true },
+        await contractRepository.update.updateContractDocuments(
+          data.contractId,
+          validDocs.map((doc) => ({
+            id: doc.id,
+            originalName: doc.fileName,
+          })),
+        );
+        const afterRows = await prisma.contractDocuments.findMany({
+          where: { id: { in: validDocs.map((d) => d.id) } },
+          select: { id: true, contractId: true },
         });
-
-        const existingIds = existingDocs.map((doc) => doc.id);
-        const incomingIds = validDocs.map((doc) => doc.id);
-
-        // 삭제할 문서: 기존에는 있는데 incoming에는 없는 것
-        const docsToDelete = existingIds.filter(
-          (id) => !incomingIds.includes(id),
-        );
-        if (docsToDelete.length > 0) {
-          await prisma.contractDocuments.deleteMany({
-            where: { id: { in: docsToDelete } },
-          });
-        }
-
-        // 새로 추가할 문서: incoming에는 있는데 기존에는 없는 것
-        const docsToAdd = validDocs.filter(
-          (doc) => !existingIds.includes(doc.id),
-        );
-        if (docsToAdd.length > 0) {
-          await contractRepository.update.updateContractDocuments(
-            data.contractId,
-            docsToAdd.map((doc) => ({
-              id: doc.id,
-              originalName: doc.fileName,
-            })),
-          );
-        }
+        const newlyLinked = afterRows
+          .filter((row) => {
+            const was = beforeMap.get(row.id) ?? null; // 이전 contractId
+            const now = row.contractId ?? null; // 현재 contractId
+            return was === null && now === data.contractId; // 이번 PATCH로 null → 이 계약 id
+          })
+          .map((r) => r.id);
+        // await sendContractDocsLinkedEmail(newlyLinked);
       }
     }
   }

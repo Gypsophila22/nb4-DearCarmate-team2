@@ -178,8 +178,8 @@ model ContractDocuments {
   url          String?
 
   // 소유/관계
-  contractId Int
-  contract   Contracts @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  contractId Int?
+  contract   Contracts? @relation(fields: [contractId], references: [id], onDelete: Cascade)
 
   uploaderId Int // 업로더
   uploader   Users @relation(fields: [uploaderId], references: [id])
