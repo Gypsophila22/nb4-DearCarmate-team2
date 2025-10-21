@@ -62,24 +62,37 @@ export const updateContractsRepository = {
     // 기존 계약에 연결된 미팅 삭제 (알람 포함))
     await prisma.meetings.deleteMany({ where: { contractId } });
 
-    for (const m of meetings) {
-      // 미팅 일정 생성
-      const meeting = await prisma.meetings.create({
-        data: {
-          date: new Date(m.date), // 문자열을 Date 객체로 변환
-          contractId, // 계약과 연결
-        },
-      });
-      // 각 미팅에 대한 알림 생성
-      for (const alarmTime of m.alarms) {
-        await prisma.alarms.create({
-          data: {
-            time: new Date(alarmTime), // 알림 시간
-            meetingId: meeting.id, // 미팅과 연결
-          },
-        });
+    // 미팅 생성 + 알람 생성 병렬 처리
+    const meetingPromises = meetings.map(async (m) => {
+      const meetingDate = new Date(m.date);
+      if (isNaN(meetingDate.getTime())) {
+        throw new Error(`Invalid meeting date: ${m.date}`);
       }
-    }
+
+      const meeting = await prisma.meetings.create({
+        data: { date: meetingDate, contractId },
+      });
+
+      const alarmPromises = (m.alarms || []).map((alarmTime) => {
+        const alarmDate = new Date(alarmTime);
+        if (isNaN(alarmDate.getTime())) {
+          throw new Error(`Invalid alarm time: ${alarmTime}`);
+        }
+
+        return prisma.alarms.create({
+          data: { time: alarmDate, meetingId: meeting.id },
+        });
+      });
+
+      await Promise.all(alarmPromises);
+
+      return {
+        ...meeting,
+        alarms: (m.alarms || []).map((time) => ({ time: new Date(time) })),
+      };
+    });
+
+    return Promise.all(meetingPromises);
   },
 
   // 계약 문서 업데이트
