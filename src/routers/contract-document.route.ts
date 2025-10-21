@@ -13,7 +13,7 @@ router.post(
   '/upload',
   passports.jwtAuth,
   uploadContract.single(DOCUMENT_FIELD_NAME),
-  contractDocumentController.postContractDocumentUploadTemp,
+  contractDocumentController.postContractDocumentUpload,
 );
 
 router.get(

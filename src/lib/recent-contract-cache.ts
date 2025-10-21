@@ -6,7 +6,7 @@ export function setRecentContract(userId: number, contractId: number) {
 
 export function getRecentContract(
   userId: number,
-  ttlMs = 5 * 60 * 1000
+  ttlMs = 5 * 60 * 1000,
 ): number | null {
   const v = recentByUser.get(userId);
   if (!v) return null;

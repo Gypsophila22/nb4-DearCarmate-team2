@@ -20,7 +20,7 @@ export const updateContractsService = async (data: UpdateContractInput) => {
   // 계약 존재 여부 확인
   const contract = await contractRepository.update.findById(
     prisma,
-    data.contractId
+    data.contractId,
   );
   if (!contract) throw new Error('존재하지 않는 계약입니다');
 
@@ -41,7 +41,7 @@ export const updateContractsService = async (data: UpdateContractInput) => {
         customer: { connect: { id: data.customerId } },
       }),
       ...(data.carId && { car: { connect: { id: data.carId } } }),
-    }
+    },
   );
 
   // 미팅 정보 업데이트
@@ -49,7 +49,7 @@ export const updateContractsService = async (data: UpdateContractInput) => {
     await contractRepository.update.updateMeetings(
       prisma,
       data.contractId,
-      data.meetings
+      data.meetings,
     );
   }
 
@@ -77,12 +77,12 @@ export const updateContractsService = async (data: UpdateContractInput) => {
       // 빈 배열이면 이 계약의 모든 문서 연결 해제
       await prisma.contractDocuments.updateMany({
         where: { contractId: data.contractId },
-        data: { contractId: null, status: 'TEMP' },
+        data: { contractId: null },
       });
     } else {
       const validDocs = data.contractDocuments.filter(
         (doc): doc is { id: number; fileName: string } =>
-          !!doc.id && !!doc.fileName
+          !!doc.id && !!doc.fileName,
       );
 
       if (validDocs.length > 0) {
@@ -92,7 +92,7 @@ export const updateContractsService = async (data: UpdateContractInput) => {
           validDocs.map((doc) => ({
             id: doc.id,
             originalName: doc.fileName,
-          }))
+          })),
         );
       }
     }

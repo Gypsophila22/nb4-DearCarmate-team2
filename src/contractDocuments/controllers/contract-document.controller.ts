@@ -3,7 +3,7 @@ import createError from 'http-errors';
 import { downloadDocumentService } from '../services/contract-document.download.service.js';
 import { getDocumentDraftsService } from '../services/contract-document.draft.service.js';
 import { getDocumentsService } from '../services/contract-document.get.service.js';
-import { documentUploadTempService } from '../services/contract-document.upload.service.js';
+import { documentUploadService } from '../services/contract-document.upload.service.js';
 
 class ContractDocumentController {
   async getContractDocumentDownload(
@@ -88,7 +88,7 @@ class ContractDocumentController {
     }
   }
 
-  async postContractDocumentUploadTemp(
+  async postContractDocumentUpload(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -99,7 +99,7 @@ class ContractDocumentController {
       if (!req.file)
         return res.status(400).json({ message: '파일은 필수입니다.' });
 
-      const result = await documentUploadTempService({
+      const result = await documentUploadService({
         actor: {
           id: req.user.id,
           companyId: req.user.companyId,

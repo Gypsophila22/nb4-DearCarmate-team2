@@ -65,7 +65,7 @@ class ContractDocumentRepository {
     });
   }
 
-  createTemp(params: {
+  create(params: {
     companyId: number;
     uploaderId: number;
     originalName: string;
@@ -83,7 +83,6 @@ class ContractDocumentRepository {
         mimeType: params.mimeType,
         size: params.size,
         path: params.path,
-        status: 'TEMP',
       },
       select: { id: true },
     });

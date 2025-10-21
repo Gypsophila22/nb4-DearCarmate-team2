@@ -3,7 +3,7 @@ import { decodeLatin1ToUtf8 } from '../../lib/filename.js';
 
 type Actor = { id: number; companyId: number; isAdmin?: boolean };
 
-export async function documentUploadTempService(args: {
+export async function documentUploadService(args: {
   actor: Actor;
   file: {
     originalname: string;
@@ -15,7 +15,7 @@ export async function documentUploadTempService(args: {
 }) {
   const originalName = decodeLatin1ToUtf8(args.file.originalname);
 
-  const doc = await contractDocumentRepository.createTemp({
+  const doc = await contractDocumentRepository.create({
     companyId: args.actor.companyId,
     uploaderId: args.actor.id,
     originalName,
