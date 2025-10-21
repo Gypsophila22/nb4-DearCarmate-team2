@@ -1,4 +1,3 @@
-// src/lib/pending-uploads.ts
 type PendingDoc = { id: number; at: number };
 const pendingByUser = new Map<number, PendingDoc[]>();
 

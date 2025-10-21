@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import createError from 'http-errors';
 
-const contractsDir = path.join(process.cwd(), 'uploads', 'contractDocuments');
+const contractsDir = path.join(process.cwd(), 'uploads', 'contract-documents');
 fs.mkdirSync(contractsDir, { recursive: true });
 
 const storage = multer.diskStorage({

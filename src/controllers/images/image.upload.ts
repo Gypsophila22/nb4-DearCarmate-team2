@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { buildImageUrl } from '../../lib/images.js';
-import fs from 'fs/promises'; // ✅ promises API
+import fs from 'fs/promises';
 
 export async function postUpload(
   req: Request,
