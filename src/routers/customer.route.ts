@@ -4,8 +4,6 @@ import {
   createCustomer,
   deleteCustomer,
   getCustomerById,
-  getCustomers,
-  updateCustomer,
 } from '../customers/controllers/index.js';
 import {
   upload,

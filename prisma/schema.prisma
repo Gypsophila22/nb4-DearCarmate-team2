@@ -91,7 +91,7 @@ model Customers {
   contractCount Int         @default(0)
   contract      Contracts[]
 
-  company   Companies   @relation(fields: [companyId], references: [id])
+  company   Companies @relation(fields: [companyId], references: [id])
   companyId Int
 }
 
