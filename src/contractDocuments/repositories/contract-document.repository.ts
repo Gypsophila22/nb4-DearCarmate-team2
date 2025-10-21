@@ -16,6 +16,24 @@ class ContractDocumentRepository {
         path: true,
         url: true,
         mimeType: true,
+        contractId: true,
+        createdAt: true,
+      },
+    });
+  }
+
+  findByIdWithJoins(id: number) {
+    // 메일 보낼 때 필요한 조인 전부 포함
+    return prisma.contractDocuments.findUnique({
+      where: { id },
+      include: {
+        contract: {
+          include: {
+            customer: true,
+            user: true,
+            car: { include: { carModel: true } },
+          },
+        },
       },
     });
   }
@@ -73,6 +91,7 @@ class ContractDocumentRepository {
     mimeType: string;
     size: number;
     path: string | null;
+    contractId?: number | null | undefined;
   }) {
     return prisma.contractDocuments.create({
       data: {
@@ -83,6 +102,7 @@ class ContractDocumentRepository {
         mimeType: params.mimeType,
         size: params.size,
         path: params.path,
+        contractId: params.contractId ?? null,
       },
       select: { id: true },
     });

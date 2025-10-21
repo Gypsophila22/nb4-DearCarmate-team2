@@ -2,6 +2,7 @@ import { ContractsStatus } from '@prisma/client';
 
 import prisma from '../../lib/prisma.js';
 import contractRepository from '../repositories/index.js';
+import { sendContractDocsLinkedEmail } from '../../contractDocuments/services/contract-document.send-email.service.js';
 
 // 계약 상태 변경, 계약서 관련 말고는 프론트에서 기존 정보 다 입력된채로 넘김
 interface UpdateContractInput {
@@ -71,8 +72,20 @@ export const updateContractsService = async (data: UpdateContractInput) => {
   //     );
   //   }
   // }
-  // 계약 문서 업데이트 수정
+
+  // 계약 문서 업데이트 수정(업로드>계약 수정 흐름이라 불가피하게 변경했습니다)
   if (data.contractDocuments !== undefined) {
+    const touchingIds = data.contractDocuments
+      .map((d) => d?.id)
+      .filter((v): v is number => typeof v === 'number');
+    const beforeRows = touchingIds.length
+      ? await prisma.contractDocuments.findMany({
+          where: { id: { in: touchingIds } },
+          select: { id: true, contractId: true },
+        })
+      : [];
+    const beforeMap = new Map(beforeRows.map((r) => [r.id, r.contractId]));
+
     if (data.contractDocuments.length === 0) {
       // 빈 배열이면 이 계약의 모든 문서 연결 해제
       await prisma.contractDocuments.updateMany({
@@ -94,6 +107,18 @@ export const updateContractsService = async (data: UpdateContractInput) => {
             originalName: doc.fileName,
           })),
         );
+        const afterRows = await prisma.contractDocuments.findMany({
+          where: { id: { in: validDocs.map((d) => d.id) } },
+          select: { id: true, contractId: true },
+        });
+        const newlyLinked = afterRows
+          .filter((row) => {
+            const was = beforeMap.get(row.id) ?? null; // 이전 contractId
+            const now = row.contractId ?? null; // 현재 contractId
+            return was === null && now === data.contractId; // 이번 PATCH로 null → 이 계약 id
+          })
+          .map((r) => r.id);
+        await sendContractDocsLinkedEmail(newlyLinked);
       }
     }
   }
