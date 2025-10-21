@@ -100,16 +100,11 @@ export const customerRepository = {
     });
   },
 
-  updateFromCsv: async (id: number, data: CustomerCsvRow, tx?: Prisma.TransactionClient) => {
-    return (tx || prisma).customers.update({
-      where: { id },
-      data: {
-        name: data.고객명,
-        gender: data.성별,
-        phoneNumber: data.연락처,
-        ageGroup: data.연령대,
-        email: data.이메일,
-        memo: data.메모,
+  delete: async (id: number, companyId: number) => {
+    return prisma.customers.deleteMany({
+      where: {
+        id,
+        companyId,
       },
     });
   },
