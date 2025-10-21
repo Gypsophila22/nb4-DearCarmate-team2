@@ -1,4 +1,4 @@
-import customerRepository from '../repositories/index.js';
+import { customerRepository } from '../repositories/index.js';
 import type { CreateCustomerBody } from '../schemas/customers.schema.js';
 
 export const customerCreateService = {

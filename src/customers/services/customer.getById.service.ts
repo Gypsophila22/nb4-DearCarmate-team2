@@ -1,4 +1,4 @@
-import customerRepository from '../repositories/index.js';
+import { customerRepository } from '../repositories/index.js';
 import createError from 'http-errors';
 import { mapAgeGroupToKorean } from '../utils/customer.mapper.js';
 

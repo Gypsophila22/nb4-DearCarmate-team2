@@ -16,4 +16,4 @@ export const customerValidation = {
   customerCsvRowSchema,
 } as const satisfies Record<string, import('zod').ZodTypeAny>;
 
-export default Object.freeze(customerValidation);
+export { customerValidation };

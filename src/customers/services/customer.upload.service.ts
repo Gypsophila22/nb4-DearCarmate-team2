@@ -1,4 +1,4 @@
-import customerRepository from '../repositories/index.js';
+import { customerRepository } from '../repositories/index.js';
 import type { CustomerCsvRow } from '../schemas/customers.schema.js';
 
 export const customerUploadService = {

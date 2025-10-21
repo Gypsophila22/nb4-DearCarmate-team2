@@ -1,4 +1,4 @@
-import customerRepository from '../repositories/index.js';
+import { customerRepository } from '../repositories/index.js';
 import type { UpdateCustomerBody } from '../schemas/customers.schema.js';
 import createError from 'http-errors';
 

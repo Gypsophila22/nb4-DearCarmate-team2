@@ -1,4 +1,4 @@
-import customerRepository from '../repositories/index.js';
+import { customerRepository } from '../repositories/index.js';
 import { mapAgeGroupToKorean } from '../utils/customer.mapper.js';
 
 export const customerGetService = {
