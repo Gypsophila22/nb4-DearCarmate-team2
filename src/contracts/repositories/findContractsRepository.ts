@@ -6,9 +6,10 @@ import prisma from '../../lib/prisma.js';
  */
 export const findContractsRepository = async (contractId: number) => {
   const contract = await prisma.contracts.findUnique({
-    where: { id: Number(contractId) },
+    where: { id: contractId },
+    include: {
+      user: true,
+    },
   });
-  if (!contract) {
-    throw new Error('존재하지 않는 계약입니다');
-  }
+  return contract;
 };

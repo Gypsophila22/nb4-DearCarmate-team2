@@ -7,10 +7,6 @@ declare global {
       isAdmin: boolean;
       companyId: number;
     }
-    interface Request {
-      paramsDto?: unknown;
-      bodyDto?: unknown;
-    }
   }
 }
 export {};

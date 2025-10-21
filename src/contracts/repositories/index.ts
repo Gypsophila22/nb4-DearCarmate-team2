@@ -1,3 +1,4 @@
+import { contractFindExistingRepository } from './contract.find-existing.repository.js';
 import { createContractsRepository } from './createContractsRepository.js';
 import { deleteContractsRepository } from './deleteContractsRepository.js';
 import { findCarsForContractRepository } from './findCarsAndStatusContractRepository.js';
@@ -22,6 +23,7 @@ const contractRepository = {
   getCarsListForContract: getCarsListForContractRepository,
   getUsersListForContract: getUsersListForContractRepository,
   getCustomersListForContract: getCustomersListForContractRepository,
+  contractFindExisting: contractFindExistingRepository,
 };
 
 Object.freeze(contractRepository);

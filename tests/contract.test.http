@@ -48,15 +48,15 @@ Authorization: bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "status": "priceNegotiation",
-  "resolutionDate": "2024-02-22T09:00:00",
+  "status": "contractDraft",
+  "resolutionDate": "2023-02-22T09:00:00",
   "contractPrice": 20000000,
   "meetings": [
     {
-      "date": "2024-02-22",
+      "date": "2025-1-01",
       "alarms": [
-        "2024-02-22T09:00:00",
-        "2024-02-21T09:00:00"
+				"2024-02-22T09:00:00",
+				"2024-02-21T09:00:00"
       ]
     }
   ],

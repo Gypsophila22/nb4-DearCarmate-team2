@@ -42,6 +42,7 @@ model Companies {
   ContractDocuments ContractDocuments[]
 }
 
+
 model Cars {
   id                Int        @id @unique @default(autoincrement())
   carNumber         String
@@ -175,7 +176,7 @@ model ContractDocuments {
   id           Int      @id @default(autoincrement())
   companyId    Int
   contractId   Int? // ← nullable (임시 업로드 허용)
-  userId       Int
+  uploaderId   Int
   originalName String
   storedName   String
   mimeType     String
@@ -186,7 +187,7 @@ model ContractDocuments {
 
   company  Companies  @relation(fields: [companyId], references: [id])
   contract Contracts? @relation(fields: [contractId], references: [id])
-  user Users      @relation(fields: [userId], references: [id])
+  uploader Users      @relation(fields: [uploaderId], references: [id])
 
   @@index([companyId])
   @@index([contractId])

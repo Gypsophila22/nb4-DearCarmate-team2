@@ -27,7 +27,6 @@ app.use(
   }),
 );
 app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
-
 app.use('/auth', routers.authRouter);
 app.use('/users', routers.userRouter);
 app.use('/cars', routers.carRouter);

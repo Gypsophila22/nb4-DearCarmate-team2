@@ -5,7 +5,5 @@ export const findUsersForContractRepository = async (userId: number) => {
     where: { id: userId },
     select: { id: true, name: true },
   });
-  if (!user) {
-    throw new Error(`존재하지 않는 유저입니다`);
-  }
+  return user;
 };

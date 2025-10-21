@@ -1,7 +1,9 @@
+import createError from 'http-errors';
+
+import { ContractIdParamSchema } from '../contract.schema.js';
 import contractsService from '../services/index.js';
 
 import type { Request, Response, NextFunction } from 'express';
-import type { ContractsStatus } from '@prisma/client';
 
 /**
  * 계약 업데이트
@@ -12,41 +14,18 @@ export const updateContractsController = async (
   next: NextFunction,
 ) => {
   try {
-    const { contractId } = req.paramsDto as {
-      contractId: number;
-    };
+    if (!req.user) throw createError(401, '로그인이 필요합니다.');
 
-    const {
-      status, // 계약 상태
-      resolutionDate, // 계약 종료일
-      contractPrice, // 계약 가격
-      meetings, // 일정 (date, alarms)
-      contractDocuments, // 계약서 (id, fileName)
-      userId, // 담당자
-      customerId, // 고객
-      carId, // 차량 번호
-    } = req.bodyDto as {
-      status: ContractsStatus;
-      resolutionDate: string;
-      contractPrice: number;
-      meetings: { date: string; alarms: string[] }[];
-      contractDocuments: { id: number; fileName: string }[];
-      userId: number;
-      customerId: number;
-      carId: number;
-    }; // 요청 데이터 추출
+    const paramResult = ContractIdParamSchema.safeParse(req.params);
+    if (!paramResult.success)
+      throw createError(404, '존재하지 않는 계약입니다');
+
+    const contractId = Number(paramResult.data.contractId);
 
     // 계약 업데이트 서비스 호출
-    const result = await contractsService.update({
+    const result = await contractsService.update(req.user.id, {
+      ...req.body,
       contractId,
-      status,
-      resolutionDate,
-      contractPrice,
-      meetings,
-      contractDocuments,
-      userId,
-      customerId,
-      carId,
     });
 
     // 결과 반환

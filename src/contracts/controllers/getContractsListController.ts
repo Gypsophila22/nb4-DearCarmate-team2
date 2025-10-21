@@ -10,7 +10,7 @@ export const getContractsListController = async (
 ) => {
   try {
     const { searchBy, keyword } = req.query as {
-      searchBy?: string; // 고객 이름 | 담당자 이름 (검색 기준)
+      searchBy?: 'customerName' | 'userName'; // 고객 이름 | 담당자 이름 (검색 기준)
       keyword?: string; // 검색어
     };
 
