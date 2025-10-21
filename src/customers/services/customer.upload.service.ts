@@ -15,14 +15,14 @@ export const customerUploadService = {
       for (const customerData of customers) {
         try {
           let existingCustomer;
-          if (customerData.이메일) {
+          if (customerData.email) {
             existingCustomer = await customerRepository.findByEmail(
-              customerData.이메일,
+              customerData.email,
               tx,
             );
-          } else if (customerData.연락처) {
+          } else if (customerData.phoneNumber) {
             existingCustomer = await customerRepository.findByPhoneNumber(
-              customerData.연락처,
+              customerData.phoneNumber,
               tx,
             );
           }
