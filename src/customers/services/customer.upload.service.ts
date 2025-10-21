@@ -1,5 +1,6 @@
 import { customerRepository } from '../repositories/index.js';
 import type { CustomerCsvRow } from '../schemas/customers.schema.js';
+import prisma from '../../lib/prisma.ts'; // Import prisma client
 
 export const customerUploadService = {
   async processCustomerCsv(customers: CustomerCsvRow[], companyId: number) {
@@ -10,37 +11,45 @@ export const customerUploadService = {
       errors: [] as { data: CustomerCsvRow; error: string }[],
     };
 
-    for (const customerData of customers) {
-      try {
-        let existingCustomer;
-        if (customerData.이메일) {
-          existingCustomer = await customerRepository.findByEmail(
-            customerData.이메일,
-          );
-        } else if (customerData.연락처) {
-          existingCustomer = await customerRepository.findByPhoneNumber(
-            customerData.연락처,
-          );
-        }
+    await prisma.$transaction(async (tx) => {
+      for (const customerData of customers) {
+        try {
+          let existingCustomer;
+          if (customerData.이메일) {
+            existingCustomer = await customerRepository.findByEmail(
+              customerData.이메일,
+              tx,
+            );
+          } else if (customerData.연락처) {
+            existingCustomer = await customerRepository.findByPhoneNumber(
+              customerData.연락처,
+              tx,
+            );
+          }
 
-        if (existingCustomer) {
-          // 기존 고객이 있으면 업데이트
-          await customerRepository.updateFromCsv(
-            existingCustomer.id,
-            customerData,
-          );
-          results.updated++;
-        } else {
-          // 새 고객 생성
-          await customerRepository.createFromCsv(customerData, companyId);
-          results.created++;
+          if (existingCustomer) {
+            await customerRepository.updateFromCsv(
+              existingCustomer.id,
+              customerData,
+              tx,
+            );
+            results.updated++;
+          } else {
+            await customerRepository.createFromCsv(
+              customerData,
+              companyId,
+              tx,
+            );
+            results.created++;
+          }
+        } catch (error: unknown) {
+          results.failed++;
+          const message = error instanceof Error ? error.message : String(error);
+          results.errors.push({ data: customerData, error: message });
+          throw error;
         }
-      } catch (error: unknown) {
-        results.failed++;
-        const message = error instanceof Error ? error.message : String(error);
-        results.errors.push({ data: customerData, error: message });
       }
-    }
+    });
 
     return results;
   },

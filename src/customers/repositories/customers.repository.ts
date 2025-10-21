@@ -76,25 +76,16 @@ export const customerRepository = {
     });
   },
 
-  delete: async (id: number, companyId: number) => {
-    return prisma.customers.deleteMany({
-      where: {
-        id,
-        companyId,
-      },
-    });
+  findByEmail: async (email: string, tx?: Prisma.TransactionClient) => {
+    return (tx || prisma).customers.findUnique({ where: { email } });
   },
 
-  findByEmail: async (email: string) => {
-    return prisma.customers.findUnique({ where: { email } });
+  findByPhoneNumber: async (phoneNumber: string, tx?: Prisma.TransactionClient) => {
+    return (tx || prisma).customers.findUnique({ where: { phoneNumber } });
   },
 
-  findByPhoneNumber: async (phoneNumber: string) => {
-    return prisma.customers.findUnique({ where: { phoneNumber } });
-  },
-
-  createFromCsv: async (data: CustomerCsvRow, companyId: number) => {
-    return prisma.customers.create({
+  createFromCsv: async (data: CustomerCsvRow, companyId: number, tx?: Prisma.TransactionClient) => {
+    return (tx || prisma).customers.create({
       data: {
         name: data.고객명,
         gender: data.성별,
@@ -109,8 +100,8 @@ export const customerRepository = {
     });
   },
 
-  updateFromCsv: async (id: number, data: CustomerCsvRow) => {
-    return prisma.customers.update({
+  updateFromCsv: async (id: number, data: CustomerCsvRow, tx?: Prisma.TransactionClient) => {
+    return (tx || prisma).customers.update({
       where: { id },
       data: {
         name: data.고객명,

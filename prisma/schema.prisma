@@ -133,6 +133,6 @@ model Contracts {
   car   Cars @relation(fields: [carId], references: [id])
   carId Int  @unique
 
-  customer   Customers @relation(fields: [customerId], references: [id])
+  customer   Customers @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId Int
 }
