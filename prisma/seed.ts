@@ -463,8 +463,9 @@ async function main() {
       });
 
       // 계약된 차량 상태 업데이트
+      const progressingIds = contractsToCreate.slice(0, 2).map((c) => c.carId);
       await prisma.cars.updateMany({
-        where: { id: { in: contractsToCreate.map((c) => c.carId) } },
+        where: { id: { in: progressingIds } },
         data: { status: CarStatus.contractProceeding },
       });
     }
