@@ -1,10 +1,14 @@
 import express from 'express';
-import authController from '../auth/controllers/index.js';
-import authValidation from '../auth/schemas/index.js';
+import { authController } from '../auth/controllers/auth.controller.js';
+import { authSchema } from '../auth/schemas/auth.schema.js';
 
 const router = express.Router();
 
-router.post('/login', authValidation.authLogin, authController.PostLogin);
-router.post('/refresh', authController.PostRefresh);
+router.post(
+  '/login',
+  authSchema.authLoginSchema,
+  authController.authLoginController,
+);
+router.post('/refresh', authController.authRefreshController);
 
 export default router;

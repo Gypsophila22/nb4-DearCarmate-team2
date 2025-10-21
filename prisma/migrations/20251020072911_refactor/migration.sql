@@ -33,8 +33,8 @@ CREATE TABLE "public"."Users" (
 -- CreateTable
 CREATE TABLE "public"."Companies" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-    "code" TEXT NOT NULL,
+    "companyName" TEXT NOT NULL,
+    "companyCode" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -98,7 +98,7 @@ CREATE TABLE "public"."Contracts" (
 CREATE UNIQUE INDEX "Users_email_key" ON "public"."Users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Companies_code_key" ON "public"."Companies"("code");
+CREATE UNIQUE INDEX "Companies_companyCode_key" ON "public"."Companies"("companyCode");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Cars_id_key" ON "public"."Cars"("id");
