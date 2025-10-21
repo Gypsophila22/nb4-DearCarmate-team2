@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import prisma from '../../lib/prisma.js';
 import createHttpError from 'http-errors';
 
-async function createCompany(req: Request, res: Response, next: NextFunction) {
+export async function createCompany(req: Request, res: Response, next: NextFunction) {
   try {
     if (!req.user || !req.user.isAdmin) {
       return next(createHttpError(401, '관리자 권한이 필요합니다.'));
@@ -46,5 +46,3 @@ async function createCompany(req: Request, res: Response, next: NextFunction) {
     next(err);
   }
 }
-
-export default { createCompany };

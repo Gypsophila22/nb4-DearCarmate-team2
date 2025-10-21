@@ -3,7 +3,7 @@ import prisma from '../../lib/prisma.js';
 import { companyRepository } from '../repositories/companyRepository.js';
 import createHttpError from 'http-errors';
 
-const patchCompany = async (req: Request, res: Response, next: NextFunction) => {
+export const patchCompany = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { companyId } = req.params;
     const { companyName, companyCode } = req.body;
@@ -48,5 +48,3 @@ const patchCompany = async (req: Request, res: Response, next: NextFunction) => 
     next(err); // 기타 예외는 전역 에러핸들러로
   }
 };
-
-export default patchCompany;

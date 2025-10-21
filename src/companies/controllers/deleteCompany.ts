@@ -2,10 +2,9 @@ import type { Request, Response, NextFunction } from "express";
 import prisma from '../../lib/prisma.js';
 import { companyRepository } from '../repositories/companyRepository.js';
 import createHttpError from 'http-errors';
-import type { responseEncoding } from "axios";
 
 // ----- 컨트롤러 -----
-const deleteCompany = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteCompany = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { companyId } = req.params;
 
@@ -29,7 +28,7 @@ const deleteCompany = async (req: Request, res: Response, next: NextFunction) =>
     const result = await companyRepository.deleteCompanyById(id);
 
     // 4️⃣ 응답
-    return res.status(200).json(result);
+    return res.status(200).json({ message: '회사 삭제 성공'});
   } catch (err) {
     if (createHttpError.isHttpError(err)) {
       return res.status(err.status).json({ message: err.message });
@@ -37,5 +36,3 @@ const deleteCompany = async (req: Request, res: Response, next: NextFunction) =>
     next(err);
   }
 };
-
-export default deleteCompany;

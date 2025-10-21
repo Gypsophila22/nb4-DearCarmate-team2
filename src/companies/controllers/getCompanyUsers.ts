@@ -11,7 +11,7 @@ const SEARCHABLE_FIELDS = {
 } as const;
 type SearchBy = (typeof SEARCHABLE_FIELDS)[keyof typeof SEARCHABLE_FIELDS];
 
-async function getCompanyUsers(
+export async function getCompanyUsers(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -104,5 +104,3 @@ async function getCompanyUsers(
     next(err);
   }
 }
-
-export default { getCompanyUsers };
