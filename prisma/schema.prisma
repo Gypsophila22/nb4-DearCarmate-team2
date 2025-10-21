@@ -146,7 +146,7 @@ model Contracts {
   date           DateTime            @default(now())
   contractPrice  Int // 계약 금액
   status         ContractsStatus // 계약 상태
-  resolutionDate DateTime // 계약 종료일
+  resolutionDate DateTime? // 계약 종료일
   carId          Int                 @unique
   car            Cars                @relation(fields: [carId], references: [id]) // 차량
   customerId     Int

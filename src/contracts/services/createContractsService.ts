@@ -9,15 +9,6 @@ interface CreateContractInput {
   userId: number; // 계약 담당자
 }
 
-interface Alarm {
-  time: Date;
-}
-
-interface Meeting {
-  date: Date;
-  alarms: Alarm[];
-}
-
 export const createContractsService = async (data: CreateContractInput) => {
   // 차량 존재 확인 및 보유중인지 상태 체크
   const car = await contractRepository.findCar(data.carId);

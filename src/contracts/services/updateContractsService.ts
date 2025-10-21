@@ -51,8 +51,10 @@ export const updateContractsService = async (
       ...(data.contractPrice !== undefined && {
         contractPrice: { set: data.contractPrice },
       }),
-      ...(data.resolutionDate && {
-        resolutionDate: new Date(data.resolutionDate),
+      ...(data.resolutionDate !== undefined && {
+        resolutionDate: data.resolutionDate
+          ? new Date(data.resolutionDate)
+          : null,
       }),
       ...(data.userId && { user: { connect: { id: data.userId } } }),
       ...(data.customerId && {
@@ -149,7 +151,9 @@ export const updateContractsService = async (
   const response = {
     id: contractResponse.id,
     status: contractResponse.status,
-    resolutionDate: contractResponse.resolutionDate.toISOString(),
+    resolutionDate: contractResponse.resolutionDate
+      ? contractResponse.resolutionDate.toISOString()
+      : null,
     contractPrice: contractResponse.contractPrice,
     meetings: contractResponse.meetings.map((m) => ({
       date: m.date.toISOString().split('T')[0], // YYYY-MM-DD

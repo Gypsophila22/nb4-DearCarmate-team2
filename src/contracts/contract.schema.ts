@@ -34,7 +34,7 @@ export const ContractUpdateBodySchema = z
         'contractFailed', // 계약 실패
       ])
       .optional(),
-    resolutionDate: z.string().optional(),
+    resolutionDate: z.string().nullable().optional(),
     contractPrice: z.number().optional(),
     meetings: z
       .array(
