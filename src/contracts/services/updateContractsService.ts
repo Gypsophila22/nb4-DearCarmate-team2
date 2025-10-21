@@ -130,7 +130,11 @@ export const updateContractsService = async (
             return was === null && now === data.contractId; // 이번 PATCH로 null → 이 계약 id
           })
           .map((r) => r.id);
-        await sendContractDocsLinkedEmail(newlyLinked);
+        if (newlyLinked.length > 0) {
+          sendContractDocsLinkedEmail(newlyLinked)
+            .then(() => console.log('[email] sent'))
+            .catch((err) => console.error('[email] failed', err));
+        }
       }
     }
   }
