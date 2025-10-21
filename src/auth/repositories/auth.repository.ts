@@ -15,7 +15,7 @@ class AuthRepository {
           isAdmin: true,
           password: true,
           company: {
-            select: { companyCode: true },
+            select: { companyName: true },
           },
         },
       });
