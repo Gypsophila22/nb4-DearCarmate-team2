@@ -1,12 +1,6 @@
 import bcrypt from 'bcrypt';
-import {
-  PrismaClient,
-  CarStatus,
-  ContractsStatus,
-  Prisma,
-} from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { CarStatus, ContractsStatus, Prisma } from '@prisma/client';
+import prisma from '../src/lib/prisma.js';
 
 async function main() {
   // CarModel 테이블에 차종(모델) 데이터 추가

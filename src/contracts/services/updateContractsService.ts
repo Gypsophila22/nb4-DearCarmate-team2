@@ -4,6 +4,7 @@ import { ContractsStatus } from '@prisma/client';
 
 import prisma from '../../lib/prisma.js';
 import contractRepository from '../repositories/index.js';
+import { sendContractDocsLinkedEmail } from '../../contractDocuments/services/contract-document.send-email.service.js';
 
 // 계약 상태 변경
 interface UpdateContractInput {
@@ -43,26 +44,23 @@ export const updateContractsService = async (
   }
 
   // 계약 정보 업데이트 (undefined인 필드를 data 객체에서 제외)
-  const updatedContract = await contractRepository.update.updateContract(
-    data.contractId,
-    {
-      ...(data.status && { status: data.status }),
-      ...(data.contractPrice !== undefined && {
-        contractPrice: { set: data.contractPrice },
+  await contractRepository.update.updateContract(data.contractId, {
+    ...(data.status && { status: data.status }),
+    ...(data.contractPrice !== undefined && {
+      contractPrice: { set: data.contractPrice },
+    }),
+    ...(data.resolutionDate && {
+      resolutionDate: new Date(data.resolutionDate),
+    }),
+    ...(data.userId && { user: { connect: { id: data.userId } } }),
+    ...(data.customerId && {
+      customer: { connect: { id: data.customerId } },
+    }),
+    ...(data.carId !== undefined &&
+      data.carId !== null && {
+        car: { connect: { id: data.carId } },
       }),
-      ...(data.resolutionDate && {
-        resolutionDate: new Date(data.resolutionDate),
-      }),
-      ...(data.userId && { user: { connect: { id: data.userId } } }),
-      ...(data.customerId && {
-        customer: { connect: { id: data.customerId } },
-      }),
-      ...(data.carId !== undefined &&
-        data.carId !== null && {
-          car: { connect: { id: data.carId } },
-        }),
-    },
-  );
+  });
 
   // 미팅 정보 업데이트
   if (data.meetings) {
@@ -131,7 +129,7 @@ export const updateContractsService = async (
             return was === null && now === data.contractId; // 이번 PATCH로 null → 이 계약 id
           })
           .map((r) => r.id);
-        // await sendContractDocsLinkedEmail(newlyLinked);
+        await sendContractDocsLinkedEmail(newlyLinked);
       }
     }
   }
