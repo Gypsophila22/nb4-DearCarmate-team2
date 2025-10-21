@@ -20,54 +20,56 @@ export const customerUploadService = {
       errors: [] as { data: CustomerUploadData; error: any }[],
     };
 
-    for (const customerData of customers) {
-      try {
-        let existingCustomer;
-        if (customerData.이메일) {
-          existingCustomer = await prisma.customers.findUnique({
-            where: { email: customerData.이메일 },
-          });
-        } else if (customerData.연락처) {
-          existingCustomer = await prisma.customers.findUnique({
-            where: { phoneNumber: customerData.연락처 },
-          });
-        }
+    await prisma.$transaction(async (tx) => {
+      for (const customerData of customers) {
+        try {
+          let existingCustomer;
+          if (customerData.이메일) {
+            existingCustomer = await tx.customers.findUnique({
+              where: { email: customerData.이메일 },
+            });
+          } else if (customerData.연락처) {
+            existingCustomer = await tx.customers.findUnique({
+              where: { phoneNumber: customerData.연락처 },
+            });
+          }
 
-        if (existingCustomer) {
-          // 기존 고객이 있으면 업데이트
-          await prisma.customers.update({
-            where: { id: existingCustomer.id },
-            data: {
-              name: customerData.고객명,
-              gender: customerData.성별,
-              phoneNumber: customerData.연락처,
-              ageGroup: customerData.연령대,
-              region: customerData.지역,
-              email: customerData.이메일,
-              memo: customerData.메모,
-            },
-          });
-          results.updated++;
-        } else {
-          // 새 고객 생성
-          await prisma.customers.create({
-            data: {
-              name: customerData.고객명,
-              gender: customerData.성별,
-              phoneNumber: customerData.연락처,
-              ageGroup: customerData.연령대,
-              region: customerData.지역,
-              email: customerData.이메일,
-              memo: customerData.메모,
-            },
-          });
-          results.created++;
+          if (existingCustomer) {
+            // 기존 고객이 있으면 업데이트
+            await tx.customers.update({
+              where: { id: existingCustomer.id },
+              data: {
+                name: customerData.고객명,
+                gender: customerData.성별,
+                phoneNumber: customerData.연락처,
+                ageGroup: customerData.연령대,
+                region: customerData.지역,
+                email: customerData.이메일,
+                memo: customerData.메모,
+              },
+            });
+            results.updated++;
+          } else {
+            // 새 고객 생성
+            await tx.customers.create({
+              data: {
+                name: customerData.고객명,
+                gender: customerData.성별,
+                phoneNumber: customerData.연락처,
+                ageGroup: customerData.연령대,
+                region: customerData.지역,
+                email: customerData.이메일,
+                memo: customerData.메모,
+              },
+            });
+            results.created++;
+          }
+        } catch (error: any) {
+          results.failed++;
+          results.errors.push({ data: customerData, error: error.message });
         }
-      } catch (error: any) {
-        results.failed++;
-        results.errors.push({ data: customerData, error: error.message });
       }
-    }
+    });
 
     return results;
   },
