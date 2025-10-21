@@ -1,3 +1,5 @@
+import createError from 'http-errors';
+
 import { CarStatus, ContractsStatus } from '@prisma/client';
 
 import prisma from '../../lib/prisma.js';
@@ -14,7 +16,7 @@ export const createContractsRepository = {
         carModel: { select: { model: true } }, // 차량 이름
       },
     });
-    if (!car) throw new Error(`차량을 찾을 수 없습니다`);
+    if (!car) throw createError(404, '차량을 찾을 수 없습니다');
     return {
       id: car.id,
       price: car.price,
@@ -29,7 +31,7 @@ export const createContractsRepository = {
       where: { id: customerId },
       select: { id: true, name: true },
     });
-    if (!customer) throw new Error(`고객을 찾을 수 없습니다`);
+    if (!customer) throw createError(404, '고객을 찾을 수 없습니다');
     return customer;
   },
 
