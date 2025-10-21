@@ -1,43 +1,48 @@
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from 'express';
+import prisma from '../../lib/prisma.js';
 
-// 회사 목록 조회 (GET /admin/companies)
 async function getCompany(req: Request, res: Response, next: NextFunction) {
   try {
-    // 페이지네이션 파라미터 기본값 처리
-    const { page = "1", pageSize = "10" } = req.query;
+    res.setHeader('Cache-Control', 'no-store');
 
-    // 현 더미 데이터.
-    // 나중에는 prisma.companies.findMany()와 prisma.companies.count()로 교체 필요
-    const items = [
-      {
-        id: 1,
-        companyName: "코드카",
-        companyCode: "CARMATE123",
-        userCount: 5,
-        createdAt: new Date().toISOString(),
+    const DEFAULT_PAGE_NUM = 1;
+    const DEFAULT_PAGE_SIZE = 10;
+
+    const page = Number(req.query.page) || DEFAULT_PAGE_NUM;
+    const pageSize = Number(req.query.pageSize) || DEFAULT_PAGE_SIZE;
+    const skip = (page - 1) * pageSize;
+
+    const totalItemCount = await prisma.companies.count();
+
+    const companies = await prisma.companies.findMany({
+      skip,
+      take: pageSize,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        _count: { select: { user: true } },
       },
-      {
-        id: 2,
-        companyName: "오토모빌",
-        companyCode: "AUTO456",
-        userCount: 3,
-        createdAt: new Date().toISOString(),
-      },
-    ];
+    });
 
-    // 페이지 정보: 현 더미 데이터
-    // 실제 DB 연동 시 totalPages, totalItems를 prisma.count() 결과로 계산 필요. 
-    const pageInfo = {
-      page: Number(page),
-      pageSize: Number(pageSize),
-      totalPages: 1,
-      totalItems: items.length,
-    };
+    // ✅ _count.user -> userCount 로 변환
+    const items = companies.map((c) => ({
+      id: c.id,
+      companyName: c.companyName,
+      companyCode: c.companyCode,
+      userCount: c._count.user ?? 0,
+    }));
 
-    // 최종 응답 구조
-    return res.json({ success: true, data: { items, pageInfo } });
+    // ✅ 프론트 명세서 형식에 맞게 메타데이터 필드 구성
+    const totalPages = Math.ceil(totalItemCount / pageSize);
+    const currentPage = page;
+
+    // ✅ 응답 형식 수정
+    return res.status(200).json({
+      currentPage,
+      totalPages,
+      totalItemCount,
+      data: items,
+    });
   } catch (err) {
-    // 에러 발생 시 Express 에러 핸들러로 전달
     next(err);
   }
 }

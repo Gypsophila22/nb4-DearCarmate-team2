@@ -51,3 +51,16 @@ Authorization: Bearer {{accessToken}}
 # @name deleteCustomer
 DELETE {{baseUrl}}/customers/{{createCustomer.response.body.id}}
 Authorization: Bearer {{accessToken}}
+
+### 고객 CSV 대용량 업로드
+# @name uploadCustomersCsv
+POST {{baseUrl}}/customers/upload
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Authorization: Bearer {{accessToken}}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="csvfile"; filename="test-customer.csv"
+Content-Type: text/csv
+
+< ./test-customer.csv
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
