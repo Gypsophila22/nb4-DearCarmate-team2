@@ -28,7 +28,7 @@ export const createCarsService = async (
   }
 
   // 모델 id 넣어서 차량 데이터 생성
-  return createCarsRepository.create({
+  const car = await createCarsRepository.create({
     carNumber: data.carNumber,
     manufacturingYear: data.manufacturingYear,
     mileage: data.mileage,
@@ -41,4 +41,13 @@ export const createCarsService = async (
     },
     status: 'possession',
   });
+  return {
+    ...car,
+    carModel: {
+      id: carModel.id,
+      type: carModel.type,
+      manufacturer: carModel.manufacturer,
+      model: carModel.model,
+    },
+  };
 };
