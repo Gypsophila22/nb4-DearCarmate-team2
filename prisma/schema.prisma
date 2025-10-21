@@ -30,13 +30,13 @@ model Users {
 }
 
 model Companies {
-  id        Int         @id @default(autoincrement())
-  name      String
-  code      String      @unique
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @default(now()) @updatedAt
-  user      Users[]
-  customer  Customers[]
+  id          Int         @id @default(autoincrement())
+  companyName String
+  companyCode String      @unique
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now()) @updatedAt
+  user        Users[]
+  customer    Customers[]
 }
 
 model Cars {
@@ -78,15 +78,15 @@ enum CarStatus {
 }
 
 model Customers {
-  id          Int     @id @default(autoincrement())
-  name        String
-  gender      Gender
-  phoneNumber String
-  ageGroup    AgeGroup?
-  region      Region?
-  email       String?
+  id            Int         @id @default(autoincrement())
+  name          String
+  gender        Gender
+  phoneNumber   String
+  ageGroup      AgeGroup?
+  region        Region?
+  email         String?
   memo          String?
-  contractCount Int        @default(0)
+  contractCount Int         @default(0)
   contract      Contracts[]
 
   company   Companies @relation(fields: [companyId], references: [id])
