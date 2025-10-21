@@ -57,6 +57,7 @@ export const updateContractsService = async (
     ...(data.customerId && {
       customer: { connect: { id: data.customerId } },
     }),
+    }),
   });
 
   // 미팅 정보 업데이트
@@ -168,3 +169,167 @@ export const updateContractsService = async (
   };
   return response;
 };
+// import createError from 'http-errors';
+// import { ContractsStatus } from '@prisma/client';
+
+// import prisma from '../../lib/prisma.js';
+// import contractRepository from '../repositories/index.js';
+// import { sendContractDocsLinkedEmail } from '../../contractDocuments/services/contract-document.send-email.service.js';
+
+// interface UpdateContractInput {
+//   contractId: number;
+//   status?: ContractsStatus;
+//   resolutionDate?: string;
+//   contractPrice?: number;
+//   meetings?: { id?: number; date: string; alarms: string[] }[];
+//   contractDocuments?: { id?: number; fileName?: string }[];
+//   userId?: number;
+//   customerId?: number;
+//   carId?: number; // ← 들어올 수는 있으나 업데이트에서는 금지
+// }
+
+// export const updateContractsService = async (
+//   userId: number,
+//   data: UpdateContractInput,
+// ) => {
+//   console.log('패치 서비스 지나감');
+
+//   // 1) 계약 존재/권한
+//   const contract = await contractRepository.findContract(data.contractId);
+//   if (!contract) throw createError(404, '존재하지 않는 계약입니다');
+//   if (contract.userId !== userId)
+//     throw createError(403, '담당자만 수정이 가능합니다');
+
+//   // 2) 차량 변경 불가 정책 적용
+//   const isCarChanging =
+//     Object.prototype.hasOwnProperty.call(data, 'carId') &&
+//     data.carId !== null &&
+//     data.carId !== undefined &&
+//     data.carId !== contract.carId;
+
+//   if (isCarChanging) {
+//     // 정책상 금지
+//     throw createError(400, '계약 등록 후에는 차량을 변경할 수 없습니다.');
+//   }
+
+//   // 3) 업데이트 페이로드에서 carId는 아예 무시
+//   const { carId: _ignoredCarId, ...rest } = data;
+//   void _ignoredCarId;
+
+//   // 4) 본 계약 필드 업데이트 (car connect 없음)
+//   await contractRepository.update.updateContract(data.contractId, {
+//     ...(rest.status && { status: rest.status }),
+//     ...(rest.contractPrice !== undefined && {
+//       contractPrice: { set: rest.contractPrice },
+//     }),
+//     ...(rest.resolutionDate && {
+//       resolutionDate: new Date(rest.resolutionDate),
+//     }),
+//     ...(rest.userId && { user: { connect: { id: rest.userId } } }),
+//     ...(rest.customerId && { customer: { connect: { id: rest.customerId } } }),
+//   });
+
+//   // 5) 미팅 정보 업데이트
+//   if (rest.meetings) {
+//     if (rest.meetings.length === 0) {
+//       await prisma.alarms.deleteMany({
+//         where: { meeting: { contractId: data.contractId } },
+//       });
+//       await prisma.meetings.deleteMany({
+//         where: { contractId: data.contractId },
+//       });
+//     } else {
+//       await contractRepository.update.updateMeetings(
+//         data.contractId,
+//         rest.meetings,
+//       );
+//     }
+//   }
+
+//   // 6) 계약 문서 업데이트
+//   if (rest.contractDocuments !== undefined) {
+//     const touchingIds = rest.contractDocuments
+//       .map((d) => d?.id)
+//       .filter((v): v is number => typeof v === 'number');
+//     const beforeRows = touchingIds.length
+//       ? await prisma.contractDocuments.findMany({
+//           where: { id: { in: touchingIds } },
+//           select: { id: true, contractId: true },
+//         })
+//       : [];
+//     const beforeMap = new Map(beforeRows.map((r) => [r.id, r.contractId]));
+
+//     if (rest.contractDocuments.length === 0) {
+//       await prisma.contractDocuments.updateMany({
+//         where: { contractId: data.contractId },
+//         data: { contractId: null },
+//       });
+//     } else {
+//       const validDocs = rest.contractDocuments.filter(
+//         (doc): doc is { id: number; fileName: string } =>
+//           !!doc.id && !!doc.fileName,
+//       );
+
+//       if (validDocs.length > 0) {
+//         await contractRepository.update.updateContractDocuments(
+//           data.contractId,
+//           validDocs.map((doc) => ({
+//             id: doc.id,
+//             originalName: doc.fileName,
+//           })),
+//         );
+
+//         const afterRows = await prisma.contractDocuments.findMany({
+//           where: { id: { in: validDocs.map((d) => d.id) } },
+//           select: { id: true, contractId: true },
+//         });
+
+//         const newlyLinked = afterRows
+//           .filter((row) => {
+//             const was = beforeMap.get(row.id) ?? null;
+//             const now = row.contractId ?? null;
+//             return was === null && now === data.contractId;
+//           })
+//           .map((r) => r.id);
+
+//         if (newlyLinked.length > 0) {
+//           sendContractDocsLinkedEmail(newlyLinked)
+//             .then(() => console.log('[email] sent'))
+//             .catch((err) => console.error('[email] failed', err));
+//         }
+//       }
+//     }
+//   }
+
+//   // 7) 최종 조회/응답
+//   const contractResponse = await contractRepository.update.findByIdForResponse(
+//     data.contractId,
+//   );
+//   if (!contractResponse) throw createError(404, '계약을 찾을 수 없습니다.');
+
+//   const response = {
+//     id: contractResponse.id,
+//     status: contractResponse.status,
+//     resolutionDate: contractResponse.resolutionDate.toISOString(),
+//     contractPrice: contractResponse.contractPrice,
+//     meetings: contractResponse.meetings.map((m) => ({
+//       date: m.date.toISOString().split('T')[0], // YYYY-MM-DD
+//       alarms: m.alarms.map((a) => a.time.toISOString()),
+//     })),
+//     user: {
+//       id: contractResponse.user.id,
+//       name: contractResponse.user.name,
+//     },
+//     customer: {
+//       id: contractResponse.customer.id,
+//       name: contractResponse.customer.name,
+//     },
+//     car: {
+//       id: contractResponse.car.id,
+//       model: contractResponse.car.carModel.model,
+//     },
+//   };
+
+//   console.log('[svc:updateContracts] EXIT', { id: data.contractId });
+//   return response;
+// };
