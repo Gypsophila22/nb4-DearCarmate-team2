@@ -2,13 +2,13 @@ import type { Gender } from '@prisma/client';
 import prisma from '../../lib/prisma.ts';
 
 interface CustomerUploadData {
-  고객명: string;
-  성별: Gender;
-  연락처: string;
-  연령대?: string;
-  지역?: string;
-  이메일?: string;
-  메모?: string;
+  customerName: string;
+  gender: Gender;
+  phoneNumber: string;
+  ageGroup?: string;
+  region?: string;
+  email?: string;
+  memo?: string;
 }
 
 export const customerUploadService = {
@@ -17,20 +17,20 @@ export const customerUploadService = {
       created: 0,
       updated: 0,
       failed: 0,
-      errors: [] as { data: CustomerUploadData; error: any }[],
+      errors: [] as { data: CustomerUploadData; error: string }[],
     };
 
     await prisma.$transaction(async (tx) => {
       for (const customerData of customers) {
         try {
           let existingCustomer;
-          if (customerData.이메일) {
-            existingCustomer = await tx.customers.findUnique({
-              where: { email: customerData.이메일 },
+          if (customerData.email) {
+            existingCustomer = await tx.customers.findFirst({
+              where: { email: customerData.email },
             });
-          } else if (customerData.연락처) {
-            existingCustomer = await tx.customers.findUnique({
-              where: { phoneNumber: customerData.연락처 },
+          } else if (customerData.phoneNumber) {
+            existingCustomer = await tx.customers.findFirst({
+              where: { phoneNumber: customerData.phoneNumber },
             });
           }
 
@@ -39,13 +39,13 @@ export const customerUploadService = {
             await tx.customers.update({
               where: { id: existingCustomer.id },
               data: {
-                name: customerData.고객명,
-                gender: customerData.성별,
-                phoneNumber: customerData.연락처,
-                ageGroup: customerData.연령대,
-                region: customerData.지역,
-                email: customerData.이메일,
-                memo: customerData.메모,
+                name: customerData.customerName,
+                gender: customerData.gender,
+                phoneNumber: customerData.phoneNumber,
+                ageGroup: customerData.ageGroup,
+                region: customerData.region,
+                email: customerData.email,
+                memo: customerData.memo,
               },
             });
             results.updated++;
@@ -53,20 +53,20 @@ export const customerUploadService = {
             // 새 고객 생성
             await tx.customers.create({
               data: {
-                name: customerData.고객명,
-                gender: customerData.성별,
-                phoneNumber: customerData.연락처,
-                ageGroup: customerData.연령대,
-                region: customerData.지역,
-                email: customerData.이메일,
-                memo: customerData.메모,
+                name: customerData.customerName,
+                gender: customerData.gender,
+                phoneNumber: customerData.phoneNumber,
+                ageGroup: customerData.ageGroup,
+                region: customerData.region,
+                email: customerData.email,
+                memo: customerData.memo,
               },
             });
             results.created++;
           }
-        } catch (error: any) {
+        } catch (error: unknown) {
           results.failed++;
-          results.errors.push({ data: customerData, error: error.message });
+          results.errors.push({ data: customerData, error: error instanceof Error ? error.message : 'Unknown error' });
         }
       }
     });
