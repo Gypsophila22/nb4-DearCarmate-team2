@@ -1,6 +1,9 @@
-import express, { NextFunction, Request, Response, type } from 'express';
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from 'express';
 import passport from 'passport';
-
 import companyController from '../companies/controllers/index.js';
 
 const router = express.Router();

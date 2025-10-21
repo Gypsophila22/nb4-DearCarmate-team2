@@ -1,6 +1,6 @@
 import express from 'express';
-
 import passports from '../lib/passport/index.js';
+
 import { userController } from '../users/controllers/user.controller.js';
 import { userSchema } from '../users/schemas/user.schema.js';
 

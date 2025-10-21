@@ -1,13 +1,14 @@
 import { Router } from 'express';
-
 import {
   createCustomer,
+  getCustomers,
+  updateCustomer,
   deleteCustomer,
   getCustomerById,
 } from '../customers/controllers/index.js';
 import {
-  upload,
   uploadCustomers,
+  upload,
 } from '../customers/controllers/uploadCustomers.js';
 import passports from '../lib/passport/index.js';
 

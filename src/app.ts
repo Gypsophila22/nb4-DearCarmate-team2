@@ -1,21 +1,22 @@
-import cors from 'cors';
-import * as dotenv from 'dotenv';
 import express, {
-  NextFunction,
   request,
-  Request,
-  Response,
   Router,
-  type,
+  type NextFunction,
+  type Request,
+  type Response,
 } from 'express';
-import passport from 'passport';
+import cors from 'cors';
 import path from 'path';
+import passport from 'passport';
 
 import errorHandler from './middlewares/errorHandler.js';
 import { requestLogger } from './middlewares/logger.js';
 import routers from './routers/index.js';
 
+import * as dotenv from 'dotenv';
+
 dotenv.config();
+
 
 const app = express();
 
@@ -191,8 +192,7 @@ testrouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     },
   });
 });
-
-// app.use('/contracts', testrouter);
+app.use('/contracts', testrouter);
 
 app.use(errorHandler);
 

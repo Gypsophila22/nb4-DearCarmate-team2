@@ -25,11 +25,10 @@ model Users {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now()) @updatedAt
 
-  company           Companies           @relation(fields: [companyId], references: [id])
-  companyId         Int
-  contract          Contracts[]
-  uploadedDocuments ContractDocuments[]
+  company   Companies @relation(fields: [companyId], references: [id])
+  companyId Int
 }
+
 
 model Companies {
   id          Int         @id @default(autoincrement())
@@ -171,30 +170,22 @@ model Alarms {
 }
 
 model ContractDocuments {
-  id Int @id @default(autoincrement())
-
-  // 업로드 파일 메타
-  originalName String // 사용자가 올린 파일명
-  storedName   String // 서버에 저장한 파일명(중복방지)
+  id           Int      @id @default(autoincrement())
+  companyId    Int
+  contractId   Int? // ← nullable (임시 업로드 허용)
+  uploaderId   Int
+  originalName String
+  storedName   String
   mimeType     String
   size         Int
-  path         String? // LOCAL일 때 경로
+  path         String?
   url          String?
+  createdAt    DateTime @default(now())
 
-  // 소유/관계
-  contractId Int?
-  contract   Contracts? @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  company  Companies  @relation(fields: [companyId], references: [id])
+  contract Contracts? @relation(fields: [contractId], references: [id])
+  uploader Users      @relation(fields: [uploaderId], references: [id])
 
-  uploaderId Int // 업로더
-  uploader   Users @relation(fields: [uploaderId], references: [id])
-
-  companyId Int // 회사 경계(질의/권한 체크 편의)
-  company   Companies @relation(fields: [companyId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([contractId])
   @@index([companyId])
-  @@index([uploaderId])
+  @@index([contractId])
 }
