@@ -35,7 +35,7 @@ export async function sendContractDocsLinkedEmail(docIds: number[]) {
       : '계약 차량';
 
     const text = [
-      `${doc.contract.customer?.name ?? '고객님'}, 안녕하세요.`,
+      `${doc.contract.customer?.name ?? '고객님'} 님, 안녕하세요.`,
       '요청하신 계약서가 업로드되어 계약에 연결되었습니다.',
       `- 차량: ${carLabel}`,
       `- 파일명: ${doc.originalName}`,
