@@ -8,7 +8,7 @@ import {
 } from "../customers/controllers/index.js";
 import { uploadCustomers, upload } from "../customers/controllers/uploadCustomers.js";
 import { validate } from '../middlewares/validate.zod.js';
-import customerValidation from '../customers/schemas/index.js';
+import { customerValidation } from '../customers/schemas/index.js';
 import passports from '../lib/passport/index.js';
 
 const customersRouter = Router();

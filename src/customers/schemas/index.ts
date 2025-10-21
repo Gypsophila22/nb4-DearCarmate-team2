@@ -7,7 +7,7 @@ import {
   customerCsvRowSchema,
 } from './customers.schema.js';
 
-export const customerValidation = {
+const customerValidation = {
   getCustomersSchema,
   createCustomerSchema,
   updateCustomerSchema,
