@@ -8,13 +8,23 @@ import { contractDocumentRepository } from '../repositories/contract-document.re
 
 type Actor = { id: number; companyId: number; isAdmin?: boolean };
 
+const UPLOADS_ROOT = path.join(process.cwd(), 'uploads');
+const DOC_BASE = path.join(UPLOADS_ROOT, 'contract-documents');
+
 function absPathOrDefault(relPath: string | null | undefined, stored: string) {
-  const base = path.join(process.cwd(), 'uploads', 'contract-documents');
-  if (relPath)
-    return path.isAbsolute(relPath)
+  // 상대경로면 cwd가 아니라 uploads/
+  const candidate = relPath
+    ? path.isAbsolute(relPath)
       ? relPath
-      : path.join(process.cwd(), relPath);
-  return path.join(base, stored);
+      : path.join(UPLOADS_ROOT, relPath)
+    : path.join(DOC_BASE, stored);
+
+  const abs = path.normalize(candidate);
+  // uploads 밖으로 벗어나는 경로 차단
+  if (!abs.startsWith(path.normalize(UPLOADS_ROOT))) {
+    throw createError(400, '잘못된 경로입니다');
+  }
+  return abs;
 }
 
 export async function downloadDocumentService(args: {
