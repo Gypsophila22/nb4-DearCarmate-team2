@@ -59,18 +59,19 @@ export const getCustomerByIdSchema = z.object({
 });
 
 export const customerCsvRowSchema = z.object({
-  customerName: z.string().min(1, '고객명은 필수입니다.'),
+  name: z.string().min(1, '고객명은 필수입니다.'),
+  email: z.string().email('유효하지 않은 이메일 형식입니다.').optional(),
   gender: z.enum(['male', 'female'], {
     message: '성별은 male 또는 female이어야 합니다.',
   }),
-  contact: z
+  phoneNumber: z
     .string()
     .regex(
       /^\d{2,4}-\d{3,4}-\d{4}$|^\d{9,11}$/,
       '유효한 연락처 형식이 아닙니다.',
     ),
-  ageGroup: z.string().optional(), // '20대', '30대' 등등
-  email: z.string().email('유효한 이메일 형식이 아닙니다.').optional(),
+  region: z.string().optional(),
+  ageGroup: z.string().optional(),
   memo: z.string().optional(),
 });
 

@@ -43,7 +43,6 @@ export const customerUploadService = {
           const message =
             error instanceof Error ? error.message : String(error);
           results.errors.push({ data: customerData, error: message });
-          throw error;
         }
       }
     });

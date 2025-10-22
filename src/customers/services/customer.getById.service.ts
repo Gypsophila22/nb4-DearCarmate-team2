@@ -1,6 +1,6 @@
 import { customerRepository } from '../repositories/index.js';
 import createError from 'http-errors';
-import { mapAgeGroupToKorean } from '../utils/customer.mapper.js';
+import { mapAgeGroupToKorean, mapRegionToKorean } from '../utils/customer.mapper.js';
 
 export const customerGetByIdService = {
   getCustomerById: async (id: number, companyId: number) => {
@@ -13,6 +13,7 @@ export const customerGetByIdService = {
     return {
       ...customer,
       ageGroup: mapAgeGroupToKorean(customer.ageGroup),
+      region: mapRegionToKorean(customer.region),
     };
   },
 };

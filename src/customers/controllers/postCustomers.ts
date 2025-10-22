@@ -1,7 +1,8 @@
+import { AgeGroup } from '@prisma/client';
+import type { CreateCustomerBody } from '../schemas/customers.schema.js';
 import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { customerCreateService } from '../services/customer.create.service.js';
-import type { CreateCustomerBody } from '../schemas/customers.schema.js';
 
 export const createCustomer = async (
   req: Request,

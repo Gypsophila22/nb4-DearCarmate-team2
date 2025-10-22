@@ -77,14 +77,33 @@ export const customerRepository = {
   },
 
   findByEmail: async (email: string, tx?: Prisma.TransactionClient) => {
-    return (tx || prisma).customers.findUnique({ where: { email } });
+    return (tx || prisma).customers.findFirst({ where: { email } });
   },
 
   findByPhoneNumber: async (
     phoneNumber: string,
     tx?: Prisma.TransactionClient,
   ) => {
-    return (tx || prisma).customers.findUnique({ where: { phoneNumber } });
+    return (tx || prisma).customers.findFirst({ where: { phoneNumber } });
+  },
+
+  updateFromCsv: async (
+    id: number,
+    data: CustomerCsvRow,
+    tx?: Prisma.TransactionClient,
+  ) => {
+    return (tx || prisma).customers.update({
+      where: { id },
+      data: {
+        name: data.name,
+        gender: data.gender,
+        phoneNumber: data.phoneNumber,
+        ageGroup: data.ageGroup,
+        email: data.email,
+        memo: data.memo,
+        region: data.region,
+      },
+    });
   },
 
   createFromCsv: async (
@@ -94,12 +113,13 @@ export const customerRepository = {
   ) => {
     return (tx || prisma).customers.create({
       data: {
-        name: data.고객명,
-        gender: data.성별,
-        phoneNumber: data.연락처,
-        ageGroup: data.연령대,
-        email: data.이메일,
-        memo: data.메모,
+        name: data.name,
+        gender: data.gender,
+        phoneNumber: data.phoneNumber,
+        ageGroup: data.ageGroup,
+        email: data.email,
+        memo: data.memo,
+        region: data.region,
         company: {
           connect: { id: companyId },
         },

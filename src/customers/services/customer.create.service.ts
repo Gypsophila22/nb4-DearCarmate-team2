@@ -12,6 +12,22 @@ const ageGroupMap: Record<string, AgeGroup> = {
   '60대': AgeGroup.GENERATION_60,
   '70대': AgeGroup.GENERATION_70,
   '80대': AgeGroup.GENERATION_80,
+  [AgeGroup.GENERATION_10]: AgeGroup.GENERATION_10,
+  [AgeGroup.GENERATION_20]: AgeGroup.GENERATION_20,
+  [AgeGroup.GENERATION_30]: AgeGroup.GENERATION_30,
+  [AgeGroup.GENERATION_40]: AgeGroup.GENERATION_40,
+  [AgeGroup.GENERATION_50]: AgeGroup.GENERATION_50,
+  [AgeGroup.GENERATION_60]: AgeGroup.GENERATION_60,
+  [AgeGroup.GENERATION_70]: AgeGroup.GENERATION_70,
+  [AgeGroup.GENERATION_80]: AgeGroup.GENERATION_80,
+  '10-20': AgeGroup.GENERATION_10,
+  '20-30': AgeGroup.GENERATION_20,
+  '30-40': AgeGroup.GENERATION_30,
+  '40-50': AgeGroup.GENERATION_40,
+  '50-60': AgeGroup.GENERATION_50,
+  '60-70': AgeGroup.GENERATION_60,
+  '70-80': AgeGroup.GENERATION_70,
+  '80대 이상': AgeGroup.GENERATION_80,
 };
 
 export const customerCreateService = {

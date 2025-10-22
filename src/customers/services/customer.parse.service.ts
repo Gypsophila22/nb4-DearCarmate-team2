@@ -16,6 +16,18 @@ const ageGroupMap: Record<string, AgeGroup> = {
   '80대': AgeGroup.GENERATION_80,
 };
 
+const getAgeGroupFromRange = (ageRange: string | undefined | null): AgeGroup | null => {
+  if (!ageRange) return null;
+
+  const match = ageRange.match(/^(\d{2})-\d{2}$/);
+  if (match && match[1]) {
+    const decade = `${match[1]}대`;
+    return ageGroupMap[decade] || null;
+  }
+
+  return ageGroupMap[ageRange] || null;
+};
+
 export const customerParseService = {
   async parseAndValidateCsv(buffer: Buffer) {
     const results: z.infer<typeof customerCsvRowSchema>[] = [];
@@ -37,7 +49,7 @@ export const customerParseService = {
           if (parsed.success) {
             const transformedData = {
               ...parsed.data,
-              ageGroup: parsed.data.ageGroup ? ageGroupMap[parsed.data.ageGroup] : null,
+              ageGroup: getAgeGroupFromRange(parsed.data.ageGroup), // Use the helper function
             };
             results.push(transformedData);
           } else {
