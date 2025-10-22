@@ -86,7 +86,7 @@ export const createContractsRepository = {
         customerId: data.customerId, // 고객
         userId: data.userId, // 로그인 사용자 (계약 담당자))
         status: ContractsStatus.carInspection, // 계약 상태: 차량 확인
-        resolutionDate: new Date(), // 계약 완료 시간
+        resolutionDate: null, // 계약 완료 시간
         contractPrice: data.contractPrice, // 차량 가격 기본값
       },
     });

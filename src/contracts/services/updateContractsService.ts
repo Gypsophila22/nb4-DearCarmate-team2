@@ -35,13 +35,8 @@ export const updateContractsService = async (
     // 차량 존재 확인 및 보유중인지 체크
     const car = await contractRepository.findCar(data.carId);
     if (!car) {
-      throw new Error('존재하지 않는 차량입니다');
+      throw createError(404, '존재하지 않는 차량입니다');
     }
-    // 기존 보유중 상태로 조회 -> 계약 연결 없는 차량 조회로 변경되면서 필요없어짐
-    // if (car.status !== 'possession') {
-    //   // 보유 중인 차량만 계약 가능
-    //   throw new Error('보유 중인 차량이 아닙니다');
-    // }
   }
 
   // 계약 정보 업데이트 (undefined인 필드를 data 객체에서 제외)
@@ -50,13 +45,19 @@ export const updateContractsService = async (
     ...(data.contractPrice !== undefined && {
       contractPrice: { set: data.contractPrice },
     }),
-    ...(data.resolutionDate && {
-      resolutionDate: new Date(data.resolutionDate),
+    ...(data.resolutionDate !== undefined && {
+      resolutionDate: data.resolutionDate
+        ? new Date(data.resolutionDate)
+        : null,
     }),
     ...(data.userId && { user: { connect: { id: data.userId } } }),
     ...(data.customerId && {
       customer: { connect: { id: data.customerId } },
     }),
+    ...(data.carId !== undefined &&
+      data.carId !== null && {
+        car: { connect: { id: data.carId } },
+      }),
   });
 
   // 미팅 정보 업데이트
@@ -147,7 +148,9 @@ export const updateContractsService = async (
   const response = {
     id: contractResponse.id,
     status: contractResponse.status,
-    resolutionDate: contractResponse.resolutionDate.toISOString(),
+    resolutionDate: contractResponse.resolutionDate
+      ? contractResponse.resolutionDate.toISOString()
+      : null,
     contractPrice: contractResponse.contractPrice,
     meetings: contractResponse.meetings.map((m) => ({
       date: m.date.toISOString().split('T')[0], // YYYY-MM-DD

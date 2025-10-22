@@ -1,3 +1,4 @@
+import createError from 'http-errors';
 import prisma from '../../lib/prisma.js';
 
 import type { Prisma } from '@prisma/client';
@@ -66,7 +67,10 @@ export const updateContractsRepository = {
     const meetingPromises = meetings.map(async (m) => {
       const meetingDate = new Date(m.date);
       if (isNaN(meetingDate.getTime())) {
-        throw new Error(`Invalid meeting date: ${m.date}`);
+        throw createError(
+          400,
+          `유효하지 않은 미팅입니다. 입력된 값: ${m.date}`,
+        );
       }
 
       const meeting = await prisma.meetings.create({
@@ -76,7 +80,10 @@ export const updateContractsRepository = {
       const alarmPromises = (m.alarms || []).map((alarmTime) => {
         const alarmDate = new Date(alarmTime);
         if (isNaN(alarmDate.getTime())) {
-          throw new Error(`Invalid alarm time: ${alarmTime}`);
+          throw createError(
+            400,
+            `유효하지 않은 알람입니다. 입력된 값: ${m.date}`,
+          );
         }
 
         return prisma.alarms.create({
