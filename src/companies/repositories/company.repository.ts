@@ -1,13 +1,15 @@
-import prisma from "../../lib/prisma.js";
+import prisma from '../../lib/prisma.js';
 
 export const companyRepository = {
   // 회사 수정
   async updateCompanyById(
     companyId: number,
-    data: { companyName: string; companyCode: string }
+    data: { companyName: string; companyCode: string },
   ) {
-    const exist = await prisma.companies.findUnique({ where: { id: companyId } });
-    if (!exist) throw new Error("존재하지 않는 회사입니다");
+    const exist = await prisma.companies.findUnique({
+      where: { id: companyId },
+    });
+    if (!exist) throw new Error('존재하지 않는 회사입니다');
 
     const company = await prisma.companies.update({
       where: { id: companyId },
@@ -43,16 +45,20 @@ export const companyRepository = {
   // 회사 삭제
   async deleteCompanyById(companyId: number) {
     await prisma.companies.delete({ where: { id: companyId } });
-    return { message: "회사 삭제 성공" };
+    return { message: '회사 삭제 성공' };
   },
 
-  
   // 회사 목록 조회
-  async findAll(page: number, pageSize: number, searchBy?: string, keyword?: string) {
+  async findAll(
+    page: number,
+    pageSize: number,
+    searchBy?: string,
+    keyword?: string,
+  ) {
     const skip = (page - 1) * pageSize;
     const where = keyword
       ? {
-          [searchBy ?? "companyName"]: {
+          [searchBy ?? 'companyName']: {
             contains: keyword,
           },
         }
@@ -76,7 +82,7 @@ export const companyRepository = {
     page: number,
     pageSize: number,
     searchBy?: string,
-    keyword?: string
+    keyword?: string,
   ) {
     const skip = (page - 1) * pageSize;
 
@@ -85,7 +91,7 @@ export const companyRepository = {
     // 검색 조건 처리
     if (keyword) {
       switch (searchBy) {
-        case "companyName":
+        case 'companyName':
           where = {
             company: {
               companyName: {
@@ -94,10 +100,10 @@ export const companyRepository = {
             },
           };
           break;
-        case "name":
+        case 'name':
           where = { name: { contains: keyword } };
           break;
-        case "email":
+        case 'email':
           where = { email: { contains: keyword } };
           break;
         default:
@@ -126,9 +132,8 @@ export const companyRepository = {
   },
 
   async findById(companyId: number) {
-  return prisma.companies.findUnique({
-    where: { id: companyId },
-  });
-},
-
+    return prisma.companies.findUnique({
+      where: { id: companyId },
+    });
+  },
 };

@@ -1,6 +1,6 @@
-import { Prisma } from "@prisma/client";
-import type { Request, Response } from "express";
-import prisma from "../../lib/prisma.js";
+import { Prisma } from '@prisma/client';
+import type { Request, Response } from 'express';
+import prisma from '../../lib/prisma.js';
 export const getCustomers = async (req: Request, res: Response) => {
   try {
     // 로그인한 유저의 회사 ID를 가져옵니다

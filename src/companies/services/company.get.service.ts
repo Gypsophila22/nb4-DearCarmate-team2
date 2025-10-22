@@ -1,16 +1,16 @@
-import { companyRepository } from "../repositories/company.repository.js";
+import { companyRepository } from '../repositories/company.repository.js';
 
 export const getCompanyService = async (
   page: number,
   pageSize: number,
   searchBy?: string,
-  keyword?: string
+  keyword?: string,
 ) => {
   const { companies, totalItemCount } = await companyRepository.findAll(
     page,
     pageSize,
     searchBy,
-    keyword
+    keyword,
   );
 
   const totalPages = Math.ceil(totalItemCount / pageSize);
