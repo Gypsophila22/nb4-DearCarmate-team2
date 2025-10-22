@@ -1,9 +1,9 @@
 // controllers/companies/index.ts
-import { createCompany } from './postCompany.js';
-import { getCompany } from './getCompany.js';
-import { getCompanyUsers } from './getCompanyUsers.js';
-import { patchCompany } from './patchCompany.js';
-import { deleteCompany } from './deleteCompany.js';
+import { createCompany } from './company.postcontroller.js';
+import { getCompany } from './company.get.controller.js';
+import { getCompanyUsers } from './company.getUsers.controller.js';
+import { patchCompany } from './company.patch.controller.js';
+import { deleteCompany } from './company.delete.controller.js';
 
 export const companyController = {
   createCompany,
