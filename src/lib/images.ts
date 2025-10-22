@@ -26,7 +26,9 @@ function fileFilter(
 ) {
   // 허용 확장자 (jpeg, png, webp, gif)
   const ok = /image\/(jpeg|png|webp|gif)/.test(file.mimetype);
-  if (!ok) return cb(createError(415, '이미지 파일만 업로드할 수 있습니다.'));
+  if (!ok) {
+    return cb(createError(415, '이미지 파일만 업로드할 수 있습니다.'));
+  }
   cb(null, true);
 }
 
