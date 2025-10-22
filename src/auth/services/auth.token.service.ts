@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
 import createError from 'http-errors';
-import { TOKEN } from '../config/token.js';
+import { TOKEN } from '../config/token.const.js';
 
 type JwtPayload = { id: number; tokenVersion?: number };
 
-class TokenService {
+class AuthTokenService {
   signAccessToken(payload: JwtPayload) {
     return jwt.sign(payload, TOKEN.access.secret, {
       expiresIn: TOKEN.access.expiresIn,
@@ -46,4 +46,4 @@ class TokenService {
   }
 }
 
-export const tokenService = new TokenService();
+export const authTokenService = new AuthTokenService();
