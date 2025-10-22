@@ -128,8 +128,8 @@ export const updateContractsService = async (
           .map((r) => r.id);
         if (newlyLinked.length > 0) {
           sendContractDocsLinkedEmail(newlyLinked)
-            .then(() => console.log('[email] sent'))
-            .catch((err) => console.error('[email] failed', err));
+            .then(() => console.log('[email] 발송 완료'))
+            .catch((err) => console.error('[email] 발송 실패', err));
         }
       }
     }

@@ -2,11 +2,6 @@ import nodemailer from 'nodemailer';
 
 const { EMAIL_SERVICE, EMAIL_USER, EMAIL_PASS, MAIL_FROM } = process.env;
 
-// 테스트용 개인 이메일 > 개인 이메일
-if (!EMAIL_SERVICE || !EMAIL_USER || !EMAIL_PASS) {
-  throw new Error('ENV가 부족해요: EMAIL_SERVICE, EMAIL_USER, EMAIL_PASS 확인');
-}
-
 // transporter는 싱글턴으로 재사용
 const transporter = nodemailer.createTransport({
   service: EMAIL_SERVICE, // 'gmail' 등
@@ -33,17 +28,17 @@ export async function sendMail(opts: {
   from?: string; // 미지정 시 MAIL_FROM/EMAIL_USER 사용
 }) {
   const from = opts.from ?? MAIL_FROM ?? EMAIL_USER!;
-  const t0 = Date.now();
+  // const t0 = Date.now();
   const info = await transporter.sendMail({ from, ...opts });
-  const ms = Date.now() - t0;
+  // const ms = Date.now() - t0;
 
-  console.log('[mail:sent]', {
-    to: opts.to,
-    subject: opts.subject,
-    ms,
-    accepted: info.accepted,
-    rejected: info.rejected,
-  });
+  // console.log('[mail:sent]', {
+  //   to: opts.to,
+  //   subject: opts.subject,
+  //   ms,
+  //   accepted: info.accepted,
+  //   rejected: info.rejected,
+  // });
 
   return info;
 }
