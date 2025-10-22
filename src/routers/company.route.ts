@@ -6,6 +6,8 @@ import express, {
 import passport from 'passport';
 import { companyController } from '../companies/controllers/index.js';
 import { checkAdmin } from '../middlewares/checkAdmin.js';
+import { validate } from '../middlewares/validate.js';
+import { getCompanyQuerySchema } from '../companies/schemas/company.get.schema.js';
 
 const router = express.Router();
 
@@ -21,6 +23,7 @@ router.post(
 router.get(
   '/',
   passport.authenticate('jwt', { session: false }),
+  validate(getCompanyQuerySchema),
   checkAdmin,
   companyController.getCompany,
 );
