@@ -1,6 +1,18 @@
-import { Prisma } from "@prisma/client";
+import { AgeGroup, Prisma } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../lib/prisma.js";
+
+const ageGroupDisplayMap: { [key in AgeGroup]: string } = {
+  [AgeGroup.GENERATION_10]: '10대',
+  [AgeGroup.GENERATION_20]: '20대',
+  [AgeGroup.GENERATION_30]: '30대',
+  [AgeGroup.GENERATION_40]: '40대',
+  [AgeGroup.GENERATION_50]: '50대',
+  [AgeGroup.GENERATION_60]: '60대',
+  [AgeGroup.GENERATION_70]: '70대',
+  [AgeGroup.GENERATION_80]: '80대',
+};
+
 export const getCustomers = async (req: Request, res: Response) => {
   try {
     // 로그인한 유저의 회사 ID를 가져옵니다
@@ -47,8 +59,15 @@ export const getCustomers = async (req: Request, res: Response) => {
 
     const totalPages = Math.ceil(totalCustomers / pageSize);
 
+    const transformedCustomers = customers.map((customer) => ({
+      ...customer,
+      ageGroup: customer.ageGroup
+        ? ageGroupDisplayMap[customer.ageGroup as AgeGroup]
+        : null,
+    }));
+
     res.status(200).json({
-      data: customers,
+      data: transformedCustomers,
       currentPage: page,
       totalPages,
     });
