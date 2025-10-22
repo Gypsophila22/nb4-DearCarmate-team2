@@ -42,10 +42,9 @@ model Companies {
   ContractDocuments ContractDocuments[]
 }
 
-
 model Cars {
   id                Int        @id @unique @default(autoincrement())
-  carNumber         String
+  carNumber         String     @unique
   manufacturingYear Int
   mileage           Int
   price             Int
