@@ -1,8 +1,12 @@
 import prisma from '../../lib/prisma.js';
 
-import type { Request, Response } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 // TODO: 정리
-export const deleteCarController = async (req: Request, res: Response) => {
+export const deleteCarController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: '로그인이 필요합니다.' });
@@ -30,7 +34,7 @@ export const deleteCarController = async (req: Request, res: Response) => {
     });
 
     res.status(200).json({ message: '차량 삭제 성공' });
-  } catch (err: any) {
-    res.status(500).json({ message: err.message });
+  } catch (err) {
+    next(err);
   }
 };
