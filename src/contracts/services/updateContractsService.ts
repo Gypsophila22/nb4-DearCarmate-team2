@@ -39,28 +39,25 @@ export const updateContractsService = async (
   }
 
   // 계약 정보 업데이트 (undefined인 필드를 data 객체에서 제외)
-  const updatedContract = await contractRepository.update.updateContract(
-    data.contractId,
-    {
-      ...(data.status && { status: data.status }),
-      ...(data.contractPrice !== undefined && {
-        contractPrice: { set: data.contractPrice },
+  await contractRepository.update.updateContract(data.contractId, {
+    ...(data.status && { status: data.status }),
+    ...(data.contractPrice !== undefined && {
+      contractPrice: { set: data.contractPrice },
+    }),
+    ...(data.resolutionDate !== undefined && {
+      resolutionDate: data.resolutionDate
+        ? new Date(data.resolutionDate)
+        : null,
+    }),
+    ...(data.userId && { user: { connect: { id: data.userId } } }),
+    ...(data.customerId && {
+      customer: { connect: { id: data.customerId } },
+    }),
+    ...(data.carId !== undefined &&
+      data.carId !== null && {
+        car: { connect: { id: data.carId } },
       }),
-      ...(data.resolutionDate !== undefined && {
-        resolutionDate: data.resolutionDate
-          ? new Date(data.resolutionDate)
-          : null,
-      }),
-      ...(data.userId && { user: { connect: { id: data.userId } } }),
-      ...(data.customerId && {
-        customer: { connect: { id: data.customerId } },
-      }),
-      ...(data.carId !== undefined &&
-        data.carId !== null && {
-          car: { connect: { id: data.carId } },
-        }),
-    },
-  );
+  });
 
   // 미팅 정보 업데이트
   if (data.meetings) {
