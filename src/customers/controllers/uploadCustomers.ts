@@ -24,6 +24,7 @@ const customerCsvRowSchema = z.object({
   ageGroup: z.string().optional(), // '20대', '30대' 등등
   email: z.string().email('유효한 이메일 형식이 아닙니다.').optional(),
   memo: z.string().optional(),
+  region: z.string().optional(),
 });
 
 // CSV 파싱 및 유효성 검사
