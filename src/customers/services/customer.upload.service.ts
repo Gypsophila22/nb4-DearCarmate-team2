@@ -66,7 +66,10 @@ export const customerUploadService = {
           }
         } catch (error: unknown) {
           results.failed++;
-          results.errors.push({ data: customerData, error: error instanceof Error ? error.message : 'Unknown error' });
+          results.errors.push({
+            data: customerData,
+            error: error instanceof Error ? error.message : 'Unknown error',
+          });
         }
       }
     });
