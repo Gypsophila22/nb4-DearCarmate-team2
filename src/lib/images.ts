@@ -1,7 +1,9 @@
+import fs from 'fs';
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs';
+
 import type { Request } from 'express';
+import createError from 'http-errors';
 
 const UPLOAD_DIR = path.resolve(process.cwd(), 'uploads');
 
@@ -25,7 +27,9 @@ function fileFilter(
 ) {
   // 허용 확장자 (jpeg, png, webp, gif)
   const ok = /image\/(jpeg|png|webp|gif)/.test(file.mimetype);
-  if (!ok) return cb(new Error('이미지 파일만 업로드할 수 있습니다.'));
+  if (!ok) {
+    return cb(createError(415, '이미지 파일만 업로드할 수 있습니다.'));
+  }
   cb(null, true);
 }
 

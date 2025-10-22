@@ -1,4 +1,5 @@
 import express from 'express';
+
 import { authController } from '../auth/controllers/auth.controller.js';
 import { authSchema } from '../auth/schemas/auth.schema.js';
 

@@ -1,5 +1,5 @@
 import prisma from '../../lib/prisma.js';
-import type { Prisma } from '../../../generated/prisma/index.js';
+import type { Prisma } from '@prisma/client';
 
 /**
  * 차량 생성 Repository
