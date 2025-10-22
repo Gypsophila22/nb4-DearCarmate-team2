@@ -21,7 +21,7 @@ export const createCustomerSchema = z.object({
     name: z.string().min(1, { message: '고객명은 필수입니다.' }),
     gender: z.nativeEnum(Gender),
     phoneNumber: z.string().min(1, { message: '연락처는 필수입니다.' }),
-    ageGroup: z.nativeEnum(AgeGroup).optional(),
+    ageGroup: z.string().optional(),
     region: z.nativeEnum(Region).optional(),
     email: z
       .string()
@@ -39,7 +39,7 @@ export const updateCustomerSchema = z.object({
     name: z.string().min(1).optional(),
     gender: z.nativeEnum(Gender).optional(),
     phoneNumber: z.string().min(1).optional(),
-    ageGroup: z.nativeEnum(AgeGroup).optional(),
+    ageGroup: z.string().optional(),
     region: z.nativeEnum(Region).optional(),
     email: z.string().email().optional(),
     memo: z.string().optional(),

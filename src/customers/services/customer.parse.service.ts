@@ -3,6 +3,18 @@ import csv from 'csv-parser';
 import { Readable } from 'stream';
 import { z } from 'zod';
 import { customerCsvRowSchema } from '../schemas/customers.schema.js';
+import { AgeGroup } from '@prisma/client';
+
+const ageGroupMap: Record<string, AgeGroup> = {
+  '10대': AgeGroup.GENERATION_10,
+  '20대': AgeGroup.GENERATION_20,
+  '30대': AgeGroup.GENERATION_30,
+  '40대': AgeGroup.GENERATION_40,
+  '50대': AgeGroup.GENERATION_50,
+  '60대': AgeGroup.GENERATION_60,
+  '70대': AgeGroup.GENERATION_70,
+  '80대': AgeGroup.GENERATION_80,
+};
 
 export const customerParseService = {
   async parseAndValidateCsv(buffer: Buffer) {
@@ -23,7 +35,11 @@ export const customerParseService = {
           rowNumber++;
           const parsed = customerCsvRowSchema.safeParse(data);
           if (parsed.success) {
-            results.push(parsed.data);
+            const transformedData = {
+              ...parsed.data,
+              ageGroup: parsed.data.ageGroup ? ageGroupMap[parsed.data.ageGroup] : null,
+            };
+            results.push(transformedData);
           } else {
             errors.push({ row: rowNumber, data, errors: parsed.error.issues });
           }
