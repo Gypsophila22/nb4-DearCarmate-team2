@@ -2,8 +2,8 @@ import express from 'express';
 import passports from '../lib/passport/index.js';
 import { uploadContract } from '../lib/contract-document.upload.js';
 
-import { contractDocumentSchema } from '../contractDocuments/schemas/contract-document.schema.js';
-import { contractDocumentController } from '../contractDocuments/controllers/contract-document.controller.js';
+import { contractDocumentSchema } from '../contract-documents/schemas/contract-document.schema.js';
+import { contractDocumentController } from '../contract-documents/controllers/contract-document.controller.js';
 
 const router = express.Router();
 const DOCUMENT_FIELD_NAME = 'file';
