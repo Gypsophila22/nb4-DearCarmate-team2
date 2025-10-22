@@ -42,7 +42,6 @@ model Companies {
   ContractDocuments ContractDocuments[]
 }
 
-
 model Cars {
   id                Int        @id @unique @default(autoincrement())
   carNumber         String
