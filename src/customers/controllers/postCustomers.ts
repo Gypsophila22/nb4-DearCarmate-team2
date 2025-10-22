@@ -12,6 +12,22 @@ const ageGroupMap: { [key: string]: AgeGroup } = {
   '60대': AgeGroup.GENERATION_60,
   '70대': AgeGroup.GENERATION_70,
   '80대': AgeGroup.GENERATION_80,
+  [AgeGroup.GENERATION_10]: AgeGroup.GENERATION_10,
+  [AgeGroup.GENERATION_20]: AgeGroup.GENERATION_20,
+  [AgeGroup.GENERATION_30]: AgeGroup.GENERATION_30,
+  [AgeGroup.GENERATION_40]: AgeGroup.GENERATION_40,
+  [AgeGroup.GENERATION_50]: AgeGroup.GENERATION_50,
+  [AgeGroup.GENERATION_60]: AgeGroup.GENERATION_60,
+  [AgeGroup.GENERATION_70]: AgeGroup.GENERATION_70,
+  [AgeGroup.GENERATION_80]: AgeGroup.GENERATION_80,
+  '10-20': AgeGroup.GENERATION_10,
+  '20-30': AgeGroup.GENERATION_20,
+  '30-40': AgeGroup.GENERATION_30,
+  '40-50': AgeGroup.GENERATION_40,
+  '50-60': AgeGroup.GENERATION_50,
+  '60-70': AgeGroup.GENERATION_60,
+  '70-80': AgeGroup.GENERATION_70,
+  '80대 이상': AgeGroup.GENERATION_80,
 };
 
 // zod 유효성 검사
@@ -33,6 +49,7 @@ export const createCustomer = async (req: Request, res: Response) => {
     // 요청 데이터 유효성 검사
     const { name, gender, phoneNumber, ageGroup, region, email, memo } =
       customersSchema.parse(req.body);
+    console.log('Received ageGroup from frontend:', ageGroup);
 
     // 인증된 사용자 회사 ID 가져오기
     const companyId = req.user?.companyId;
@@ -43,6 +60,7 @@ export const createCustomer = async (req: Request, res: Response) => {
     }
 
     const mappedAgeGroup = ageGroup ? ageGroupMap[ageGroup] : null;
+    console.log('Mapped ageGroup for database:', mappedAgeGroup);
 
     // 데이터베이스에 고객 정보 생성
     const newCustomer = await prisma.customers.create({

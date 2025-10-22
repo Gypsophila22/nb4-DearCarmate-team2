@@ -6,3 +6,5 @@ node_modules
 dist/
 uploads/*
 !uploads/.gitkeep
+uploads/contract-documents/
+!uploads/contract-documents/.gitkeep

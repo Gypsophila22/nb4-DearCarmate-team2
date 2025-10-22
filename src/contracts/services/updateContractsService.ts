@@ -4,6 +4,7 @@ import { ContractsStatus } from '@prisma/client';
 
 import prisma from '../../lib/prisma.js';
 import contractRepository from '../repositories/index.js';
+import { sendContractDocsLinkedEmail } from '../../contract-documents/services/contract-document.send-email.service.js';
 
 // 계약 상태 변경
 interface UpdateContractInput {
@@ -126,7 +127,11 @@ export const updateContractsService = async (
             return was === null && now === data.contractId; // 이번 PATCH로 null → 이 계약 id
           })
           .map((r) => r.id);
-        // await sendContractDocsLinkedEmail(newlyLinked);
+        if (newlyLinked.length > 0) {
+          sendContractDocsLinkedEmail(newlyLinked)
+            .then(() => console.log('[email] 발송 완료'))
+            .catch((err) => console.error('[email] 발송 실패', err));
+        }
       }
     }
   }
@@ -164,6 +169,5 @@ export const updateContractsService = async (
       model: contractResponse.car.carModel.model,
     },
   };
-
   return response;
 };
