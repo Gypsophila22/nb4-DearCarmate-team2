@@ -1,13 +1,18 @@
 import prisma from '../../lib/prisma.js';
 
+// 연결 계약이 없는 차량만 조회
 export const getCarsListForContractRepository = async () => {
-  // 상태가 보유중 'possession'인 차량 조회
   const cars = await prisma.cars.findMany({
-    where: { status: 'possession' },
-    include: {
-      carModel: true, // carModel 조인
+    where: {
+      contract: null,
     },
-    orderBy: { id: 'asc' },
+    include: {
+      carModel: true,
+    },
+    orderBy: {
+      id: 'asc',
+    },
   });
+
   return cars;
 };

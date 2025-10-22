@@ -12,11 +12,6 @@ const app = express();
 
 const PORT = process.env.PORT || 4000;
 
-app.use((req, _res, next) => {
-  console.log('[IN]', req.method, req.url);
-  next();
-});
-
 app.use(express.json());
 app.use(passport.initialize());
 app.use(requestLogger);

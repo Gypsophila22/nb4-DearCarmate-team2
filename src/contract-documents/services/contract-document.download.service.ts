@@ -9,7 +9,7 @@ import { contractDocumentRepository } from '../repositories/contract-document.re
 type Actor = { id: number; companyId: number; isAdmin?: boolean };
 
 function absPathOrDefault(relPath: string | null | undefined, stored: string) {
-  const base = path.join(process.cwd(), 'uploads', 'contractDocuments');
+  const base = path.join(process.cwd(), 'uploads', 'contract-documents');
   if (relPath)
     return path.isAbsolute(relPath)
       ? relPath
