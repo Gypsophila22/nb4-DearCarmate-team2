@@ -4,6 +4,7 @@ import { ContractsStatus } from '@prisma/client';
 
 import prisma from '../../lib/prisma.js';
 import contractRepository from '../repositories/index.js';
+import { sendContractDocsLinkedEmail } from '../../contract-documents/services/contract-document.send-email.service.js';
 
 // 계약 상태 변경
 interface UpdateContractInput {
@@ -62,7 +63,6 @@ export const updateContractsService = async (
   // 미팅 정보 업데이트
   if (data.meetings) {
     if (data.meetings.length === 0) {
-      // 빈 배열이면 기존 미팅과 알람 모두 삭제
       await prisma.alarms.deleteMany({
         where: {
           meeting: {
@@ -74,7 +74,6 @@ export const updateContractsService = async (
         where: { contractId: data.contractId },
       });
     } else {
-      // 빈 배열이 아닌 경우 기존 로직: 추가/업데이트
       await contractRepository.update.updateMeetings(
         data.contractId,
         data.meetings,
@@ -115,10 +114,12 @@ export const updateContractsService = async (
             originalName: doc.fileName,
           })),
         );
+
         const afterRows = await prisma.contractDocuments.findMany({
           where: { id: { in: validDocs.map((d) => d.id) } },
           select: { id: true, contractId: true },
         });
+
         const newlyLinked = afterRows
           .filter((row) => {
             const was = beforeMap.get(row.id) ?? null; // 이전 contractId
@@ -126,7 +127,11 @@ export const updateContractsService = async (
             return was === null && now === data.contractId; // 이번 PATCH로 null → 이 계약 id
           })
           .map((r) => r.id);
-        // await sendContractDocsLinkedEmail(newlyLinked);
+        if (newlyLinked.length > 0) {
+          sendContractDocsLinkedEmail(newlyLinked)
+            .then(() => console.log('[email] 발송 완료'))
+            .catch((err) => console.error('[email] 발송 실패', err));
+        }
       }
     }
   }
@@ -164,6 +169,5 @@ export const updateContractsService = async (
       model: contractResponse.car.carModel.model,
     },
   };
-
   return response;
 };
