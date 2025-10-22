@@ -1,4 +1,4 @@
-import { getCarsListRepository } from "./getList.js";
+import { getCarsListRepository } from './getList.js';
 
 const carRepository = {
   getList: getCarsListRepository,

@@ -12,7 +12,7 @@ export const userPatchService = {
       currentPassword: string;
       password?: string | undefined;
       passwordConfirmation?: string | undefined;
-    }
+    },
   ) {
     // 유저 조회
     const user = await userPatchRepository.findById(userId);

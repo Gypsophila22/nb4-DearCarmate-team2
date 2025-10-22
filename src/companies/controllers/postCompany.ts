@@ -1,5 +1,5 @@
-import type { Request, Response, NextFunction } from "express";
-import { PrismaClient } from "../../../generated/prisma/index.js";
+import type { Request, Response, NextFunction } from 'express';
+import { PrismaClient } from '../../../generated/prisma/index.js';
 
 const prisma = new PrismaClient();
 
@@ -8,7 +8,7 @@ async function createCompany(req: Request, res: Response, next: NextFunction) {
     const { name, code } = req.body;
 
     if (!name || !code) {
-      return res.status(400).json({ message: "잘못된 요청입니다" });
+      return res.status(400).json({ message: '잘못된 요청입니다' });
     }
 
     // 중복 코드 확인
@@ -16,7 +16,7 @@ async function createCompany(req: Request, res: Response, next: NextFunction) {
       where: { code },
     });
     if (exists) {
-      return res.status(400).json({ message: "이미 존재하는 회사 코드입니다" });
+      return res.status(400).json({ message: '이미 존재하는 회사 코드입니다' });
     }
 
     const company = await prisma.companies.create({

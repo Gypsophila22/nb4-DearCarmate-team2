@@ -1,17 +1,17 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import { getCarsListRepository } from "../repositories/getList.js";
+import { getCarsListRepository } from '../repositories/getList.js';
 
-import type { GetCarsListRequestDto } from "../dtos/getCarsListRequestDto.js";
+import type { GetCarsListRequestDto } from '../dtos/getCarsListRequestDto.js';
 
 /**
  * 차량 목록 조회 Service
  */
 type CarSearchFilter = {
-  status?: "possession" | "contractProceeding" | "contractCompleted";
-  carNumber?: { contains: string; mode: "insensitive" };
+  status?: 'possession' | 'contractProceeding' | 'contractCompleted';
+  carNumber?: { contains: string; mode: 'insensitive' };
   carModel?: {
-    model?: { contains: string; mode: "insensitive" };
+    model?: { contains: string; mode: 'insensitive' };
   };
 };
 
@@ -22,7 +22,7 @@ export type CarFilter = {
 };
 
 export const getCarsListService = async (
-  data: z.infer<typeof GetCarsListRequestDto>
+  data: z.infer<typeof GetCarsListRequestDto>,
 ) => {
   const filter: CarFilter = {
     search: {},
@@ -31,17 +31,17 @@ export const getCarsListService = async (
   };
   if (data.status) filter.search.status = data.status;
   if (data.keyword && data.searchBy) {
-    if (data.searchBy === "carNumber") {
+    if (data.searchBy === 'carNumber') {
       filter.search.carNumber = {
         contains: data.keyword,
-        mode: "insensitive",
+        mode: 'insensitive',
       };
     }
-    if (data.searchBy === "model") {
+    if (data.searchBy === 'model') {
       filter.search.carModel = {
         model: {
           contains: data.keyword,
-          mode: "insensitive",
+          mode: 'insensitive',
         },
       };
     }

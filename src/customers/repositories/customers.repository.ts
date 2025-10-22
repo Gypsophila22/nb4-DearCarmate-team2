@@ -80,11 +80,18 @@ export const customerRepository = {
     return (tx || prisma).customers.findUnique({ where: { email } });
   },
 
-  findByPhoneNumber: async (phoneNumber: string, tx?: Prisma.TransactionClient) => {
+  findByPhoneNumber: async (
+    phoneNumber: string,
+    tx?: Prisma.TransactionClient,
+  ) => {
     return (tx || prisma).customers.findUnique({ where: { phoneNumber } });
   },
 
-  createFromCsv: async (data: CustomerCsvRow, companyId: number, tx?: Prisma.TransactionClient) => {
+  createFromCsv: async (
+    data: CustomerCsvRow,
+    companyId: number,
+    tx?: Prisma.TransactionClient,
+  ) => {
     return (tx || prisma).customers.create({
       data: {
         name: data.고객명,

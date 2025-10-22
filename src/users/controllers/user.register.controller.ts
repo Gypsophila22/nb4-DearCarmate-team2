@@ -4,7 +4,7 @@ import { userRegisterService } from '../services/user.register.service.js';
 export async function postRegister(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const user = await userRegisterService.register({

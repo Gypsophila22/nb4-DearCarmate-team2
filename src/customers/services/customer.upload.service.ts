@@ -35,16 +35,13 @@ export const customerUploadService = {
             );
             results.updated++;
           } else {
-            await customerRepository.createFromCsv(
-              customerData,
-              companyId,
-              tx,
-            );
+            await customerRepository.createFromCsv(customerData, companyId, tx);
             results.created++;
           }
         } catch (error: unknown) {
           results.failed++;
-          const message = error instanceof Error ? error.message : String(error);
+          const message =
+            error instanceof Error ? error.message : String(error);
           results.errors.push({ data: customerData, error: message });
           throw error;
         }
