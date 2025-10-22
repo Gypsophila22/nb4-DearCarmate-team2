@@ -1,5 +1,5 @@
 import { AgeGroup, Gender, Region } from '@prisma/client';
-import prisma from '../../lib/prisma';
+import prisma from '../../lib/prisma.js';
 
 interface CustomerUploadData {
   name: string;
