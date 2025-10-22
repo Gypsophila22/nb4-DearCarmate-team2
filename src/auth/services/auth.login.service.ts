@@ -2,9 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import createError from 'http-errors';
 import { authRepository } from '../repositories/auth.repository.js';
-
-const ACCESS_SECRET = process.env.ACCESS_TOKEN_SECRET || 'dev_access_secret';
-const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET || 'dev_refresh_secret';
+import { TOKEN } from '../config/token.const.js';
 
 export const authLoginService = {
   async login(email: string, password: string) {
@@ -19,11 +17,13 @@ export const authLoginService = {
     // 3. 토큰 발급
     const accessToken = jwt.sign(
       { id: user.id, email: user.email },
-      ACCESS_SECRET,
-      { expiresIn: '1h' },
+      TOKEN.access.secret,
+      {
+        expiresIn: TOKEN.access.expiresIn,
+      },
     );
-    const refreshToken = jwt.sign({ id: user.id }, REFRESH_SECRET, {
-      expiresIn: '7d',
+    const refreshToken = jwt.sign({ id: user.id }, TOKEN.refresh.secret, {
+      expiresIn: TOKEN.refresh.expiresIn,
     });
 
     // 4. 응답용 데이터 가공
