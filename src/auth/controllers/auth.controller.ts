@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { authLoginService } from '../services/auth.login.service.js';
 import createError from 'http-errors';
-import { tokenService } from '../services/auth.token.service.js';
+import { authTokenService } from '../services/auth.token.service.js';
 
 class AuthController {
   async authLoginController(req: Request, res: Response, next: NextFunction) {
@@ -21,7 +21,7 @@ class AuthController {
         return next(createError(400, '리프레시 토큰이 필요합니다.'));
 
       const { accessToken, refreshToken: newRefreshToken } =
-        await tokenService.rotateRefreshToken(refreshToken);
+        await authTokenService.rotateRefreshToken(refreshToken);
 
       return res.json({ accessToken, refreshToken: newRefreshToken });
     } catch (err) {
