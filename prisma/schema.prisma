@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -15,58 +14,91 @@ datasource db {
 }
 
 model Users {
-  id             Int     @id
+  id             Int      @id @default(autoincrement())
   name           String
-  email          String
+  email          String   @unique
   employeeNumber String
   phoneNumber    String
-  imgUrl         String
+  imageUrl       String?
   password       String
-  isAdmin        Boolean
+  isAdmin        Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
 
-  company   Companies @relation(fields: [companyId], references: [id])
-  companyId Int
+  company           Companies           @relation(fields: [companyId], references: [id])
+  companyId         Int
+  contract          Contracts[]
+  uploadedDocuments ContractDocuments[]
 }
 
 model Companies {
-  id   Int     @id
-  name String
-  code String
-  user Users[]
+  id                Int                 @id @default(autoincrement())
+  companyName       String
+  companyCode       String              @unique
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @default(now()) @updatedAt
+  user              Users[]
+  customer          Customers[]
+  ContractDocuments ContractDocuments[]
 }
 
 model Cars {
-  id                Int    @id @unique
-  number            String
-  manufacturer      String
-  model             String
+  id                Int        @id @unique @default(autoincrement())
+  carNumber         String
   manufacturingYear Int
   mileage           Int
   price             Int
   accidentCount     Int
   explanation       String
   accidentDetails   String
+  status            CarStatus  @default(possession)
+  modelId           Int
+  carModel          CarModel   @relation(fields: [modelId], references: [id])
+  contract          Contracts?
+}
 
-  contract Contracts?
-  // contractId Int?
+// 차종
+model CarModel {
+  id           Int     @id @default(autoincrement())
+  model        String
+  type         CarType
+  manufacturer String
+  cars         Cars[]
+
+  @@unique([manufacturer, model])
+}
+
+enum CarType {
+  SUV
+  세단
+  경차
+}
+
+enum CarStatus {
+  possession // 보유 중
+  contractProceeding // 계약 진행 중
+  contractCompleted // 계약 완료
 }
 
 model Customers {
-  id          Int    @id @unique
-  name        String
-  gender      String
-  phoneNumber String
-  ageGroup    String
-  region      String
-  email       String
-  memo        String
+  id            Int         @id @default(autoincrement())
+  name          String
+  gender        Gender
+  phoneNumber   String
+  ageGroup      AgeGroup?
+  region        Region?
+  email         String?
+  memo          String?
+  contractCount Int         @default(0)
+  contract      Contracts[]
 
-  contract Contracts?
+  company   Companies @relation(fields: [companyId], references: [id])
+  companyId Int
 }
 
 enum Gender {
-  MALE
-  FEMALE
+  male
+  female
 }
 
 enum AgeGroup {
@@ -100,14 +132,62 @@ enum Region {
   제주
 }
 
+enum ContractsStatus {
+  carInspection // 차량 확인
+  priceNegotiation // 가격 협의
+  contractDraft // 계약서 작성 중
+  contractSuccessful // 계약 성공
+  contractFailed // 계약 실패
+}
+
 model Contracts {
-  id     Int        @id @unique
-  date   DateTime //계약 날짜
-  alarms DateTime[] //알람을 원하는 시간
+  id             Int                 @id @default(autoincrement())
+  date           DateTime            @default(now())
+  contractPrice  Int // 계약 금액
+  status         ContractsStatus // 계약 상태
+  resolutionDate DateTime? // 계약 종료일
+  carId          Int                 @unique
+  car            Cars                @relation(fields: [carId], references: [id]) // 차량
+  customerId     Int
+  customer       Customers           @relation(fields: [customerId], references: [id]) // 고객
+  meetings       Meetings[] // 미팅 일정
+  userId         Int // 담당자
+  user           Users               @relation(fields: [userId], references: [id])
+  documents      ContractDocuments[] // 계약서
+}
 
-  car   Cars @relation(fields: [carId], references: [id])
-  carId Int  @unique
+model Meetings {
+  id         Int       @id @default(autoincrement())
+  date       DateTime
+  contractId Int
+  contract   Contracts @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  alarms     Alarms[]
+}
 
-  custmor   Customers @relation(fields: [custmorId], references: [id])
-  custmorId Int       @unique
+model Alarms {
+  id        Int      @id @default(autoincrement())
+  time      DateTime
+  meetingId Int
+  meeting   Meetings @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+}
+
+model ContractDocuments {
+  id           Int      @id @default(autoincrement())
+  companyId    Int
+  contractId   Int? // ← nullable (임시 업로드 허용)
+  uploaderId   Int
+  originalName String
+  storedName   String
+  mimeType     String
+  size         Int
+  path         String?
+  url          String?
+  createdAt    DateTime @default(now())
+
+  company  Companies  @relation(fields: [companyId], references: [id])
+  contract Contracts? @relation(fields: [contractId], references: [id])
+  uploader Users      @relation(fields: [uploaderId], references: [id])
+
+  @@index([companyId])
+  @@index([contractId])
 }
