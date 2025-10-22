@@ -1,4 +1,5 @@
 import createError from 'http-errors';
+
 import { userRepository } from '../repositories/user.repository.js';
 
 export const userGetService = {

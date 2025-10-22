@@ -1,5 +1,6 @@
-import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import nodemailer from 'nodemailer';
+
 dotenv.config();
 
 const { EMAIL_SERVICE, EMAIL_USER, EMAIL_PASS, MAIL_FROM, MAIL_TO } =

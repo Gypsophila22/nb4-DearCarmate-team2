@@ -1,6 +1,7 @@
+import fs from 'fs';
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs';
+
 import type { Request } from 'express';
 
 const UPLOAD_DIR = path.resolve(process.cwd(), 'uploads');
