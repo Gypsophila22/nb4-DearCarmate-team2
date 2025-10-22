@@ -170,6 +170,8 @@ model Alarms {
   time      DateTime
   meetingId Int
   meeting   Meetings @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  customer   Customers @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId Int
 }
 
 model ContractDocuments {
