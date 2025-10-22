@@ -71,59 +71,64 @@ export const companyRepository = {
     return { companies, totalItemCount };
   },
 
-  //회사별 유저 검색
   // 회사별 유저 목록 조회
-async findCompanyUsers(
-  page: number,
-  pageSize: number,
-  searchBy?: string,
-  keyword?: string
-) {
-  const skip = (page - 1) * pageSize;
+  async findCompanyUsers(
+    page: number,
+    pageSize: number,
+    searchBy?: string,
+    keyword?: string
+  ) {
+    const skip = (page - 1) * pageSize;
 
-  let where = {};
+    let where = {};
 
-  // 검색 조건 처리
-  if (keyword) {
-    switch (searchBy) {
-      case "companyName":
-        where = {
-          company: {
-            companyName: {
-              contains: keyword,
+    // 검색 조건 처리
+    if (keyword) {
+      switch (searchBy) {
+        case "companyName":
+          where = {
+            company: {
+              companyName: {
+                contains: keyword,
+              },
             },
-          },
-        };
-        break;
-      case "name":
-        where = { name: { contains: keyword } };
-        break;
-      case "email":
-        where = { email: { contains: keyword } };
-        break;
-      default:
-        where = {};
+          };
+          break;
+        case "name":
+          where = { name: { contains: keyword } };
+          break;
+        case "email":
+          where = { email: { contains: keyword } };
+          break;
+        default:
+          where = {};
+      }
     }
-  }
 
-  const [users, totalItemCount] = await Promise.all([
-    prisma.users.findMany({
-      where,
-      skip,
-      take: pageSize,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        employeeNumber: true,
-        phoneNumber: true,
-        company: { select: { companyName: true } },
-      },
-    }),
-    prisma.users.count({ where }),
-  ]);
+    const [users, totalItemCount] = await Promise.all([
+      prisma.users.findMany({
+        where,
+        skip,
+        take: pageSize,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          employeeNumber: true,
+          phoneNumber: true,
+          company: { select: { companyName: true } },
+        },
+      }),
+      prisma.users.count({ where }),
+    ]);
 
-  return { users, totalItemCount };
+    return { users, totalItemCount };
+  },
+
+  async findById(companyId: number) {
+  return prisma.companies.findUnique({
+    where: { id: companyId },
+  });
 },
 
 };

@@ -1,38 +1,20 @@
 import type { Request, Response, NextFunction } from "express";
-import prisma from '../../lib/prisma.js';
-import { companyRepository } from '../repositories/company.repository.js';
-import createHttpError from 'http-errors';
+import createHttpError from "http-errors";
+import { deleteCompanyService } from "../services/company.delete.service.js";
 
-// ----- 컨트롤러 -----
 export const deleteCompany = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { companyId } = req.params;
+    const companyIdParam = req.params.companyId;
+    if (!companyIdParam) throw createHttpError(400, "잘못된 요청입니다");
 
-    // 🔐 관리자 권한 확인
-    if (!req.user || !req.user.isAdmin) {
-      return next(createHttpError(401, '관리자 권한이 필요합니다.'));
-    }
+    const companyId = parseInt(companyIdParam);
+    if (isNaN(companyId)) throw createHttpError(400, "잘못된 요청입니다");
 
-    // 1️⃣ 요청값 검증
-    if (!companyId) {
-      return next(createHttpError(400, '잘못된 요청입니다.'));
-    }
+    if (!req.user?.isAdmin) throw createHttpError(401, "관리자 권한이 필요합니다.");
 
-    const id = Number(companyId);
-
-    // 2️⃣ 존재 확인
-    const exist = await prisma.companies.findUnique({ where: { id } });
-    if (!exist) return next(createHttpError(404, '존재하지 않는 회사입니다.'));
-
-    // 3️⃣ 삭제 실행
-    const result = await companyRepository.deleteCompanyById(id);
-
-    // 4️⃣ 응답
-    return res.status(200).json({ message: '회사 삭제 성공'});
+    const result = await deleteCompanyService(companyId);
+    res.status(200).json(result);
   } catch (err) {
-    if (createHttpError.isHttpError(err)) {
-      return res.status(err.status).json({ message: err.message });
-    }
     next(err);
   }
 };
