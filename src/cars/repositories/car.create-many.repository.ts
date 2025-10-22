@@ -1,10 +1,9 @@
-import prisma from '../../lib/prisma.js';
+import { Prisma } from '@prisma/client';
 
-import type { Prisma } from '@prisma/client';
+type CarsCreateManyInput = Prisma.CarsCreateManyInput;
 
-export const carCreateManyRepository = (data: Prisma.CarsCreateManyInput[]) => {
-  return prisma.cars.createMany({
-    data,
-    skipDuplicates: true,
-  });
-};
+// 트랜잭션 내 차량 생성
+export const createManyTx = (
+  tx: Prisma.TransactionClient,
+  data: CarsCreateManyInput[],
+) => tx.cars.createMany({ data });

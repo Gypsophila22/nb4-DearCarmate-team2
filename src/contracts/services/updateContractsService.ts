@@ -63,6 +63,7 @@ export const updateContractsService = async (
   // 미팅 정보 업데이트
   if (data.meetings) {
     if (data.meetings.length === 0) {
+      // 빈 배열이면 기존 미팅과 알람 모두 삭제
       await prisma.alarms.deleteMany({
         where: {
           meeting: {
@@ -74,6 +75,7 @@ export const updateContractsService = async (
         where: { contractId: data.contractId },
       });
     } else {
+      // 빈 배열이 아닌 경우 기존 로직: 추가/업데이트
       await contractRepository.update.updateMeetings(
         data.contractId,
         data.meetings,
@@ -114,12 +116,10 @@ export const updateContractsService = async (
             originalName: doc.fileName,
           })),
         );
-
         const afterRows = await prisma.contractDocuments.findMany({
           where: { id: { in: validDocs.map((d) => d.id) } },
           select: { id: true, contractId: true },
         });
-
         const newlyLinked = afterRows
           .filter((row) => {
             const was = beforeMap.get(row.id) ?? null; // 이전 contractId

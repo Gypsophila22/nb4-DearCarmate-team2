@@ -51,10 +51,7 @@ const regionMap: { [key: string]: Region } = {
 };
 
 export const customerUploadService = {
-  async processCustomerCsv(
-    customers: CustomerUploadData[],
-    companyId: number,
-  ) {
+  async processCustomerCsv(customers: CustomerUploadData[], companyId: number) {
     const results = {
       created: 0,
       updated: 0,

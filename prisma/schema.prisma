@@ -44,7 +44,7 @@ model Companies {
 
 model Cars {
   id                Int        @id @unique @default(autoincrement())
-  carNumber         String
+  carNumber         String     @unique
   manufacturingYear Int
   mileage           Int
   price             Int
@@ -147,7 +147,7 @@ model Contracts {
   status         ContractsStatus // 계약 상태
   resolutionDate DateTime? // 계약 종료일
   carId          Int                 @unique
-  car            Cars                @relation(fields: [carId], references: [id]) // 차량
+  car            Cars                @relation(fields: [carId], references: [id], onDelete: Cascade) // 차량
   customerId     Int
   customer       Customers           @relation(fields: [customerId], references: [id]) // 고객
   meetings       Meetings[] // 미팅 일정
