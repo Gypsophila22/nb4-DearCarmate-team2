@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
 import createError from 'http-errors';
+
 import { Prisma } from '@prisma/client';
+
 import { userRepository } from '../repositories/user.repository.js';
 
 type RegisterInput = {
