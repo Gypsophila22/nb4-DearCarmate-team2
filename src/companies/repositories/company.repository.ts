@@ -7,11 +7,6 @@ export const companyRepository = {
     companyId: number,
     data: { companyName: string; companyCode: string },
   ) {
-    const exist = await prisma.companies.findUnique({
-      where: { id: companyId },
-    });
-    if (!exist) throw createHttpError(404, '존재하지 않는 회사입니다.');
-
     const company = await prisma.companies.update({
       where: { id: companyId },
       data: {
@@ -45,11 +40,6 @@ export const companyRepository = {
 
   // 회사 삭제
   async deleteCompanyById(companyId: number) {
-    const exist = await prisma.companies.findUnique({
-      where: { id: companyId },
-    });
-    if (!exist) throw createHttpError(404, '존재하지 않는 회사입니다.');
-
     await prisma.companies.delete({ where: { id: companyId } });
     return { message: '회사 삭제 성공' };
   },
@@ -153,10 +143,6 @@ export const companyRepository = {
   },
 
   async findById(companyId: number) {
-    const company = await prisma.companies.findUnique({
-      where: { id: companyId },
-    });
-    if (!company) throw createHttpError(404, '존재하지 않는 회사입니다.');
-    return company;
+    return prisma.companies.findUnique({ where: { id: companyId } });
   },
 };

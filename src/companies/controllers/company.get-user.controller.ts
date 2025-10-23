@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import createHttpError from 'http-errors';
-import { getCompanyUsersService } from '../services/company.getUsers.service.js';
-import { getCompanyUsersQuerySchema } from '../schemas/company.getUsers.schema.js';
+import { getCompanyUsersService } from '../services/company.get-user.service.js';
+import { getCompanyUsersQuerySchema } from '../schemas/company.get-user.schema.js';
 
 export const getCompanyUsers = async (
   req: Request,

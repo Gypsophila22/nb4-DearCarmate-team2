@@ -6,6 +6,7 @@ export const getCompanyService = async (
   searchBy?: string,
   keyword?: string,
 ) => {
+  // ✅ 실제 로직은 여전히 서비스가 책임
   const { companies, totalItemCount } = await companyRepository.findAll(
     page,
     pageSize,
@@ -15,17 +16,15 @@ export const getCompanyService = async (
 
   const totalPages = Math.ceil(totalItemCount / pageSize);
 
-  const formattedData = companies.map((c) => ({
-    id: c.id,
-    companyName: c.companyName,
-    companyCode: c.companyCode,
-    userCount: c._count.user,
-  }));
-
   return {
     currentPage: page,
     totalPages,
     totalItemCount,
-    data: formattedData,
+    data: companies.map((c) => ({
+      id: c.id,
+      companyName: c.companyName,
+      companyCode: c.companyCode,
+      userCount: c._count.user,
+    })),
   };
 };
