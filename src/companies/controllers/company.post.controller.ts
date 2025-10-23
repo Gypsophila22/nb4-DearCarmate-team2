@@ -9,16 +9,13 @@ export async function createCompany(
   next: NextFunction,
 ) {
   try {
-    const { companyName, companyCode } = req.body;
-
-    if (!companyName || !companyCode) {
-      throw createHttpError(400, '잘못된 요청입니다.');
+    if (!req.user?.isAdmin) {
+      throw createHttpError(401, '관리자 권한이 필요합니다.');
     }
 
-    if (!req.user?.isAdmin)
-      throw createHttpError(401, '관리자 권한이 필요합니다.');
-
+    const { companyName, companyCode } = req.body;
     const company = await createCompanyService(companyName, companyCode);
+
     res.status(201).json(company);
   } catch (err) {
     next(err);

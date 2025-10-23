@@ -15,12 +15,11 @@ export const getCompanyService = async (
 
   const totalPages = Math.ceil(totalItemCount / pageSize);
 
-  // ⚙️ 명세서에 맞춰 반환 데이터 포맷
-  const formattedData = companies.map((company) => ({
-    id: company.id,
-    companyName: company.companyName,
-    companyCode: company.companyCode,
-    userCount: company.user.length,
+  const formattedData = companies.map((c) => ({
+    id: c.id,
+    companyName: c.companyName,
+    companyCode: c.companyCode,
+    userCount: c._count.user,
   }));
 
   return {

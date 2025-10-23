@@ -1,4 +1,5 @@
 import prisma from '../../lib/prisma.js';
+import createHttpError from 'http-errors';
 
 export const companyRepository = {
   // 회사 수정
@@ -9,7 +10,7 @@ export const companyRepository = {
     const exist = await prisma.companies.findUnique({
       where: { id: companyId },
     });
-    if (!exist) throw new Error('존재하지 않는 회사입니다');
+    if (!exist) throw createHttpError(404, '존재하지 않는 회사입니다.');
 
     const company = await prisma.companies.update({
       where: { id: companyId },
@@ -44,6 +45,11 @@ export const companyRepository = {
 
   // 회사 삭제
   async deleteCompanyById(companyId: number) {
+    const exist = await prisma.companies.findUnique({
+      where: { id: companyId },
+    });
+    if (!exist) throw createHttpError(404, '존재하지 않는 회사입니다.');
+
     await prisma.companies.delete({ where: { id: companyId } });
     return { message: '회사 삭제 성공' };
   },
@@ -56,9 +62,23 @@ export const companyRepository = {
     keyword?: string,
   ) {
     const skip = (page - 1) * pageSize;
+
+    // ✅ 허용된 검색 기준 화이트리스트
+    const validSearchFields = ['companyName', 'companyCode'];
+
+    // ✅ searchBy가 유효하지 않다면 명시적으로 에러 처리
+    if (searchBy && !validSearchFields.includes(searchBy)) {
+      throw createHttpError(400, '유효하지 않은 검색 기준입니다.');
+    }
+
+    // ✅ 검색 조건 설정
+    const field = validSearchFields.includes(searchBy ?? '')
+      ? searchBy
+      : 'companyName';
+
     const where = keyword
       ? {
-          [searchBy ?? 'companyName']: {
+          [field]: {
             contains: keyword,
           },
         }
@@ -69,7 +89,12 @@ export const companyRepository = {
         where,
         skip,
         take: pageSize,
-        include: { user: true },
+        include: {
+          _count: {
+            select: { user: true },
+          },
+        },
+        orderBy: { id: 'asc' },
       }),
       prisma.companies.count({ where }),
     ]);
@@ -93,11 +118,7 @@ export const companyRepository = {
       switch (searchBy) {
         case 'companyName':
           where = {
-            company: {
-              companyName: {
-                contains: keyword,
-              },
-            },
+            company: { companyName: { contains: keyword } },
           };
           break;
         case 'name':
@@ -132,8 +153,10 @@ export const companyRepository = {
   },
 
   async findById(companyId: number) {
-    return prisma.companies.findUnique({
+    const company = await prisma.companies.findUnique({
       where: { id: companyId },
     });
+    if (!company) throw createHttpError(404, '존재하지 않는 회사입니다.');
+    return company;
   },
 };

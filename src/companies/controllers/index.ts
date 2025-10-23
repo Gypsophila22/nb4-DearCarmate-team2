@@ -1,5 +1,5 @@
 // controllers/companies/index.ts
-import { createCompany } from './company.postcontroller.js';
+import { createCompany } from './company.post.controller.js';
 import { getCompany } from './company.get.controller.js';
 import { getCompanyUsers } from './company.getUsers.controller.js';
 import { patchCompany } from './company.patch.controller.js';
