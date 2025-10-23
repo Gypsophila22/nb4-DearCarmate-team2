@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import createHttpError from 'http-errors';
-import { deleteCompanyService } from '../services/company.delete.service.js';
+import companyService from '../services/index.js';
 
 export const deleteCompany = async (
   req: Request,
@@ -17,7 +17,7 @@ export const deleteCompany = async (
     if (!req.user?.isAdmin)
       throw createHttpError(401, '관리자 권한이 필요합니다.');
 
-    const result = await deleteCompanyService(companyId);
+    const result = await companyService.deleteCompanyService(companyId);
     res.status(200).json(result);
   } catch (err) {
     next(err);

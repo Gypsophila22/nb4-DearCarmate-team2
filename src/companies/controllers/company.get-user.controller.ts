@@ -1,7 +1,6 @@
+// src/companies/controllers/company.get-user.controller.ts
 import type { Request, Response, NextFunction } from 'express';
-import createHttpError from 'http-errors';
-import { getCompanyUsersService } from '../services/company.get-user.service.js';
-import { getCompanyUsersQuerySchema } from '../schemas/company.get-user.schema.js';
+import companyService from '../services/index.js';
 
 export const getCompanyUsers = async (
   req: Request,
@@ -9,14 +8,11 @@ export const getCompanyUsers = async (
   next: NextFunction,
 ) => {
   try {
-    // ✅ Zod 검증 (임시 컨트롤러 내부에서만 사용)
-    const parsed = getCompanyUsersQuerySchema.parse(req.query);
-    const { page, pageSize, searchBy, keyword } = parsed;
+    const { page, pageSize, searchBy, keyword } = req.query as any;
 
-    // 🚀 서비스 호출
-    const result = await getCompanyUsersService(
-      page,
-      pageSize,
+    const result = await companyService.getCompanyUsersService(
+      Number(page),
+      Number(pageSize),
       searchBy,
       keyword,
     );

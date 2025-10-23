@@ -1,4 +1,5 @@
 import { companyRepository } from '../repositories/company.repository.js';
+import createHttpError from 'http-errors';
 
 export const getCompanyService = async (
   page: number,
@@ -6,7 +7,12 @@ export const getCompanyService = async (
   searchBy?: string,
   keyword?: string,
 ) => {
-  // ✅ 실제 로직은 여전히 서비스가 책임
+  const validSearchFields = ['companyName', 'companyCode'];
+
+  if (searchBy && !validSearchFields.includes(searchBy)) {
+    throw createHttpError(400, '유효하지 않은 검색 기준입니다.');
+  }
+
   const { companies, totalItemCount } = await companyRepository.findAll(
     page,
     pageSize,

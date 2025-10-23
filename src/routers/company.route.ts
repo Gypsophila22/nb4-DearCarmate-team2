@@ -1,48 +1,48 @@
-import express from 'express';
+// src/companies/routes/company.route.ts
+import { Router } from 'express';
 import passport from 'passport';
 import companyController from '../companies/controllers/index.js';
-import { validateSchema } from '../middlewares/validateSchema.js';
-import CompanySchema from '../companies/schemas/index.js';
+import { companySchema } from '../companies/schemas/company.schema.js';
 
-const router = express.Router();
+const router = Router();
 
-// 회사 등록
+// ✅ 회사 등록
 router.post(
   '/',
   passport.authenticate('jwt', { session: false }),
-  validateSchema(CompanySchema.createCompanySchema),
+  companySchema.companyRegister,
   companyController.createCompany,
 );
 
-// 회사 목록 조회
+// ✅ 회사 목록 조회
 router.get(
   '/',
   passport.authenticate('jwt', { session: false }),
-  validateSchema(CompanySchema.getCompanyQuerySchema),
+  companySchema.companyGet,
   companyController.getCompany,
 );
 
-// 회사별 유저 조회
+// ✅ 회사별 유저 조회
 router.get(
   '/users',
   passport.authenticate('jwt', { session: false }),
-  validateSchema(CompanySchema.getCompanyUsersQuerySchema),
+  companySchema.companyGetUsers,
   companyController.getCompanyUsers,
 );
 
-// 회사 수정
+// ✅ 회사 수정
 router.patch(
   '/:companyId',
   passport.authenticate('jwt', { session: false }),
-  validateSchema(CompanySchema.patchCompanySchema),
+  companySchema.companyPatch,
   companyController.patchCompany,
 );
 
-// 회사 삭제
+// ✅ 회사 삭제
 router.delete(
   '/:companyId',
   passport.authenticate('jwt', { session: false }),
-  validateSchema(CompanySchema.deleteCompanySchema),
+  companySchema.companyDeleteParam,
   companyController.deleteCompany,
 );
 

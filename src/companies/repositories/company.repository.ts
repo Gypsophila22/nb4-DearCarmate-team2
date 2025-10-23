@@ -53,18 +53,8 @@ export const companyRepository = {
   ) {
     const skip = (page - 1) * pageSize;
 
-    // ✅ 허용된 검색 기준 화이트리스트
-    const validSearchFields = ['companyName', 'companyCode'];
-
-    // ✅ searchBy가 유효하지 않다면 명시적으로 에러 처리
-    if (searchBy && !validSearchFields.includes(searchBy)) {
-      throw createHttpError(400, '유효하지 않은 검색 기준입니다.');
-    }
-
     // ✅ 검색 조건 설정
-    const field = validSearchFields.includes(searchBy ?? '')
-      ? searchBy
-      : 'companyName';
+    const field = searchBy ?? 'companyName';
 
     const where = keyword
       ? {

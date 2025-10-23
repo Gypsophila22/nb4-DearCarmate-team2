@@ -1,6 +1,6 @@
-// src/companies/controllers/postCompany.ts
+// src/companies/controllers/company.post.controller.ts
 import type { Request, Response, NextFunction } from 'express';
-import { createCompanyService } from '../services/company.post.service.js';
+import companyService from '../services/index.js';
 import createHttpError from 'http-errors';
 
 export async function createCompany(
@@ -14,7 +14,10 @@ export async function createCompany(
     }
 
     const { companyName, companyCode } = req.body;
-    const company = await createCompanyService(companyName, companyCode);
+    const company = await companyService.createCompanyService(
+      companyName,
+      companyCode,
+    );
 
     res.status(201).json(company);
   } catch (err) {

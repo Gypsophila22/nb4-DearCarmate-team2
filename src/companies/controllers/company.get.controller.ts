@@ -1,7 +1,7 @@
+// src/companies/controllers/company.get.controller.ts
 import type { Request, Response, NextFunction } from 'express';
 import createHttpError from 'http-errors';
-import { getCompanyService } from '../services/company.get.service.js';
-import { getCompanyQuerySchema } from '../schemas/company.get.schema.js';
+import companyService from '../services/index.js';
 
 export const getCompany = async (
   req: Request,
@@ -9,17 +9,23 @@ export const getCompany = async (
   next: NextFunction,
 ) => {
   try {
-    // ✅ zod로 검증 + 변환
-    const parsed = getCompanyQuerySchema.parse({ query: req.query });
-    const { page, pageSize, searchBy, keyword } = parsed.query;
-
-    // 🔐 관리자 권한 확인
     if (!req.user?.isAdmin) {
-      throw createHttpError(401, '관리자 권한이 필요합니다');
+      throw createHttpError(401, '관리자 권한이 필요합니다.');
     }
 
-    // 🚀 서비스 호출
-    const result = await getCompanyService(page, pageSize, searchBy, keyword);
+    const { page, pageSize, searchBy, keyword } = req.query as any;
+
+    const validSearchFields = ['companyName', 'companyCode'];
+    if (searchBy && !validSearchFields.includes(searchBy)) {
+      throw createHttpError(400, '유효하지 않은 검색 기준입니다.');
+    }
+
+    const result = await companyService.getCompanyService(
+      Number(page),
+      Number(pageSize),
+      searchBy,
+      keyword,
+    );
 
     res.status(200).json(result);
   } catch (err) {

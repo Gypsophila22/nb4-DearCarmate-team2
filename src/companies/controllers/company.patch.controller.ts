@@ -1,8 +1,7 @@
 // src/companies/controllers/company.patch.controller.ts
 import type { Request, Response, NextFunction } from 'express';
 import createHttpError from 'http-errors';
-import { patchCompanyService } from '../services/company.patch.service.js';
-import { patchCompanySchema } from '../schemas/company.patch.schema.js';
+import companyService from '../services/index.js';
 
 export const patchCompany = async (
   req: Request,
@@ -10,13 +9,14 @@ export const patchCompany = async (
   next: NextFunction,
 ) => {
   try {
-    if (!req.user?.isAdmin)
+    if (!req.user?.isAdmin) {
       throw createHttpError(401, '관리자 권한이 필요합니다.');
+    }
 
-    const { companyId } = req.params;
+    const companyId = Number(req.params.companyId);
     const { companyName, companyCode } = req.body;
 
-    const updatedCompany = await patchCompanyService(Number(companyId), {
+    const updatedCompany = await companyService.patchCompanyService(companyId, {
       companyName,
       companyCode,
     });
