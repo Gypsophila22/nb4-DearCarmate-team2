@@ -88,3 +88,8 @@ export type GetCustomerByIdParams = z.infer<
   typeof getCustomerByIdSchema
 >['params'];
 export type CustomerCsvRow = z.infer<typeof customerCsvRowSchema>;
+
+export type TransformedUpdateCustomerBody = Omit<UpdateCustomerBody, 'ageGroup' | 'region'> & {
+  ageGroup?: AgeGroup;
+  region?: Region;
+};

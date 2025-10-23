@@ -1,11 +1,13 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, AgeGroup } from '@prisma/client';
 import prisma from '../../lib/prisma.js';
 import { DuplicateCustomerError } from '../utils/DuplicateCustomerError.js';
+import { mapAgeGroupToEnum } from '../utils/customer.mapper.js';
 import type {
   CreateCustomerBody,
   UpdateCustomerBody,
-  CustomerCsvRow,
+  TransformedUpdateCustomerBody,
 } from '../schemas/customers.schema.js';
+import type { CustomerCsvRow } from '../schemas/customers.schema.js';
 
 export const customerRepository = {
   findMany: async (
@@ -89,7 +91,7 @@ export const customerRepository = {
     }
   },
 
-  update: async (id: number, data: UpdateCustomerBody, companyId: number) => {
+  update: async (id: number, data: TransformedUpdateCustomerBody, companyId: number) => {
     try {
       return await prisma.customers.updateMany({
         where: {
@@ -137,8 +139,7 @@ export const customerRepository = {
         name: data.name,
         gender: data.gender,
         phoneNumber: data.phoneNumber,
-        ageGroup: data.ageGroup,
-        email: data.email,
+                  ageGroup: mapAgeGroupToEnum(data.ageGroup),        email: data.email,
         memo: data.memo,
         region: data.region,
       },
@@ -156,7 +157,7 @@ export const customerRepository = {
           name: data.name,
           gender: data.gender,
           phoneNumber: data.phoneNumber,
-          ageGroup: data.ageGroup,
+          ageGroup: mapAgeGroupToEnum(data.ageGroup),
           email: data.email,
           memo: data.memo,
           region: data.region,

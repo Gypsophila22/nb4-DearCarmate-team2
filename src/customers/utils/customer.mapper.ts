@@ -48,3 +48,27 @@ export function mapRegionToKorean(
   }
   return regionMap[region] || region;
 }
+
+export function mapAgeGroupToEnum(
+  koreanAgeGroup: string | undefined | null,
+): AgeGroup | null {
+  if (!koreanAgeGroup) return null;
+
+  const match = koreanAgeGroup.match(/^(\d{2})-\d{2}$/);
+  if (match && match[1]) {
+    const decade = `${match[1]}대`;
+    for (const key in ageGroupMap) {
+      if (ageGroupMap[key as AgeGroup] === decade) {
+        return key as AgeGroup;
+      }
+    }
+  }
+
+  for (const key in ageGroupMap) {
+    if (ageGroupMap[key as AgeGroup] === koreanAgeGroup) {
+      return key as AgeGroup;
+    }
+  }
+
+  return null;
+}

@@ -1,11 +1,13 @@
 import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
-import { ZodType, ZodError } from 'zod';
+import { ZodType, ZodError, z } from 'zod';
 
-// Extend the Request type to include the 'validated' property
+interface ValidatedRequest<T> extends Request {
+  validated?: T;
+}
 
 export const validate = (schema: ZodType) => (
-  req: Request,
+  req: ValidatedRequest<z.infer<typeof schema>>,
   res: Response,
   next: NextFunction,
 ) => {
@@ -17,7 +19,7 @@ export const validate = (schema: ZodType) => (
     });
 
     if (!parsed.success) {
-      const errorMessages = parsed.error.errors.map((err) => err.message).join(', ');
+      const errorMessages = parsed.error.issues.map((err) => err.message).join(', ');
       return next(createError(400, `Validation Error: ${errorMessages}`));
     }
 
@@ -25,7 +27,7 @@ export const validate = (schema: ZodType) => (
     next();
   } catch (error) {
     if (error instanceof ZodError) {
-      const errorMessages = error.errors.map((err) => err.message).join(', ');
+      const errorMessages = error.issues.map((err) => err.message).join(', ');
       return next(createError(400, `Validation Error: ${errorMessages}`));
     }
     next(error);
