@@ -19,7 +19,6 @@ export const userDeleteService = {
   async deleteMe(userId: number) {
     const user = await userRepository.findById(userId);
     if (!user) throw createError(404, '존재하지 않는 유저입니다.');
-
     try {
       await userRepository.deleteById(user.id);
     } catch (e: unknown) {
