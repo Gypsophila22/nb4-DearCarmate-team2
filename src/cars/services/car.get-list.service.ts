@@ -20,10 +20,13 @@ export type CarFilter = {
 };
 
 export const carGetListService = async (data) => {
+  const page = Number(data.page);
+  const pageSize = Number(data.pageSize);
+
   const filter: CarFilter = {
     search: {},
-    page: (data.page - 1) * data.pageSize,
-    pageSize: data.pageSize,
+    page: (page - 1) * pageSize,
+    pageSize,
   };
   if (data.status) filter.search.status = data.status;
   if (data.keyword && data.searchBy) {

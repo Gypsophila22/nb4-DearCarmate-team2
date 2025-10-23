@@ -15,8 +15,8 @@ const Cars = z
     mileage: z.number().int().nonnegative(), // 주행거리
     price: z.number().int().nonnegative(), // 가격
     accidentCount: z.number().int().nonnegative(), // 사고 횟수
-    explanation: z.string(), // 차량 설명
-    accidentDetails: z.string(), // 사고 상세
+    explanation: z.string().default(''), // 차량 설명
+    accidentDetails: z.string().default(''), // 사고 상세
     status: z.enum(['possession', 'carProceeding', 'carCompleted']), // 계약 상태 (보유 중 | 계약 진행 중 | 계약 완료)
     modelId: z.number().int().nonnegative(), // 모델 ID
     carModel: z.object({
@@ -54,16 +54,10 @@ export const CreateCars = Cars.omit({
   })
   .strict();
 
-export const GetCarsListParams = z
+export const GetCarsListQuery = z
   .object({
-    page: z.coerce // 현재 페이지 번호 (기본값 1)
-      .number()
-      .optional()
-      .default(1),
-    pageSize: z.coerce // 페이지당 아이템 수 (기본값 10)
-      .number()
-      .optional()
-      .default(10),
+    page: z.string().optional().default('1'), // 현재 페이지 번호 (기본값 1)
+    pageSize: z.string().optional().default('10'), // 페이지당 아이템 수 (기본값 10)
     status: z // 차량 상태 (보유 중 | 계약 진행 중 | 계약 완료)
       .enum(['possession', 'carProceeding', 'carCompleted'])
       .optional(),
@@ -109,7 +103,7 @@ class CarSchema {
 
   // 차량 목록 조회
   getList(req: Request, _res: Response, next: NextFunction) {
-    const result = GetCarsListParams.safeParse(req.query);
+    const result = GetCarsListQuery.safeParse(req.query);
     if (!result.success) {
       return next(createError(400, '잘못된 요청입니다'));
     } else {

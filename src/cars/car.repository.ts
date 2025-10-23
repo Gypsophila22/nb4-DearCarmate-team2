@@ -115,6 +115,7 @@ class CarRepository {
         skip: filter.page, // 패스할 아이템
         take: filter.pageSize, // 가져올 아이템
         include: { carModel: true }, // 차종 관계 포함
+        orderBy: { id: 'desc' }, // 최신순
       }),
       prisma.cars.count({
         where: filter.search, // 전체 아이템 수 (totalItemCount)
@@ -138,17 +139,6 @@ class CarRepository {
       where: { id: carId },
     });
   };
-
-  // findExistingCarModel = async (manufacturer, model) => {
-  //   return prisma.carModel.findUnique({
-  //     where: {
-  //       manufacturer_model: {
-  //         manufacturer,
-  //         model,
-  //       },
-  //     },
-  //   });
-  // };
 }
 
 export const carRepository = new CarRepository();

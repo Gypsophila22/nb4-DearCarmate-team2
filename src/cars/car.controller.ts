@@ -79,7 +79,7 @@ class CarController {
   getCarModels = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await carService.getModel();
-      res.status(200).json(result);
+      res.status(200).json({ data: result });
     } catch (err) {
       next(err);
     }
@@ -89,7 +89,9 @@ class CarController {
     try {
       const { cars, totalItemCount } = await carService.list(req.query); // 차량 목록 조회 서비스 실행
 
-      const { currentPage, pageSize } = req.query;
+      const currentPage = req.query.page;
+      const pageSize = req.query.pageSize;
+
       const totalPages = Math.ceil(totalItemCount / Number(pageSize));
 
       const result = {
