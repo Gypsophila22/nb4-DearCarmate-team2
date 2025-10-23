@@ -1,7 +1,6 @@
-import { Prisma, AgeGroup } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import prisma from '../../lib/prisma.js';
 import createError from 'http-errors';
-import { mapAgeGroupToEnum } from '../utils/customer.mapper.js';
 import type {
   CreateCustomerBody,
   UpdateCustomerBody,

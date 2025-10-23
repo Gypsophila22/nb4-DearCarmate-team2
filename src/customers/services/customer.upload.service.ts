@@ -1,7 +1,7 @@
 import { customerRepository } from '../repositories/index.js';
 import type { CustomerCsvRow } from '../schemas/customers.schema.js';
-import prisma from '../../lib/prisma.js'; // Import prisma client
-import { DuplicateCustomerError } from '../utils/DuplicateCustomerError.js'; // Add this import
+import prisma from '../../lib/prisma.js';
+import createError from 'http-errors'; // Import http-errors
 
 export const customerUploadService = {
   async processCustomerCsv(customers: CustomerCsvRow[], companyId: number) {
@@ -42,13 +42,13 @@ export const customerUploadService = {
         } catch (error: unknown) {
           results.failed++;
           let errorMessage: string;
-          if (error instanceof DuplicateCustomerError) {
-            errorMessage = error.message;
-          } else if (error instanceof Error) {
+          if (error instanceof Error) {
             errorMessage = error.message;
           } else {
             errorMessage = String(error);
           }
+          // For errors during CSV processing, we assume it's a conflict if it has a message
+          // or a generic server error.
           results.errors.push({ data: customerData, error: errorMessage });
         }
       }
