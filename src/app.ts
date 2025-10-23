@@ -31,6 +31,7 @@ app.use('/customers', routers.customersRouter);
 app.use('/companies', routers.companyRouter);
 app.use('/contracts', routers.contractRouter);
 app.use('/contractDocuments', routers.contractDocumentRouter);
+app.use('/dashboard', routers.dashboardRouter);
 
 app.use(errorHandler);
 

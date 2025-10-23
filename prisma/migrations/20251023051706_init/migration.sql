@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "CarType" AS ENUM ('SUV', '세단', '경차');
+CREATE TYPE "CarType" AS ENUM ('LIGHT', 'MEDIUM', 'HEAVY', 'SPORTS', 'SUV');
 
 -- CreateEnum
 CREATE TYPE "CarStatus" AS ENUM ('possession', 'contractProceeding', 'contractCompleted');
@@ -15,9 +15,6 @@ CREATE TYPE "Region" AS ENUM ('서울', '경기', '인천', '강원', '충북', 
 
 -- CreateEnum
 CREATE TYPE "ContractsStatus" AS ENUM ('carInspection', 'priceNegotiation', 'contractDraft', 'contractSuccessful', 'contractFailed');
-
--- CreateEnum
-CREATE TYPE "DocStatus" AS ENUM ('TEMP', 'LINKED');
 
 -- CreateTable
 CREATE TABLE "Users" (
@@ -95,7 +92,7 @@ CREATE TABLE "Contracts" (
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "contractPrice" INTEGER NOT NULL,
     "status" "ContractsStatus" NOT NULL,
-    "resolutionDate" TIMESTAMP(3) NOT NULL,
+    "resolutionDate" TIMESTAMP(3),
     "carId" INTEGER NOT NULL,
     "customerId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
@@ -133,7 +130,6 @@ CREATE TABLE "ContractDocuments" (
     "size" INTEGER NOT NULL,
     "path" TEXT,
     "url" TEXT,
-    "status" "DocStatus" NOT NULL DEFAULT 'TEMP',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "ContractDocuments_pkey" PRIMARY KEY ("id")
@@ -147,6 +143,9 @@ CREATE UNIQUE INDEX "Companies_companyCode_key" ON "Companies"("companyCode");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Cars_id_key" ON "Cars"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Cars_carNumber_key" ON "Cars"("carNumber");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "CarModel_manufacturer_model_key" ON "CarModel"("manufacturer", "model");
@@ -170,7 +169,7 @@ ALTER TABLE "Cars" ADD CONSTRAINT "Cars_modelId_fkey" FOREIGN KEY ("modelId") RE
 ALTER TABLE "Customers" ADD CONSTRAINT "Customers_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Companies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Contracts" ADD CONSTRAINT "Contracts_carId_fkey" FOREIGN KEY ("carId") REFERENCES "Cars"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Contracts" ADD CONSTRAINT "Contracts_carId_fkey" FOREIGN KEY ("carId") REFERENCES "Cars"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Contracts" ADD CONSTRAINT "Contracts_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "Customers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -15,5 +15,8 @@ export default function errorHandler(
     return res
       .status(status)
       .json({ message: err.message, code: status, name: err.name });
+  } else {
+    console.error(err);
+    return res.status(500).send('서버 내부 오류입니다.');
   }
 }
