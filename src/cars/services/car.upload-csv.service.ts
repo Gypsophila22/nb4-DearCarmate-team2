@@ -4,9 +4,9 @@ import createError from 'http-errors';
 import csv from 'csv-parser';
 import prisma from '../../lib/prisma.js';
 import { CarStatus, CarType } from '@prisma/client';
-import type { CarModel } from '@prisma/client';
 import { Readable } from 'stream';
 import { z } from 'zod';
+import type { CarModel } from '@prisma/client';
 /**
  * CSV 파일 업로드로 차량 대용량 등록
  * @param csvBuffer
