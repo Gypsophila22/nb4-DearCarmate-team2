@@ -74,7 +74,7 @@ export const companyRepository = {
             select: { user: true },
           },
         },
-        orderBy: { id: 'asc' },
+        orderBy: { id: 'desc' },
       }),
       prisma.companies.count({ where }),
     ]);
