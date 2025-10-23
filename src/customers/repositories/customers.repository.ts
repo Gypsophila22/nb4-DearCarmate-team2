@@ -37,6 +37,9 @@ export const customerRepository = {
         where,
         take: pageSize,
         skip: skip,
+        orderBy: {
+          createdAt: 'desc',
+        },
       }),
       prisma.customers.count({
         where,
