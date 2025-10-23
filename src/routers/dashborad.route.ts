@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import passport from 'passport';
 import { getDashboard } from '../dashboard/controllers/dashboard.get.controller.js';
+import passports from '../lib/passport/index.js';
 
 const router = Router();
 
-router.get('/', passport.authenticate('jwt', { session: false }), getDashboard);
+router.get('/', passports.jwtAuth, getDashboard);
 
 export default router;
