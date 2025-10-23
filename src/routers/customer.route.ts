@@ -11,8 +11,7 @@ import {
   upload,
 } from '../customers/controllers/uploadCustomers.js';
 import passports from '../lib/passport/index.js';
-import { validate } from '../customers/middlewares/validate.middleware.js'; // validate 미들웨어 임포트
-import { customerValidation } from '../customers/schemas/index.js'; // customerValidation 스키마 임포트
+import { customerValidation } from '../customers/schemas/index.js';
 
 const customersRouter = Router();
 
@@ -20,19 +19,19 @@ const customersRouter = Router();
 customersRouter.use(passports.jwtAuth);
 
 // 고객 목록 조회
-customersRouter.get('/', validate(customerValidation.getCustomersSchema), getCustomers);
+customersRouter.get('/', customerValidation.getCustomers, getCustomers);
 
 // 고객 등록
-customersRouter.post('/', validate(customerValidation.createCustomerSchema), createCustomer);
+customersRouter.post('/', customerValidation.createCustomer, createCustomer);
 
 // 고객 상세 정보 조회
-customersRouter.get('/:id', validate(customerValidation.getCustomerByIdSchema), getCustomerById);
+customersRouter.get('/:id', customerValidation.getCustomerById, getCustomerById);
 
 // 고객 수정
-customersRouter.patch('/:id', validate(customerValidation.updateCustomerSchema), updateCustomer);
+customersRouter.patch('/:id', customerValidation.updateCustomer, updateCustomer);
 
 // 고객 삭제
-customersRouter.delete('/:id', validate(customerValidation.deleteCustomerSchema), deleteCustomer);
+customersRouter.delete('/:id', customerValidation.deleteCustomer, deleteCustomer);
 
 // 고객 CSV 대용량 업로드
 customersRouter.post('/upload', upload.single('file'), uploadCustomers);

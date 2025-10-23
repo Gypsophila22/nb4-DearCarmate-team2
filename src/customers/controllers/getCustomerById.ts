@@ -3,14 +3,8 @@ import createError from 'http-errors';
 import { customerGetByIdService } from '../services/customer.getById.service.js';
 import type { GetCustomerByIdParams } from '../schemas/customers.schema.js';
 
-interface ValidatedRequest extends Request {
-  validated?: {
-    params?: GetCustomerByIdParams;
-  };
-}
-
 export const getCustomerById = async (
-  req: ValidatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
@@ -20,7 +14,7 @@ export const getCustomerById = async (
       throw createError(401, '인증된 사용자 정보가 없습니다.');
     }
 
-    const { params } = req.validated!;
+    const params = req.params as unknown as GetCustomerByIdParams;
 
     const customer = await customerGetByIdService.getCustomerById(
       params.id,

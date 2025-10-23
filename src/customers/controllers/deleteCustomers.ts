@@ -3,14 +3,8 @@ import createError from 'http-errors';
 import { customerDeleteService } from '../services/customer.delete.service.js';
 import type { DeleteCustomerParams } from '../schemas/customers.schema.js';
 
-interface ValidatedRequest extends Request {
-  validated?: {
-    params?: DeleteCustomerParams;
-  };
-}
-
 export const deleteCustomer = async (
-  req: ValidatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
@@ -20,7 +14,7 @@ export const deleteCustomer = async (
       throw createError(401, '인증된 사용자 정보가 없습니다.');
     }
 
-    const { params } = req.validated!;
+    const params = req.params as unknown as DeleteCustomerParams;
 
     const result = await customerDeleteService.deleteCustomer(
       params.id,
