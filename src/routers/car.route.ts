@@ -1,13 +1,16 @@
+import carController from '../cars/controllers/index.js';
 import express from 'express';
 import passport from 'passport';
-
-//import를 index 사용해서 캡슐화 진행해주세요
+import passports from '../lib/passport/index.js';
 import { createCarsController } from '../cars/controllers/createCar.js';
 import { deleteCarController } from '../cars/controllers/deleteCarsController.js';
 import { getCarByIdController } from '../cars/controllers/getCarByIdController.js';
 import { getCarModelsController } from '../cars/controllers/getCarModelsController.js';
 import { getCarsListController } from '../cars/controllers/getCarsListController.js';
 import { updateCarsController } from '../cars/controllers/updateCarsController.js';
+import { uploadCsvMiddleware } from '../cars/upload-csv.middleware.js';
+
+//import를 index 사용해서 캡슐화 진행해주세요 (추후 리팩토링 브랜치에서 진행 예정))
 
 const router = express.Router();
 
@@ -23,7 +26,9 @@ router.route('/models').get(
   getCarModelsController, // 차량 모델 목록 조회
 );
 
-// router.route('/upload').get(); // 차량 데이터 대용량 업로드
+router
+  .route('/upload')
+  .post(passports.jwtAuth, uploadCsvMiddleware, carController.uploadCsv);
 
 router
   .route('/:carId')

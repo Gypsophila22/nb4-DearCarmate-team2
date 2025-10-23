@@ -1,33 +1,44 @@
 import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-dotenv.config();
 
-const { EMAIL_SERVICE, EMAIL_USER, EMAIL_PASS, MAIL_FROM, MAIL_TO } =
-  process.env;
+const { EMAIL_SERVICE, EMAIL_USER, EMAIL_PASS, MAIL_FROM } = process.env;
 
-// 테스트용 개인 이메일 > 개인 이메일
-if (!EMAIL_SERVICE || !EMAIL_USER || !EMAIL_PASS || !MAIL_TO) {
-  throw new Error(
-    'ENV가 부족해요: EMAIL_SERVICE, EMAIL_USER, EMAIL_PASS, MAIL_TO 확인',
-  );
-}
-
+// transporter는 싱글턴으로 재사용
 const transporter = nodemailer.createTransport({
-  service: EMAIL_SERVICE,
+  service: EMAIL_SERVICE, // 'gmail' 등
   auth: { user: EMAIL_USER, pass: EMAIL_PASS },
+  pool: true, // ✅ 연결 풀링
+  maxConnections: 3, // 동시에 유지할 SMTP 연결 수
+  maxMessages: 200, // 연결당 전송 가능한 메시지 수
+  rateDelta: 1000, // 윈도우(ms)
+  rateLimit: 10, // 초당 최대 전송 수
 });
 
-async function main() {
-  await transporter.verify(); // 접속/인증 확인
-  const info = await transporter.sendMail({
-    from: MAIL_FROM ?? EMAIL_USER,
-    to: MAIL_TO, // 쉼표로 여러 명 가능
-    subject: 'Nodemailer Test',
-    text: '노드 패키지 nodemailer로 보낸 이메일',
-    // html: '<b>테스트</b>',
-    // attachments: [{ filename: 'contract.pdf', path: '/path/to/contract.pdf' }],
-  });
-  console.log('Email Sent:', info.messageId);
+export async function verifyMailer() {
+  return transporter.verify();
 }
 
-main().catch(console.error);
+type Attachment = { filename: string; path: string; contentType?: string };
+
+export async function sendMail(opts: {
+  to: string; // 다수면 "a@x.com,b@y.com"
+  subject: string;
+  text?: string;
+  html?: string;
+  attachments?: Attachment[];
+  from?: string; // 미지정 시 MAIL_FROM/EMAIL_USER 사용
+}) {
+  const from = opts.from ?? MAIL_FROM ?? EMAIL_USER!;
+  // const t0 = Date.now();
+  const info = await transporter.sendMail({ from, ...opts });
+  // const ms = Date.now() - t0;
+
+  // console.log('[mail:sent]', {
+  //   to: opts.to,
+  //   subject: opts.subject,
+  //   ms,
+  //   accepted: info.accepted,
+  //   rejected: info.rejected,
+  // });
+
+  return info;
+}

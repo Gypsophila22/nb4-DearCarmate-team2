@@ -1,5 +1,5 @@
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
-import { PrismaClient } from '../../../generated/prisma/index.js';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -14,8 +14,8 @@ export const jwtStrategy = new JwtStrategy(
         where: { id: payload.id },
         select: {
           id: true,
-          email: true,
-          name: true,
+          // email: true,
+          // name: true,
           isAdmin: true,
           companyId: true,
         },

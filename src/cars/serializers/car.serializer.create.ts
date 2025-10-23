@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { Cars } from '../../../generated/prisma/index.js';
+import type { Cars } from '@prisma/client';
 import type { CreateCarsResponseDto } from '../dtos/createCarsResponseDto.js';
 
 /**

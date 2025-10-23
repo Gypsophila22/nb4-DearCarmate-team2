@@ -1,20 +1,13 @@
-import { userRegisterService } from './user.register.service.js';
-import { userPatchService } from './user.patch.service.js';
-import { userGetService } from './user.get.service.js';
 import { userDeleteService } from './user.delete.service.js';
+import { userGetService } from './user.get.service.js';
+import { userPatchService } from './user.patch.service.js';
+import { userRegisterService } from './user.register.service.js';
 
-export {
-  userRegisterService,
-  userPatchService,
-  userGetService,
-  userDeleteService,
-};
-
-const UserServices = {
+export const userService = {
   userRegisterService,
   userPatchService,
   userGetService,
   userDeleteService,
 } as const;
 
-export default Object.freeze(UserServices);
+export default Object.freeze(userService);
