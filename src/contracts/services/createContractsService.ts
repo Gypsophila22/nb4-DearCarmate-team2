@@ -1,6 +1,5 @@
 import createError from 'http-errors';
-
-import contractRepository from '../repositories/index.js';
+import { contractRepository } from '../contract.repository.js';
 
 interface CreateContractInput {
   carId: number;
@@ -35,7 +34,7 @@ export const createContractsService = async (data: CreateContractInput) => {
   }
 
   // 계약 생성
-  const contract = await contractRepository.create.createContract({
+  const contract = await contractRepository.create({
     carId: data.carId,
     customerId: data.customerId,
     contractPrice: car.price,
@@ -43,13 +42,13 @@ export const createContractsService = async (data: CreateContractInput) => {
   });
 
   // 미팅 및 알람 생성
-  const meetings = await contractRepository.create.createMeetingsAndAlarms(
+  const meetings = await contractRepository.createMeetingsAndAlarms(
     contract.id,
     data.meetings,
   );
 
   // 차량 상태를 '계약 진행 중'으로 변경
-  await contractRepository.create.updateCarStatus(data.carId);
+  await contractRepository.updateCarStatus(data.carId);
 
   return {
     id: contract.id,

@@ -1,6 +1,5 @@
-import contractRepository from '../repositories/index.js';
-
 import type { ContractsStatus } from '@prisma/client';
+import { contractRepository } from '../contract.repository.js';
 
 interface Contract {
   id: number;
@@ -28,11 +27,12 @@ export const getContractsListService = async (
   ];
 
   // 상태별 계약 목록과 총 아이템 수 (TODO: any 지금 수정하는게 골치아파서 나중에 수정하겠습니다...)
-  const result: Record<string, { totalItemCount: number; data: any[] }> = {};
+  const result: Record<string, { totalItemCount: number; data: Contract[] }> =
+    {};
 
   // 각 상태별 계약 조회
   for (const status of statuses) {
-    const data: Contract[] = await contractRepository.getList.findByStatus(
+    const data: Contract[] = await contractRepository.findByStatus(
       status,
       searchBy, // 검색 기준: 'customerName' | 'userName'
       keyword, // 검색 키워드

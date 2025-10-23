@@ -1,10 +1,8 @@
-import contractRepository from '../repositories/index.js';
+import { contractRepository } from '../contract.repository.js';
 import createError from 'http-errors';
 import prisma from '../../lib/prisma.js';
 import { ContractsStatus } from '@prisma/client';
 import { sendContractDocsLinkedEmail } from '../../contract-documents/services/contract-document.send-email.service.js';
-
-
 
 // 계약 상태 변경
 interface UpdateContractInput {
@@ -24,11 +22,13 @@ export const updateContractsService = async (
   data: UpdateContractInput,
 ) => {
   // 계약 존재 여부 확인
-  const contract = await contractRepository.findContract(data.contractId);
+  const contract = await contractRepository.contractFindExisting(
+    data.contractId,
+  );
   if (!contract) {
     throw createError(404, '존재하지 않는 계약입니다');
   }
-  if (contract.userId !== userId) {
+  if (contract.userId !== req.user) {
     throw createError(403, '담당자만 수정이 가능합니다');
   }
   if (data.carId) {
@@ -39,8 +39,14 @@ export const updateContractsService = async (
     }
   }
 
+  //TODO: 계약 업데이트에 따라서 차량 상태 변경하기
+  // 차량 계약 진행 중 상태에서 계약 삭제, 실패 (계약 진행 중 -> 보유중)
+  // 차량 확인, 가격 협의, 계약서 작성 중 (계약 진행 중)
+  // 계약 완료 상태에서 계약 삭제 시 변화 없음
+  // 계약 성공 (계약 완료)
+
   // 계약 정보 업데이트 (undefined인 필드를 data 객체에서 제외)
-  await contractRepository.update.updateContract(data.contractId, {
+  await contractRepository.update(data.contractId, {
     ...(data.status && { status: data.status }),
     ...(data.contractPrice !== undefined && {
       contractPrice: { set: data.contractPrice },
@@ -74,10 +80,7 @@ export const updateContractsService = async (
         where: { contractId: data.contractId },
       });
     } else {
-      await contractRepository.update.updateMeetings(
-        data.contractId,
-        data.meetings,
-      );
+      await contractRepository.updateMeetings(data.contractId, data.meetings);
     }
   }
 
@@ -107,7 +110,7 @@ export const updateContractsService = async (
       );
 
       if (validDocs.length > 0) {
-        await contractRepository.update.updateContractDocuments(
+        await contractRepository.updateContractDocuments(
           data.contractId,
           validDocs.map((doc) => ({
             id: doc.id,
@@ -135,7 +138,7 @@ export const updateContractsService = async (
   }
 
   // 최종 조회
-  const contractResponse = await contractRepository.update.findByIdForResponse(
+  const contractResponse = await contractRepository.findByIdForResponse(
     data.contractId,
   );
 

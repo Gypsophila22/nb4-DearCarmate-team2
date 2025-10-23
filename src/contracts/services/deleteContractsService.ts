@@ -1,13 +1,12 @@
 import createError from 'http-errors';
-
-import contractRepository from '../repositories/index.js';
+import { contractRepository } from '../contract.repository.js';
 
 export const deleteContractsService = async (
   contractId: number,
   userId: number,
 ) => {
   // 계약 존재 여부 확인 레포지토리 호출
-  const contract = await contractRepository.findContract(contractId);
+  const contract = await contractRepository.contractFindExisting(contractId);
   if (!contract) {
     throw createError(404, '존재하지 않는 계약입니다');
   }
