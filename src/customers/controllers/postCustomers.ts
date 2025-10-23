@@ -1,4 +1,3 @@
-import { AgeGroup } from '@prisma/client';
 import type { CreateCustomerBody } from '../schemas/customers.schema.js';
 import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
