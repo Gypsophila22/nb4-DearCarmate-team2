@@ -67,7 +67,6 @@ export const customerRepository = {
       return await prisma.customers.create({
         data: {
           ...data,
-          createdAt: new Date(),
           company: {
             connect: { id: companyId },
           },
