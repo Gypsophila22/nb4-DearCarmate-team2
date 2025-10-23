@@ -1,15 +1,15 @@
-//controllers/companies/index.ts
-import createCompany from './postCompany.js';
-import getCompany from './getCompany.js';
-import patchCompany from './patchCompany.js';
-import deleteCompany from './deleteCompany.js';
-import getCompanyUsers from './getCompanyUsers.js';
+import { createCompany } from './company.post.controller.js';
+import { getCompany } from './company.get.controller.js';
+import { getCompanyUsers } from './company.get-user.controller.js';
+import { patchCompany } from './company.patch.controller.js';
+import { deleteCompany } from './company.delete.controller.js';
 
+// 각 컨트롤러 모음 객체
 const companyController = {
-  ...createCompany,
-  ...getCompany,
-  ...getCompanyUsers,
-  updateCompany: patchCompany,
+  createCompany,
+  getCompany,
+  getCompanyUsers,
+  patchCompany,
   deleteCompany,
 };
 
