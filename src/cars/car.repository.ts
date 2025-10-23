@@ -2,24 +2,35 @@ import { CarType, Prisma } from '@prisma/client';
 
 import prisma from '../lib/prisma.js';
 
-import type { Cars } from '@prisma/client';
+import type { Cars, CarStatus } from '@prisma/client';
 type CarsCreateManyInput = Prisma.CarsCreateManyInput;
 type UniqueModel = { manufacturer: string; model: string };
 import type { CarFilter } from './services/car.get-list.service.js';
+
+interface UpdateCarData {
+  carNumber?: string;
+  manufacturingYear?: number;
+  mileage?: number;
+  price?: number;
+  accidentCount?: number;
+  explanation?: string;
+  accidentDetails?: string;
+  status?: CarStatus;
+}
 
 class CarRepository {
   findModelWithManufacturer = async () => {
     return prisma.carModel.findMany();
   };
 
-  findCarById = async (carId) => {
+  findCarById = async (carId: number) => {
     return prisma.cars.findUnique({
       where: { id: carId },
     });
   };
 
   // 차량 조회 (carModel 관계 포함)
-  getCarByIdWithModel = async (carId) => {
+  getCarByIdWithModel = async (carId: number) => {
     return prisma.cars.findUnique({
       where: { id: carId },
       include: {
@@ -101,9 +112,15 @@ class CarRepository {
   };
 
   // 제조사와 모델명으로 carModel 조회
-  findByManufacturerAndModel = async (manufacturer: string, model: string) => {
-    return prisma.carModel.findFirst({
-      where: { manufacturer, model },
+  findByManufacturerAndModel = async ({
+    manufacturer,
+    model,
+  }: {
+    manufacturer: string;
+    model: string;
+  }) => {
+    return prisma.carModel.findUnique({
+      where: { manufacturer_model: { manufacturer, model } },
     });
   };
 
@@ -126,15 +143,29 @@ class CarRepository {
   };
 
   // 차량 수정
-  update = async (carId, updateData) => {
+  update = async ({
+    carId,
+    updateData,
+  }: {
+    carId: number;
+    updateData: UpdateCarData;
+  }) => {
     return prisma.cars.update({
-      where: { id: Number(carId) },
+      where: { id: carId },
       data: updateData,
       include: { carModel: true },
     });
   };
 
-  delete = async (carId) => {
+  updateCarModelId = async (carId: number, modelId: number) => {
+    return prisma.cars.update({
+      where: { id: carId },
+      data: { modelId },
+      include: { carModel: true },
+    });
+  };
+
+  delete = async (carId: number) => {
     return prisma.cars.delete({
       where: { id: carId },
     });

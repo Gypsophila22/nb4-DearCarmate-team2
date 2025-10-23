@@ -1,16 +1,28 @@
-import { CarStatus, CarType } from '@prisma/client';
-import { carRepository } from '../car.repository.js';
-import { Prisma } from '@prisma/client';
 import createError from 'http-errors';
+
+import { CarStatus, CarType } from '@prisma/client';
+
+import { carRepository } from '../car.repository.js';
+
 /**
  * 차량 생성 Service
  */
-export const createCarsService = async (data) => {
+export const createCarsService = async (data: {
+  carNumber: string;
+  manufacturer: string;
+  model: string;
+  manufacturingYear: number;
+  mileage: number;
+  price: number;
+  accidentCount: number;
+  explanation: string;
+  accidentDetails: string;
+  status: CarStatus;
+}) => {
   // 차량 모델 조회
-  let carModel = await carRepository.findByManufacturerAndModel(
-    data.manufacturer,
-    data.model,
-  );
+  let carModel = await carRepository.findByManufacturerAndModel({
+    ...data,
+  });
 
   // 모델이 없으면 생성
   if (!carModel) {
@@ -46,12 +58,8 @@ export const createCarsService = async (data) => {
       },
     };
   } catch (err) {
-    if (
-      err instanceof Prisma.PrismaClientKnownRequestError &&
-      err.code === 'P2002'
-    ) {
-      // Unique constraint failed
-      throw createError(400, `차량 번호 ${data.carNumber}는 이미 존재합니다.`);
+    if (err.code === 'P2002') {
+      throw createError(409, `차량 번호 ${data.carNumber}는 이미 존재합니다.`);
     }
     throw err;
   }

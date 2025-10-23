@@ -1,3 +1,4 @@
+import createError from 'http-errors';
 import multer from 'multer';
 import path from 'path';
 
@@ -17,7 +18,7 @@ const fileFilter = (
   const ext = path.extname(file.originalname).toLowerCase(); // 파일 확장자 추출
   if (ext === '.csv')
     cb(null, true); // CSV 파일이면 허용
-  else cb(new Error('잘못된 요청입니다')); // 그 외는 에러 처리
+  else cb(createError(400, 'CSV 파일만 업로드 가능합니다')); // 그 외는 에러 처리
 };
 
 export const uploadCsvMiddleware = multer({ storage, fileFilter }).single(

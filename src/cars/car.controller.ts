@@ -1,13 +1,18 @@
 import createError from 'http-errors';
-import { CarIdParam } from './car.schema.js';
+
+import { CarIdParam, GetCarsListQuery } from './car.schema.js';
 import carService from './services/index.js';
 
-import type { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 class CarController {
-  create = async (req: Request, res: Response, next: NextFunction) => {
+  create = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       const car = await carService.create(req.body); // 차량 생성 서비스 실행
-      return res.status(201).json({
+      res.status(201).json({
         id: car.id,
         carNumber: car.carNumber,
         manufacturer: car.carModel.manufacturer,
@@ -26,7 +31,11 @@ class CarController {
     }
   };
 
-  uploadCsv = async (req: Request, res: Response, next: NextFunction) => {
+  uploadCsv = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       // 업로드 파일 확인
       if (!req.file) {
@@ -34,17 +43,25 @@ class CarController {
       }
       // 차량 csv 파일 업로드 서비스 호출 (차량 추가)
       await carService.uploadCsv(req.file.buffer);
-      return res.status(201).json({ message: '성공적으로 등록되었습니다' });
+      res.status(201).json({ message: '성공적으로 등록되었습니다' });
     } catch (err) {
       next(err);
     }
   };
 
-  deleteCar = async (req: Request, res: Response, next: NextFunction) => {
+  deleteCar = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
-      const carId = CarIdParam.safeParse(req.params);
+      const parsed = CarIdParam.safeParse(req.params);
+      if (!parsed.success) {
+        throw createError(400, '잘못된 차량 ID입니다');
+      }
+      const carId = parsed.data.carId;
       await carService.delete(carId);
-      return res.status(200).json({ message: '차량 삭제 성공' });
+      res.status(200).json({ message: '차량 삭제 성공' });
     } catch (err) {
       next(err);
     }
@@ -52,9 +69,16 @@ class CarController {
 
   getCarById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const carId = CarIdParam.safeParse(req.params);
+      const parsed = CarIdParam.safeParse(req.params);
+      if (!parsed.success) {
+        throw createError(400, '잘못된 차량 ID입니다');
+      }
+      const carId = parsed.data.carId;
       // 차량 조회 서비스 호출 (carModel 관계 포함)
       const car = await carService.getById(carId);
+      if (!car) {
+        throw createError(404, '차량을 찾을 수 없습니다');
+      }
 
       // 조회 결과 반환
       res.status(200).json({
@@ -87,10 +111,11 @@ class CarController {
 
   getCarsList = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { cars, totalItemCount } = await carService.list(req.query); // 차량 목록 조회 서비스 실행
+      const parsed = GetCarsListQuery.parse(req.query);
+      const { cars, totalItemCount } = await carService.list(parsed); // 차량 목록 조회 서비스 실행
 
-      const currentPage = req.query.page;
-      const pageSize = req.query.pageSize;
+      const currentPage = req.query['page'];
+      const pageSize = req.query['pageSize'];
 
       const totalPages = Math.ceil(totalItemCount / Number(pageSize));
 
@@ -121,7 +146,11 @@ class CarController {
 
   updateCars = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const carId = CarIdParam.safeParse(req.params).data.carId;
+      const parsed = CarIdParam.safeParse(req.params);
+      if (!parsed.success) {
+        throw createError(400, '잘못된 차량 ID입니다');
+      }
+      const carId = parsed.data.carId;
       const result = await carService.update(carId, req.body);
 
       // 업데이트 결과 반환

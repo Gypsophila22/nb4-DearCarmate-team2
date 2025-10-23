@@ -6,7 +6,7 @@ import { carRepository } from '../car.repository.js';
  * 차량 삭제
  * @param carId
  */
-export const carDeleteService = async (carId) => {
+export const carDeleteService = async (carId: number) => {
   // 차량 확인 레포지토리 호출
   const car = await carRepository.findCarById(carId);
   if (!car) {

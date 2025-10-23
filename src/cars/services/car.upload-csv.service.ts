@@ -2,12 +2,13 @@ import csv from 'csv-parser';
 import createError from 'http-errors';
 import { Readable } from 'stream';
 import { z } from 'zod';
+import { ZodError } from 'zod';
 
 import { CarStatus, CarType } from '@prisma/client';
 
 import prisma from '../../lib/prisma.js';
 import { carRepository } from '../car.repository.js';
-import { CreateCars } from '../car.schema.js';
+import { CsvUploadCreateCar } from '../car.schema.js';
 
 import type { CarModel } from '@prisma/client';
 /**
@@ -16,45 +17,57 @@ import type { CarModel } from '@prisma/client';
  * @returns
  */
 export const carUploadCsvService = async (csvBuffer: Buffer) => {
-  type CarCsvRecord = z.infer<typeof CreateCars>; // 타입정의
+  type CarCsvRecord = z.infer<typeof CsvUploadCreateCar>; // 타입정의
   const records: CarCsvRecord[] = [];
 
+  const csvHeaders = [
+    'carNumber',
+    'manufacturer',
+    'model',
+    'manufacturingYear',
+    'mileage',
+    'price',
+    'accidentCount',
+    'explanation',
+    'accidentDetails',
+  ];
+
   const stream = Readable.from(csvBuffer.toString('utf-8'));
+
+  let rowIndex = 1;
 
   // CSV 파싱 및 헤더 유효성 검사
   await new Promise<void>((resolve, reject) => {
     stream
-      .pipe(csv())
+      .pipe(
+        csv({
+          mapHeaders: ({ header, index }) => csvHeaders[index] ?? header, // 헤더 매핑
+        }),
+      )
       .on('data', (data) => {
-        const parsed = CreateCars.safeParse({ ...data }); // 한 줄씩 데이터 검증
+        const parsed = CsvUploadCreateCar.safeParse({ ...data }); // 한 줄씩 데이터 검증
 
         if (!parsed.success) {
-          return reject(createError('잘못된 데이터가 들어있습니다'));
+          const zodError = parsed.error as ZodError<
+            z.infer<typeof CsvUploadCreateCar>
+          >;
+          const errorDetails = zodError.issues
+            .map((e) => `${e.path.join('.')}: ${e.message}`)
+            .join(', ');
+          return reject(
+            createError(
+              400,
+              `CSV ${rowIndex}번째 줄 잘못된 데이터: ${errorDetails}`,
+            ),
+          );
         } else {
           records.push(parsed.data);
+          rowIndex++;
         }
       })
       .on('end', () => {
         if (records.length === 0) {
           return reject(createError('CSV 파일이 비어 있습니다'));
-        }
-
-        const firstRecord = records[0]!;
-        const requiredHeaders = [
-          'carNumber',
-          'manufacturer',
-          'model',
-          'manufacturingYear',
-          'mileage',
-          'price',
-          'accidentCount',
-          'explanation',
-          'accidentDetails',
-        ];
-
-        const hasAllHeaders = requiredHeaders.every((h) => h in firstRecord);
-        if (!hasAllHeaders) {
-          return reject(createError(400, 'CSV 파일 헤더가 잘못되었습니다'));
         }
         resolve();
       })
@@ -67,17 +80,6 @@ export const carUploadCsvService = async (csvBuffer: Buffer) => {
         ),
       );
   });
-  // 차량 번호 중복 체크
-  const carNumbersInCsv = records.map((r) => r.carNumber.trim());
-  const existingCars =
-    await carRepository.findManyByCarNumbers(carNumbersInCsv);
-  if (existingCars.length > 0) {
-    const duplicateNumbers = existingCars.map((c) => c.carNumber).join(', ');
-    throw createError(
-      400,
-      `이미 존재하는 차량 번호가 있습니다: ${duplicateNumbers}`,
-    );
-  }
 
   // 차량 모델 추출 (중복 제거)
   const uniqueModels = Array.from(
@@ -87,7 +89,7 @@ export const carUploadCsvService = async (csvBuffer: Buffer) => {
   // 기존 모델 조회
   const existingModels = await carRepository.findManyModel(uniqueModels);
 
-  // 기존 모델 Set
+  // 기존 모델 set
   const existingKeys = new Set(
     existingModels.map((m) => `${m.manufacturer}|${m.model}`),
   );
@@ -133,6 +135,33 @@ export const carUploadCsvService = async (csvBuffer: Buffer) => {
     }));
 
     // 차량 대량 등록
-    await carRepository.createManyTx(tx, carsToCreate);
+    try {
+      await carRepository.createManyTx(tx, carsToCreate);
+    } catch (err) {
+      if (err.code === 'P2002') {
+        // 중복 차량 번호 체크
+        const carNumbersInCsv = records.map((r) => r.carNumber.trim());
+        const existingCars =
+          await carRepository.findManyByCarNumbers(carNumbersInCsv);
+
+        if (existingCars.length > 0) {
+          const duplicateNumbers = existingCars.map((c) => c.carNumber);
+          const maxDisplay = 1; // 보여줄 개수
+          const displayed = duplicateNumbers.slice(0, maxDisplay);
+          const remaining = duplicateNumbers.length - maxDisplay;
+
+          const message =
+            remaining > 0
+              ? `${displayed.join(', ')} 외 ${remaining}개`
+              : displayed.join(', ');
+
+          throw createError(
+            409,
+            `이미 존재하는 차량 번호가 있습니다: ${message}`,
+          );
+        }
+      }
+      throw err;
+    }
   });
 };

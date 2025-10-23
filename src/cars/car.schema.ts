@@ -1,8 +1,8 @@
-import createError from 'http-errors';
+import { CarStatus } from '@prisma/client';
 import { z } from 'zod';
 
-import type { Request, Response, NextFunction } from 'express';
-
+import type { NextFunction, Request, Response } from 'express';
+import createError from 'http-errors';
 const Cars = z
   .object({
     id: z.coerce.number().int().nonnegative(), // 차량 고유 ID
@@ -11,10 +11,10 @@ const Cars = z
       .number()
       .int()
       .nonnegative()
-      .lte(new Date().getFullYear()), // 제조년도
-    mileage: z.number().int().nonnegative(), // 주행거리
-    price: z.number().int().nonnegative(), // 가격
-    accidentCount: z.number().int().nonnegative(), // 사고 횟수
+      .lte(new Date().getFullYear()), // 제조년도 (현재 연도 이하)
+    mileage: z.number().int().nonnegative().lte(1_000_000), // 주행거리
+    price: z.number().int().nonnegative().lte(1_000_000_000), // 가격
+    accidentCount: z.number().int().nonnegative().lte(100), // 사고 횟수
     explanation: z.string().default(''), // 차량 설명
     accidentDetails: z.string().default(''), // 사고 상세
     status: z.enum(['possession', 'carProceeding', 'carCompleted']), // 계약 상태 (보유 중 | 계약 진행 중 | 계약 완료)
@@ -35,32 +35,50 @@ export const CarIdParam = z
   })
   .strict();
 
-const UpdateBody = Cars.omit({
-  id: true,
-  status: true,
-  modelId: true,
-  carModel: true,
-}).strict();
+const UpdateCarBody = Cars.extend({
+  manufacturer: z.string().min(1).optional(),
+  model: z.string().min(1).optional(),
+  explanation: z.string().optional(),
+  accidentDetails: z.string().optional(),
+})
+  .partial()
+  .strict();
 
-export const CreateCars = Cars.omit({
+const CreateCars = Cars.omit({
   id: true,
   status: true, // 계약 상태
   modelId: true, // 차종 모델 id
   carModel: true, // 차종 테이블 연결
 })
   .extend({
-    manufacturer: z.string().min(1), // 제조사
-    model: z.string().min(1), // 차종 이름
+    manufacturer: z.string().min(1),
+    model: z.string().min(1),
+    explanation: z.string().default(''),
+    accidentDetails: z.string().default(''),
+  })
+  .strict();
+
+export const CsvUploadCreateCar = Cars.omit({
+  id: true,
+  status: true,
+  modelId: true,
+  carModel: true,
+})
+  .extend({
+    manufacturer: z.string().min(1),
+    model: z.string().min(1),
+    manufacturingYear: z.coerce.number().int().nonnegative(),
+    mileage: z.coerce.number().int().nonnegative(),
+    price: z.coerce.number().int().nonnegative(),
+    accidentCount: z.coerce.number().int().nonnegative().default(0),
   })
   .strict();
 
 export const GetCarsListQuery = z
   .object({
-    page: z.string().optional().default('1'), // 현재 페이지 번호 (기본값 1)
-    pageSize: z.string().optional().default('10'), // 페이지당 아이템 수 (기본값 10)
-    status: z // 차량 상태 (보유 중 | 계약 진행 중 | 계약 완료)
-      .enum(['possession', 'carProceeding', 'carCompleted'])
-      .optional(),
+    page: z.coerce.number().optional().default(1), // 현재 페이지 번호 (기본값 1)
+    pageSize: z.coerce.number().optional().default(10), // 페이지당 아이템 수 (기본값 10)
+    status: z.enum(CarStatus).optional(), // 차량 상태 (보유 중 | 계약 진행 중 | 계약 완료)
     searchBy: z.enum(['carNumber', 'model']).optional(), // 검색 기준
     keyword: z.string().optional(), // 검색어
   })
@@ -81,7 +99,7 @@ class CarSchema {
   // 차량 수정
   update(req: Request, _res: Response, next: NextFunction) {
     const paramResult = CarIdParam.safeParse(req.params);
-    const bodyResult = UpdateBody.safeParse(req.body);
+    const bodyResult = UpdateCarBody.safeParse(req.body);
 
     if (!paramResult.success || !bodyResult.success) {
       return next(createError(400, '잘못된 요청입니다'));

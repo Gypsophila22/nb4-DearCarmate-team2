@@ -19,7 +19,13 @@ export type CarFilter = {
   pageSize: number; // 페이지당 아이템 수
 };
 
-export const carGetListService = async (data) => {
+export const carGetListService = async (data: {
+  page: number;
+  pageSize: number;
+  searchBy?: 'carNumber' | 'model';
+  keyword?: string;
+  status?: CarStatus;
+}) => {
   const page = Number(data.page);
   const pageSize = Number(data.pageSize);
 
