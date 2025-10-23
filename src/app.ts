@@ -1,12 +1,11 @@
 import { config } from './lib/config.js';
 import express from 'express';
 import cors from 'cors';
-import path from 'path';
-import passport from 'passport';
-
 import errorHandler from './middlewares/errorHandler.js';
-import { requestLogger } from './middlewares/logger.js';
+import passport from 'passport';
+import path from 'path';
 import routers from './routers/index.js';
+import { requestLogger } from './middlewares/logger.js';
 
 const app = express();
 

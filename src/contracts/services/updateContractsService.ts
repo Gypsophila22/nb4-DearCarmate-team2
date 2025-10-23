@@ -1,10 +1,10 @@
-import createError from 'http-errors';
-
-import { ContractsStatus } from '@prisma/client';
-
-import prisma from '../../lib/prisma.js';
 import contractRepository from '../repositories/index.js';
+import createError from 'http-errors';
+import prisma from '../../lib/prisma.js';
+import { ContractsStatus } from '@prisma/client';
 import { sendContractDocsLinkedEmail } from '../../contract-documents/services/contract-document.send-email.service.js';
+
+
 
 // 계약 상태 변경
 interface UpdateContractInput {
@@ -114,12 +114,10 @@ export const updateContractsService = async (
             originalName: doc.fileName,
           })),
         );
-
         const afterRows = await prisma.contractDocuments.findMany({
           where: { id: { in: validDocs.map((d) => d.id) } },
           select: { id: true, contractId: true },
         });
-
         const newlyLinked = afterRows
           .filter((row) => {
             const was = beforeMap.get(row.id) ?? null; // 이전 contractId
