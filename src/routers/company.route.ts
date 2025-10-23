@@ -1,6 +1,6 @@
 // src/companies/routes/company.route.ts
 import { Router } from 'express';
-import passport from 'passport';
+import passports from '../lib/passport/index.js';
 import companyController from '../companies/controllers/index.js';
 import { companySchema } from '../companies/schemas/company.schema.js';
 
@@ -9,7 +9,7 @@ const router = Router();
 // ✅ 회사 등록
 router.post(
   '/',
-  passport.authenticate('jwt', { session: false }),
+  passports.jwtAuth,
   companySchema.companyRegister,
   companyController.createCompany,
 );
@@ -17,7 +17,7 @@ router.post(
 // ✅ 회사 목록 조회
 router.get(
   '/',
-  passport.authenticate('jwt', { session: false }),
+  passports.jwtAuth,
   companySchema.companyGet,
   companyController.getCompany,
 );
@@ -25,7 +25,7 @@ router.get(
 // ✅ 회사별 유저 조회
 router.get(
   '/users',
-  passport.authenticate('jwt', { session: false }),
+  passports.jwtAuth,
   companySchema.companyGetUsers,
   companyController.getCompanyUsers,
 );
@@ -33,7 +33,7 @@ router.get(
 // ✅ 회사 수정
 router.patch(
   '/:companyId',
-  passport.authenticate('jwt', { session: false }),
+  passports.jwtAuth,
   companySchema.companyPatch,
   companyController.patchCompany,
 );
@@ -41,7 +41,7 @@ router.patch(
 // ✅ 회사 삭제
 router.delete(
   '/:companyId',
-  passport.authenticate('jwt', { session: false }),
+  passports.jwtAuth,
   companySchema.companyDeleteParam,
   companyController.deleteCompany,
 );
