@@ -11,11 +11,11 @@ const upload = multer({ storage: multer.memoryStorage() });
 export { upload };
 
 const customerCsvRowSchema = z.object({
-  customerName: z.string().min(1, '고객명은 필수입니다.'),
+  name: z.string().min(1, '고객명은 필수입니다.'),
   gender: z.enum(['male', 'female'], {
     message: '성별은 male 또는 female이어야 합니다.',
   }),
-  contact: z
+  phoneNumber: z
     .string()
     .regex(
       /^\d{2,4}-\d{3,4}-\d{4}$|^\d{9,11}$/,
@@ -24,6 +24,7 @@ const customerCsvRowSchema = z.object({
   ageGroup: z.string().optional(), // '20대', '30대' 등등
   email: z.string().email('유효한 이메일 형식이 아닙니다.').optional(),
   memo: z.string().optional(),
+  region: z.string().optional(),
 });
 
 // CSV 파싱 및 유효성 검사
@@ -64,6 +65,10 @@ export const uploadCustomers = async (
   next: NextFunction,
 ) => {
   try {
+    const companyId = req.user?.companyId;
+    if (!companyId) {
+      throw createError(401, '인증된 사용자 정보가 없습니다.');
+    }
     // 파일 존재 확인
     if (!req.file) {
       throw createError(400, '업로드된 파일이 없습니다.');
@@ -80,8 +85,10 @@ export const uploadCustomers = async (
     const { results: validCustomers, errors: validationErrors } =
       await parseAndValidateCsv(csvBuffer);
 
-    const dbProcessResults =
-      await customerUploadService.processCustomerCsv(validCustomers);
+    const dbProcessResults = await customerUploadService.processCustomerCsv(
+      validCustomers,
+      companyId,
+    );
 
     res.status(200).json({
       message: 'CSV 파일 업로드 요청을 받았습니다.',

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-
 import prisma from '../src/lib/prisma.js';
+import { CarStatus, ContractsStatus, Prisma } from '@prisma/client';
 
 async function main() {
   // CarModel 테이블에 차종(모델) 데이터 추가
@@ -26,21 +26,21 @@ async function main() {
 
   // 회사 등록 (Codeit만 변수로 받아두고 나머지는 반복문)
   const company = await prisma.companies.upsert({
-    where: { companyCode: 'CDEIT2025' },
+    where: { companyCode: 'CODEIT2025' },
     update: {},
-    create: { companyName: 'Codeit', companyCode: 'CDEIT2025' },
+    create: { companyName: 'Codeit', companyCode: 'CODEIT2025' },
   });
 
   // 나머지 회사 등록
   const otherCompanies = [
-    { companyName: '햇살카', companyCode: 'sunshine' },
-    { companyName: '케이카', companyCode: 'kcar' },
-    { companyName: '굿모닝카', companyCode: 'goodmorning' },
-    { companyName: '행복카', companyCode: 'happy' },
-    { companyName: '믿음카', companyCode: 'trust' },
+    { companyName: '햇살카', companyCode: 'Sunshine' },
+    { companyName: '케이카', companyCode: 'KCar' },
+    { companyName: '굿모닝카', companyCode: 'GoodMorning' },
+    { companyName: '행복카', companyCode: 'Happy' },
+    { companyName: '믿음카', companyCode: 'Trust' },
     { companyName: '신뢰카', companyCode: 'reliable' },
-    { companyName: '우리카', companyCode: 'ourcar' },
-    { companyName: '미래카', companyCode: 'future' },
+    { companyName: '우리카', companyCode: 'OurCar' },
+    { companyName: '미래카', companyCode: 'Future' },
   ];
 
   for (const c of otherCompanies) {
@@ -79,7 +79,7 @@ async function main() {
         name: '김코드',
         email: 'user1@codeit.com',
         employeeNumber: '101',
-        phoneNumber: '01011112222',
+        phoneNumber: '010-1111-2222',
         password: userHashed,
         isAdmin: false,
         companyId: company.id,
@@ -88,7 +88,7 @@ async function main() {
         name: '이코드',
         email: 'user2@codeit.com',
         employeeNumber: '102',
-        phoneNumber: '01022223333',
+        phoneNumber: '010-2222-3333',
         password: userHashed,
         isAdmin: false,
         companyId: company.id,
@@ -97,7 +97,7 @@ async function main() {
         name: '박코드',
         email: 'user3@codeit.com',
         employeeNumber: '103',
-        phoneNumber: '01033334444',
+        phoneNumber: '010-3333-4444',
         password: userHashed,
         isAdmin: false,
         companyId: company.id,
@@ -106,7 +106,7 @@ async function main() {
         name: '최코드',
         email: 'user4@codeit.com',
         employeeNumber: '104',
-        phoneNumber: '01044445555',
+        phoneNumber: '010-4444-5555',
         password: userHashed,
         isAdmin: false,
         companyId: company.id,
@@ -115,7 +115,7 @@ async function main() {
         name: '정코드',
         email: 'user5@codeit.com',
         employeeNumber: '105',
-        phoneNumber: '01055556666',
+        phoneNumber: '010-5555-6666',
         password: userHashed,
         isAdmin: false,
         companyId: company.id,
@@ -295,18 +295,219 @@ async function main() {
     ],
     skipDuplicates: true, // email이 중복되면 추가X
   });
+  const carModels = await prisma.carModel.findMany({
+    select: { id: true, manufacturer: true, model: true },
+  });
 
-  // 회사 데이터 임시 추가.
-  const companies = [
-    { companyName: '햇살카', companyCode: 'sunshine' },
-    { companyName: '케이카', companyCode: 'kcar' },
-    { companyName: '굿모닝카', companyCode: 'goodmorning' },
-    { companyName: '행복카', companyCode: 'happy' },
-    { companyName: '믿음카', companyCode: 'trust' },
-    { companyName: '신뢰카', companyCode: 'reliable' },
-    { companyName: '우리카', companyCode: 'ourcar' },
-    { companyName: '미래카', companyCode: 'future' },
+  const getModelId = (
+    manufacturer: string,
+    model: string,
+  ): number | undefined => {
+    return carModels.find(
+      (m) => m.manufacturer === manufacturer && m.model === model,
+    )?.id;
+  };
+
+  // 2) 차량 원본 정의
+  const carsSeedRaw = Array.from({ length: 20 }, (_, i) => ({
+    carNumber: `${i + 1}가 ${1000 + i}`,
+    manufacturer: i % 2 === 0 ? '현대' : '기아',
+    model: i % 2 === 0 ? '투싼' : 'K5',
+    manufacturingYear: 2020 + (i % 3),
+    mileage: 10000 + i * 1000,
+    price: 1500 + i * 50,
+    accidentCount: 0,
+    explanation: '무사고',
+    accidentDetails: '',
+    status: CarStatus.possession,
+  }));
+
+  // 3) CarsCreateManyInput로 매핑
+  const carsToCreate: Prisma.CarsCreateManyInput[] = [];
+  for (const c of carsSeedRaw) {
+    const modelId = getModelId(c.manufacturer, c.model);
+    if (!modelId) {
+      console.warn(`[seed] 모델 없음 -> skip: ${c.manufacturer} ${c.model}`);
+      continue;
+    }
+    carsToCreate.push({
+      carNumber: c.carNumber,
+      manufacturingYear: c.manufacturingYear,
+      mileage: c.mileage,
+      price: c.price,
+      accidentCount: c.accidentCount,
+      explanation: c.explanation,
+      accidentDetails: c.accidentDetails,
+      status: c.status, // CarStatus enum
+      modelId,
+    });
+  }
+
+  if (carsToCreate.length) {
+    await prisma.cars.createMany({ data: carsToCreate, skipDuplicates: true });
+  }
+
+  // 4) 계약 5건: 참조 로드(명시 타입 + 길이 체크)
+  const createdCars = await prisma.cars.findMany({
+    where: { carNumber: { in: carsSeedRaw.map((c) => c.carNumber) } },
+    orderBy: { id: 'asc' },
+  });
+  const usersForCompany = await prisma.users.findMany({
+    where: { companyId: company.id },
+    orderBy: { id: 'asc' },
+  });
+  const someCustomers = await prisma.customers.findMany({
+    where: { companyId: company.id },
+    orderBy: { id: 'asc' },
+  });
+
+  if (!createdCars.length || !usersForCompany.length || !someCustomers.length) {
+    console.warn('[seed] 계약 생성 생략: 참조 데이터 부족');
+  } else {
+    const admin = usersForCompany.find((u) => u.isAdmin) ?? usersForCompany[0];
+
+    // 만들 수 있는 최소 개수만큼만 생성(최대 5건)
+    const n = Math.min(
+      5,
+      createdCars.length,
+      someCustomers.length,
+      usersForCompany.length,
+    );
+
+    const statuses: ContractsStatus[] = [
+      ContractsStatus.carInspection,
+      ContractsStatus.priceNegotiation,
+      ContractsStatus.contractDraft,
+      ContractsStatus.contractSuccessful,
+      ContractsStatus.contractFailed,
+    ];
+
+    const today = new Date();
+    const addDays = (d: number) => new Date(today.getTime() + d * 86400000);
+
+    const contractsToCreate: Prisma.ContractsCreateManyInput[] = [];
+    for (let i = 0; i < n; i++) {
+      const car = createdCars[i];
+      const customer = someCustomers[i];
+      const user = usersForCompany[i] ?? admin;
+
+      // 모든 키가 확실히 존재할 때만 push (undefined 제거)
+      if (car?.id && customer?.id && user?.id) {
+        contractsToCreate.push({
+          carId: car.id,
+          customerId: customer.id,
+          userId: user.id,
+          contractPrice: [1900, 1800, 2100, 900, 1600][i] ?? 1500,
+          status: statuses[i] ?? ContractsStatus.carInspection,
+          date: addDays([-3, -2, -1, -10, -8][i] ?? -1),
+          resolutionDate: addDays([7, 5, 3, -2, -1][i] ?? 7),
+        });
+      }
+    }
+
+    if (contractsToCreate.length) {
+      await prisma.contracts.createMany({
+        data: contractsToCreate,
+        skipDuplicates: true,
+      });
+
+      // 계약된 차량 상태 업데이트
+      const progressingIds = contractsToCreate.slice(0, 2).map((c) => c.carId);
+      await prisma.cars.updateMany({
+        where: { id: { in: progressingIds } },
+        data: { status: CarStatus.contractProceeding },
+      });
+    }
+  }
+
+  // 대시보드용 계약 시드데이터 추가 (10월 10개, 9월 10개 -> 월별 매출액 성장 확인용)
+  const allCars = await prisma.cars.findMany({ include: { carModel: true } });
+  const allUsers = await prisma.users.findMany({
+    where: { companyId: company.id },
+  });
+  const allCustomers = await prisma.customers.findMany({
+    where: { companyId: company.id },
+  });
+
+  const statuses: ContractsStatus[] = [
+    ContractsStatus.contractDraft,
+    ContractsStatus.priceNegotiation,
+    ContractsStatus.carInspection,
+    ContractsStatus.contractSuccessful,
+    ContractsStatus.contractFailed,
   ];
+
+  // 날짜 계산
+  const today = new Date();
+  const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+
+  // 이번달 10개: cars[0~9]
+  // 저번달 10개: cars[10~19]
+  const createContract = (
+    carIndex: number,
+    customerIndex: number,
+    userIndex: number,
+    date: Date,
+    status: ContractsStatus,
+    price: number,
+  ) => ({
+    carId: allCars[carIndex].id,
+    customerId: allCustomers[customerIndex % allCustomers.length].id,
+    userId: allUsers[userIndex % allUsers.length].id,
+    contractPrice: price,
+    status,
+    date,
+    resolutionDate: new Date(date.getTime() + 5 * 86400000),
+  });
+
+  // 이번달 계약 10개: cars[0~9]
+  const thisMonthContracts: Prisma.ContractsCreateManyInput[] = [];
+  for (let i = 0; i < 10; i++) {
+    const status =
+      i % 2 === 0
+        ? ContractsStatus.contractSuccessful
+        : ContractsStatus.contractDraft;
+    const price = 1000 + i * 100;
+    thisMonthContracts.push(createContract(i, i, i, today, status, price));
+  }
+
+  // 저번달 계약 10개: cars[10~19]
+  const lastMonthContracts: Prisma.ContractsCreateManyInput[] = [];
+  for (let i = 0; i < 10; i++) {
+    const status =
+      i % 2 === 0
+        ? ContractsStatus.contractSuccessful
+        : ContractsStatus.contractDraft;
+    const price = 900 + i * 100;
+    lastMonthContracts.push(
+      createContract(i + 10, i, i, lastMonth, status, price),
+    );
+  }
+
+  // DB 삽입
+  await prisma.contracts.createMany({
+    data: [...thisMonthContracts, ...lastMonthContracts],
+    skipDuplicates: true,
+  });
+
+  // 차량 상태 업데이트 (진행중/성사된 상태 반영)
+  const progressingCarIds = thisMonthContracts
+    .filter((c) => c.status !== ContractsStatus.contractSuccessful)
+    .map((c) => c.carId);
+  await prisma.cars.updateMany({
+    where: { id: { in: progressingCarIds } },
+    data: { status: CarStatus.contractProceeding },
+  });
+
+  const completedCarIds = thisMonthContracts
+    .filter((c) => c.status === ContractsStatus.contractSuccessful)
+    .map((c) => c.carId);
+  await prisma.cars.updateMany({
+    where: { id: { in: completedCarIds } },
+    data: { status: CarStatus.possession },
+  });
+
+  console.log('✅ 이번달/저번달 계약 시드 20개 생성 완료');
 
   console.log('✅ Seeding 완료');
 }
