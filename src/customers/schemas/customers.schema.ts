@@ -39,8 +39,8 @@ export const updateCustomerSchema = z.object({
     name: z.string().min(1).optional(),
     gender: z.nativeEnum(Gender).optional(),
     phoneNumber: z.string().min(1).optional(),
-    ageGroup: z.nativeEnum(AgeGroup).optional(),
-    region: z.nativeEnum(Region).optional(),
+    ageGroup: z.string().optional(),
+    region: z.string().optional(),
     email: z.string().email().optional(),
     memo: z.string().optional(),
   }),
@@ -71,7 +71,7 @@ export const customerCsvRowSchema = z.object({
       '유효한 연락처 형식이 아닙니다.',
     ),
   region: z.nativeEnum(Region).optional(),
-  ageGroup: z.nativeEnum(AgeGroup).optional(),
+  ageGroup: z.string().optional(),
   memo: z.string().optional(),
 });
 

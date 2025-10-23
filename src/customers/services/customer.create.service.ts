@@ -1,6 +1,8 @@
 import { customerRepository } from '../repositories/index.js';
 import type { CreateCustomerBody } from '../schemas/customers.schema.js';
 import { AgeGroup } from '@prisma/client'; // Import AgeGroup
+import createError from 'http-errors'; // Add this import
+import { DuplicateCustomerError } from '../utils/DuplicateCustomerError.js'; // Add this import
 
 // Define the mapping for AgeGroup
 const ageGroupMap: Record<string, AgeGroup> = {
@@ -36,6 +38,13 @@ export const customerCreateService = {
       ...data,
       ageGroup: data.ageGroup ? ageGroupMap[data.ageGroup] : null,
     };
-    return customerRepository.create(transformedData, companyId);
+    try {
+      return await customerRepository.create(transformedData, companyId);
+    } catch (error) {
+      if (error instanceof DuplicateCustomerError) {
+        throw createError(409, error.message); // 409 Conflict
+      }
+      throw error;
+    }
   },
 };

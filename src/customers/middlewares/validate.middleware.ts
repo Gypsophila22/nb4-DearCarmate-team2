@@ -3,17 +3,6 @@ import createError from 'http-errors';
 import { ZodType, ZodError } from 'zod';
 
 // Extend the Request type to include the 'validated' property
-declare global {
-  namespace Express {
-    interface Request {
-      validated?: {
-        body?: any;
-        query?: any;
-        params?: any;
-      };
-    }
-  }
-}
 
 export const validate = (schema: ZodType) => (
   req: Request,

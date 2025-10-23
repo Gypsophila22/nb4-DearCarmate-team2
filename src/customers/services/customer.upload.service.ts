@@ -1,6 +1,7 @@
 import { customerRepository } from '../repositories/index.js';
 import type { CustomerCsvRow } from '../schemas/customers.schema.js';
 import prisma from '../../lib/prisma.js'; // Import prisma client
+import { DuplicateCustomerError } from '../utils/DuplicateCustomerError.js'; // Add this import
 
 export const customerUploadService = {
   async processCustomerCsv(customers: CustomerCsvRow[], companyId: number) {
@@ -40,9 +41,15 @@ export const customerUploadService = {
           }
         } catch (error: unknown) {
           results.failed++;
-          const message =
-            error instanceof Error ? error.message : String(error);
-          results.errors.push({ data: customerData, error: message });
+          let errorMessage: string;
+          if (error instanceof DuplicateCustomerError) {
+            errorMessage = error.message;
+          } else if (error instanceof Error) {
+            errorMessage = error.message;
+          } else {
+            errorMessage = String(error);
+          }
+          results.errors.push({ data: customerData, error: errorMessage });
         }
       }
     });
