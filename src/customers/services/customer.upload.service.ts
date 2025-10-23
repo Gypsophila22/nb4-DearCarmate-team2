@@ -1,6 +1,6 @@
 import { customerRepository } from '../repositories/index.js';
 import type { CustomerCsvRow } from '../schemas/customers.schema.js';
-import prisma from '../../lib/prisma.ts'; // Import prisma client
+import prisma from '../../lib/prisma.js'; // Import prisma client
 
 export const customerUploadService = {
   async processCustomerCsv(customers: CustomerCsvRow[], companyId: number) {

@@ -21,7 +21,7 @@ export const createCustomerSchema = z.object({
     name: z.string().min(1, { message: '고객명은 필수입니다.' }),
     gender: z.nativeEnum(Gender),
     phoneNumber: z.string().min(1, { message: '연락처는 필수입니다.' }),
-    ageGroup: z.string().optional(),
+    ageGroup: z.nativeEnum(AgeGroup).optional(),
     region: z.nativeEnum(Region).optional(),
     email: z
       .string()
@@ -39,7 +39,7 @@ export const updateCustomerSchema = z.object({
     name: z.string().min(1).optional(),
     gender: z.nativeEnum(Gender).optional(),
     phoneNumber: z.string().min(1).optional(),
-    ageGroup: z.string().optional(),
+    ageGroup: z.nativeEnum(AgeGroup).optional(),
     region: z.nativeEnum(Region).optional(),
     email: z.string().email().optional(),
     memo: z.string().optional(),
@@ -70,8 +70,8 @@ export const customerCsvRowSchema = z.object({
       /^\d{2,4}-\d{3,4}-\d{4}$|^\d{9,11}$/,
       '유효한 연락처 형식이 아닙니다.',
     ),
-  region: z.string().optional(),
-  ageGroup: z.string().optional(),
+  region: z.nativeEnum(Region).optional(),
+  ageGroup: z.nativeEnum(AgeGroup).optional(),
   memo: z.string().optional(),
 });
 

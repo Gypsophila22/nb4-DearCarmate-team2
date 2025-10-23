@@ -3,8 +3,14 @@ import createError from 'http-errors';
 import { customerGetService } from '../services/customer.get.service.js';
 import type { GetCustomersQuery } from '../schemas/customers.schema.js';
 
+interface ValidatedRequest extends Request {
+  validated?: {
+    query?: GetCustomersQuery;
+  };
+}
+
 export const getCustomers = async (
-  req: Request,
+  req: ValidatedRequest,
   res: Response,
   next: NextFunction,
 ) => {
@@ -14,7 +20,7 @@ export const getCustomers = async (
       throw createError(401, '인증된 사용자 정보가 없습니다.');
     }
 
-    const { query } = req.validated as { query: GetCustomersQuery };
+    const { query } = req.validated!;
 
     const result = await customerGetService.getCustomers(
       companyId,

@@ -6,8 +6,15 @@ import type {
   UpdateCustomerBody,
 } from '../schemas/customers.schema.js';
 
+interface ValidatedRequest extends Request {
+  validated?: {
+    params?: UpdateCustomerParams;
+    body?: UpdateCustomerBody;
+  };
+}
+
 export const updateCustomer = async (
-  req: Request,
+  req: ValidatedRequest,
   res: Response,
   next: NextFunction,
 ) => {
@@ -17,10 +24,7 @@ export const updateCustomer = async (
       throw createError(401, '인증된 사용자 정보가 없습니다.');
     }
 
-    const { params, body } = req.validated as {
-      params: UpdateCustomerParams;
-      body: UpdateCustomerBody;
-    };
+    const { params, body } = req.validated!;
 
     const result = await customerUpdateService.updateCustomer(
       params.id,
