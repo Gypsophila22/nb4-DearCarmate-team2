@@ -1,7 +1,6 @@
 import { customerRepository } from '../repositories/index.js';
 import type { CustomerCsvRow } from '../schemas/customers.schema.js';
 import prisma from '../../lib/prisma.js';
-import createError from 'http-errors'; // Import http-errors
 
 export const customerUploadService = {
   async processCustomerCsv(customers: CustomerCsvRow[], companyId: number) {
@@ -44,7 +43,8 @@ export const customerUploadService = {
           let errorMessage: string;
           if (error instanceof Error) {
             errorMessage = error.message;
-          } else {
+          }
+          else {
             errorMessage = String(error);
           }
           // For errors during CSV processing, we assume it's a conflict if it has a message

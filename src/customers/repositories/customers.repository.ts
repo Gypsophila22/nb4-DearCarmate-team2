@@ -75,12 +75,10 @@ class CustomerRepository {
       ) {
         const target = error.meta?.target as string | undefined;
         let message = '중복된 고객 정보입니다.';
-        if (target?.includes('phoneNumber')) {
-          message = '이미 등록된 연락처입니다.';
-        } else if (target?.includes('email')) {
+        if (target?.includes('email')) {
           message = '이미 등록된 이메일입니다.';
-        } else if (target?.includes('name') && target?.includes('phoneNumber')) {
-          message = '이미 등록된 고객명과 연락처 조합입니다.';
+        } else if (target?.includes('phoneNumber')) {
+          message = '이미 등록된 연락처입니다.';
         }
         throw createError(409, message);
       }
@@ -108,12 +106,10 @@ class CustomerRepository {
       ) {
         const target = error.meta?.target as string | undefined;
         let message = '중복된 고객 정보입니다.';
-        if (target?.includes('phoneNumber')) {
-          message = '이미 등록된 연락처입니다.';
-        } else if (target?.includes('email')) {
+        if (target?.includes('email')) {
           message = '이미 등록된 이메일입니다.';
-        } else if (target?.includes('name') && target?.includes('phoneNumber')) {
-          message = '이미 등록된 고객명과 연락처 조합입니다.';
+        } else if (target?.includes('phoneNumber')) {
+          message = '이미 등록된 연락처입니다.';
         }
         throw createError(409, message);
       }
@@ -178,12 +174,10 @@ class CustomerRepository {
       ) {
         const target = error.meta?.target as string | undefined;
         let message = '중복된 고객 정보입니다.';
-        if (target?.includes('phoneNumber')) {
-          message = '이미 등록된 연락처입니다.';
-        } else if (target?.includes('email')) {
+        if (target?.includes('email')) {
           message = '이미 등록된 이메일입니다.';
-        } else if (target?.includes('name') && target?.includes('phoneNumber')) {
-          message = '이미 등록된 고객명과 연락처 조합입니다.';
+        } else if (target?.includes('phoneNumber')) {
+          message = '이미 등록된 연락처입니다.';
         }
         throw createError(409, message);
       }
