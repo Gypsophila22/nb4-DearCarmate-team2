@@ -7,13 +7,13 @@ import { carUpdateService } from './car.update.service.js';
 import { carUploadCsvService } from './car.upload-csv.service.js';
 
 const carService = {
-  uploadCsv: carUploadCsvService,
   create: createCarsService,
   delete: carDeleteService,
-  getById: carGetByIdService,
-  getModel: carGetModelService,
   update: carUpdateService,
+  getById: carGetByIdService,
   list: carGetListService,
+  getModel: carGetModelService,
+  uploadCsv: carUploadCsvService,
 };
 
 Object.freeze(carService);

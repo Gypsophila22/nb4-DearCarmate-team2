@@ -1,3 +1,4 @@
+import { CarStatus, CarType } from '@prisma/client';
 import { carRepository } from '../car.repository.js';
 
 /**
@@ -15,7 +16,7 @@ export const createCarsService = async (data) => {
     carModel = await carRepository.createModel({
       manufacturer: data.manufacturer, // 제조사
       model: data.model, // 차량 이름
-      type: '세단', // 기본값 세단
+      type: CarType.세단, // 기본값 세단
     });
   }
 
@@ -31,7 +32,7 @@ export const createCarsService = async (data) => {
     carModel: {
       connect: { id: carModel.id },
     },
-    status: 'possession', // 기본값 '보유중'
+    status: CarStatus.possession, // 기본값 '보유중'
   });
   return {
     ...car,
