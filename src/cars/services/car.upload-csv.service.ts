@@ -1,20 +1,22 @@
-import carDto from '../dtos/index.js';
-import carRepository from '../repositories/index.js';
-import createError from 'http-errors';
 import csv from 'csv-parser';
-import prisma from '../../lib/prisma.js';
-import { CarStatus, CarType } from '@prisma/client';
+import createError from 'http-errors';
 import { Readable } from 'stream';
 import { z } from 'zod';
+
+import { CarStatus, CarType } from '@prisma/client';
+
+import prisma from '../../lib/prisma.js';
+import { carRepository } from '../car.repository.js';
+import { CreateCars } from '../car.schema.js';
+
 import type { CarModel } from '@prisma/client';
 /**
  * CSV 파일 업로드로 차량 대용량 등록
  * @param csvBuffer
  * @returns
  */
-
 export const carUploadCsvService = async (csvBuffer: Buffer) => {
-  type CarCsvRecord = z.infer<typeof carDto.createCarsRequest>;
+  type CarCsvRecord = z.infer<typeof CreateCars>; // 타입정의
   const records: CarCsvRecord[] = [];
 
   const stream = Readable.from(csvBuffer.toString('utf-8'));
@@ -23,7 +25,15 @@ export const carUploadCsvService = async (csvBuffer: Buffer) => {
   await new Promise<void>((resolve, reject) => {
     stream
       .pipe(csv())
-      .on('data', (data) => records.push(data))
+      .on('data', (data) => {
+        const parsed = CreateCars.safeParse({ ...data }); // 한 줄씩 데이터 검증
+
+        if (!parsed.success) {
+          return reject(createError('잘못된 데이터가 들어있습니다'));
+        } else {
+          records.push(parsed.data);
+        }
+      })
       .on('end', () => {
         if (records.length === 0) {
           return reject(createError('CSV 파일이 비어 있습니다'));
@@ -94,7 +104,7 @@ export const carUploadCsvService = async (csvBuffer: Buffer) => {
     if (modelsToCreate.length > 0) {
       createdModels = await Promise.all(
         modelsToCreate.map((r) =>
-          carRepository.createModelTx.create(tx, {
+          carRepository.createModelTx(tx, {
             manufacturer: r.manufacturer,
             model: r.model,
             type: CarType.세단, // 기본값

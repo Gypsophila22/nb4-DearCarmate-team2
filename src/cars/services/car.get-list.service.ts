@@ -1,17 +1,15 @@
-import { z } from 'zod';
+import { carRepository } from '../car.repository.js';
 
-import { getCarsListRepository } from '../repositories/getList.js';
-
-import type { GetCarsListRequestDto } from '../dtos/getCarsListRequestDto.js';
+import type { CarStatus } from '@prisma/client';
 
 /**
  * 차량 목록 조회 Service
  */
 type CarSearchFilter = {
-  status?: 'possession' | 'contractProceeding' | 'contractCompleted';
-  carNumber?: { contains: string; mode: 'insensitive' };
+  status?: CarStatus;
+  carNumber?: { contains: string; mode: 'insensitive' }; // 대소문자 구분 없이
   carModel?: {
-    model?: { contains: string; mode: 'insensitive' };
+    model?: { contains: string; mode: 'insensitive' }; // 대소문자 구분 없이
   };
 };
 
@@ -21,9 +19,7 @@ export type CarFilter = {
   pageSize: number; // 페이지당 아이템 수
 };
 
-export const getCarsListService = async (
-  data: z.infer<typeof GetCarsListRequestDto>,
-) => {
+export const carGetListService = async (data) => {
   const filter: CarFilter = {
     search: {},
     page: (data.page - 1) * data.pageSize,
@@ -46,5 +42,6 @@ export const getCarsListService = async (
       };
     }
   }
-  return getCarsListRepository.findCars(filter);
+  const result = await carRepository.findList(filter);
+  return result;
 };

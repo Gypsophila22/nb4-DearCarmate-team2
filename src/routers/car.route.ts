@@ -1,19 +1,18 @@
 import express from 'express';
-import passports from '../lib/passport/index.js';
+
 import { carController } from '../cars/car.controller.js';
+import { carSchema } from '../cars/car.schema.js';
 import { uploadCsvMiddleware } from '../cars/upload-csv.middleware.js';
+import passports from '../lib/passport/index.js';
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(passports.jwtAuth, carController.create) // 차량 등록
-  .get(passports.jwtAuth, getCarsListController); // 차량 목록 조회
+  .post(passports.jwtAuth, carSchema.create, carController.create) // 차량 등록
+  .get(passports.jwtAuth, carSchema.getList, carController.getCarsList); // 차량 목록 조회
 
-router.route('/models').get(
-  passports.jwtAuth,
-  getCarModelsController, // 차량 모델 목록 조회
-);
+router.route('/models').get(passports.jwtAuth, carController.getCarModels); // 차량 모델 목록 조회
 
 router
   .route('/upload')
@@ -21,11 +20,8 @@ router
 
 router
   .route('/:carId')
-  .get(passports.jwtAuth, getCarByIdController) // 차량 상세 정보 조회
-  .patch(passports.jwtAuth, updateCarsController) // 차량 수정
-  .delete(
-    passports.jwtAuth,
-    deleteCarController, // 차량 삭제
-  );
+  .get(passports.jwtAuth, carController.getCarById) // 차량 상세 정보 조회
+  .patch(passports.jwtAuth, carSchema.update, carController.updateCars) // 차량 수정
+  .delete(passports.jwtAuth, carSchema.delete, carController.deleteCar); // 차량 삭제
 
 export default router;
