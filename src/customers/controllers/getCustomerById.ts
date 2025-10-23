@@ -14,7 +14,7 @@ export const getCustomerById = async (
       throw createError(401, '인증된 사용자 정보가 없습니다.');
     }
 
-    const params = req.params as unknown as GetCustomerByIdParams;
+    const params = res.locals.params as GetCustomerByIdParams;
 
     const customer = await customerGetByIdService.getCustomerById(
       params.id,

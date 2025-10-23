@@ -14,7 +14,7 @@ export const getCustomers = async (
       throw createError(401, '인증된 사용자 정보가 없습니다.');
     }
 
-    const query = req.query as unknown as GetCustomersQuery;
+    const query = res.locals.query as GetCustomersQuery;
 
     const result = await customerGetService.getCustomers(
       companyId,

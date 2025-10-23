@@ -3,7 +3,7 @@ import { Gender, Region, AgeGroup } from '@prisma/client';
 import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 
-const getCustomersSchema = z.object({
+export const getCustomersSchema = z.object({
   page: z
     .string()
     .optional()
@@ -16,12 +16,12 @@ const getCustomersSchema = z.object({
   keyword: z.string().optional(),
 });
 
-const createCustomerSchema = z.object({
+export const createCustomerSchema = z.object({
   name: z.string().min(1, { message: '고객명은 필수입니다.' }),
   gender: z.nativeEnum(Gender),
   phoneNumber: z.string().min(1, { message: '연락처는 필수입니다.' }),
-  ageGroup: z.nativeEnum(AgeGroup).optional(),
-  region: z.nativeEnum(Region).optional(),
+  ageGroup: z.string().optional(),
+  region: z.string().optional(),
   email: z
     .string()
     .email({ message: '유효하지 않은 이메일 형식입니다.' })
@@ -29,10 +29,10 @@ const createCustomerSchema = z.object({
   memo: z.string().optional(),
 });
 
-const updateCustomerParamsSchema = z.object({
+export const updateCustomerParamsSchema = z.object({
   id: z.string().transform((val) => parseInt(val, 10)),
 });
-const updateCustomerBodySchema = z.object({
+export const updateCustomerBodySchema = z.object({
   name: z.string().min(1).optional(),
   gender: z.nativeEnum(Gender).optional(),
   phoneNumber: z.string().min(1).optional(),
@@ -42,11 +42,11 @@ const updateCustomerBodySchema = z.object({
   memo: z.string().optional(),
 });
 
-const deleteCustomerSchema = z.object({
+export const deleteCustomerSchema = z.object({
   id: z.string().transform((val) => parseInt(val, 10)),
 });
 
-const getCustomerByIdSchema = z.object({
+export const getCustomerByIdSchema = z.object({
   id: z.string().transform((val) => parseInt(val, 10)),
 });
 
@@ -62,7 +62,7 @@ export const customerCsvRowSchema = z.object({
       /^\d{2,4}-\d{3,4}-\d{4}$|^\d{9,11}$/,
       '유효한 연락처 형식이 아닙니다.',
     ),
-  region: z.nativeEnum(Region).optional(),
+  region: z.string().optional(),
   ageGroup: z.string().optional(),
   memo: z.string().optional(),
 });
@@ -71,7 +71,7 @@ class CustomerValidation {
   getCustomers(req: Request, res: Response, next: NextFunction) {
     const result = getCustomersSchema.safeParse(req.query);
     if (result.success) {
-      req.query = result.data;
+      res.locals.query = result.data;
       return next();
     }
     return next(createError(400, '잘못된 입력값입니다.'));
@@ -80,7 +80,7 @@ class CustomerValidation {
   createCustomer(req: Request, res: Response, next: NextFunction) {
     const result = createCustomerSchema.safeParse(req.body);
     if (result.success) {
-      req.body = result.data;
+      res.locals.body = result.data;
       return next();
     }
     return next(createError(400, '잘못된 입력값입니다.'));
@@ -97,15 +97,15 @@ class CustomerValidation {
       return next(createError(400, '잘못된 요청 본문입니다.'));
     }
 
-    req.params = paramsResult.data;
-    req.body = bodyResult.data;
+    res.locals.params = paramsResult.data;
+    res.locals.body = bodyResult.data;
     return next();
   }
 
   deleteCustomer(req: Request, res: Response, next: NextFunction) {
     const result = deleteCustomerSchema.safeParse(req.params);
     if (result.success) {
-      req.params = result.data;
+      res.locals.params = result.data;
       return next();
     }
     return next(createError(400, '잘못된 입력값입니다.'));
@@ -114,7 +114,7 @@ class CustomerValidation {
   getCustomerById(req: Request, res: Response, next: NextFunction) {
     const result = getCustomerByIdSchema.safeParse(req.params);
     if (result.success) {
-      req.params = result.data;
+      res.locals.params = result.data;
       return next();
     }
     return next(createError(400, '잘못된 입력값입니다.'));
@@ -131,7 +131,17 @@ export type DeleteCustomerParams = z.infer<typeof deleteCustomerSchema>;
 export type GetCustomerByIdParams = z.infer<typeof getCustomerByIdSchema>;
 export type CustomerCsvRow = z.infer<typeof customerCsvRowSchema>;
 
-export type TransformedUpdateCustomerBody = Omit<UpdateCustomerBody, 'ageGroup' | 'region'> & {
+export type TransformedCreateCustomerData = Omit<CreateCustomerBody, 'ageGroup' | 'region'> & {
+  ageGroup?: AgeGroup;
+  region?: Region;
+};
+
+export type TransformedUpdateCustomerData = Omit<UpdateCustomerBody, 'ageGroup' | 'region'> & {
+  ageGroup?: AgeGroup;
+  region?: Region;
+};
+
+export type TransformedCustomerCsvRow = Omit<CustomerCsvRow, 'ageGroup' | 'region'> & {
   ageGroup?: AgeGroup;
   region?: Region;
 };

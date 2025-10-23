@@ -1,6 +1,8 @@
 import { customerRepository } from '../repositories/index.js';
-import type { CustomerCsvRow } from '../schemas/customers.schema.js';
+import type { CustomerCsvRow, TransformedCustomerCsvRow } from '../schemas/customers.schema.js';
 import prisma from '../../lib/prisma.js';
+import { toAgeGroupEnum, toRegionEnum } from '../utils/customer.mapper.js';
+import { Prisma } from '@prisma/client';
 
 export const customerUploadService = {
   async processCustomerCsv(customers: CustomerCsvRow[], companyId: number) {
@@ -11,18 +13,24 @@ export const customerUploadService = {
       errors: [] as { data: CustomerCsvRow; error: string }[],
     };
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       for (const customerData of customers) {
+        const transformedCustomerData: TransformedCustomerCsvRow = {
+          ...customerData,
+          ageGroup: toAgeGroupEnum(customerData.ageGroup),
+          region: toRegionEnum(customerData.region),
+        };
+
         try {
           let existingCustomer;
-          if (customerData.email) {
+          if (transformedCustomerData.email) {
             existingCustomer = await customerRepository.findByEmail(
-              customerData.email,
+              transformedCustomerData.email,
               tx,
             );
-          } else if (customerData.phoneNumber) {
+          } else if (transformedCustomerData.phoneNumber) {
             existingCustomer = await customerRepository.findByPhoneNumber(
-              customerData.phoneNumber,
+              transformedCustomerData.phoneNumber,
               tx,
             );
           }
@@ -30,12 +38,12 @@ export const customerUploadService = {
           if (existingCustomer) {
             await customerRepository.updateFromCsv(
               existingCustomer.id,
-              customerData,
+              transformedCustomerData,
               tx,
             );
             results.updated++;
           } else {
-            await customerRepository.createFromCsv(customerData, companyId, tx);
+            await customerRepository.createFromCsv(transformedCustomerData, companyId, tx);
             results.created++;
           }
         } catch (error: unknown) {
@@ -47,8 +55,6 @@ export const customerUploadService = {
           else {
             errorMessage = String(error);
           }
-          // For errors during CSV processing, we assume it's a conflict if it has a message
-          // or a generic server error.
           results.errors.push({ data: customerData, error: errorMessage });
         }
       }

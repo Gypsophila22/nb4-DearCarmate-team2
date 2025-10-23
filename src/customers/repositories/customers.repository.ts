@@ -2,11 +2,10 @@ import { Prisma } from '@prisma/client';
 import prisma from '../../lib/prisma.js';
 import createError from 'http-errors';
 import type {
-  CreateCustomerBody,
-  UpdateCustomerBody,
-  TransformedUpdateCustomerBody,
+  TransformedCreateCustomerData,
+  TransformedUpdateCustomerData,
+  TransformedCustomerCsvRow,
 } from '../schemas/customers.schema.js';
-import type { CustomerCsvRow } from '../schemas/customers.schema.js';
 
 class CustomerRepository {
   findMany = async (
@@ -58,7 +57,7 @@ class CustomerRepository {
     });
   };
 
-  create = async (data: CreateCustomerBody, companyId: number) => {
+  create = async (data: TransformedCreateCustomerData, companyId: number) => {
     try {
       return await prisma.customers.create({
         data: {
@@ -88,11 +87,11 @@ class CustomerRepository {
 
   update = async (
     id: number,
-    data: TransformedUpdateCustomerBody,
+    data: TransformedUpdateCustomerData,
     companyId: number,
   ) => {
     try {
-      return await prisma.customers.updateMany({
+      return await prisma.customers.update({
         where: {
           id,
           companyId,
@@ -130,11 +129,11 @@ class CustomerRepository {
 
   updateFromCsv = async (
     id: number,
-    data: CustomerCsvRow,
+    data: TransformedCustomerCsvRow,
     tx?: Prisma.TransactionClient,
   ) => {
     return (tx || prisma).customers.update({
-      where: { id },
+      where: { id: id },
       data: {
         name: data.name,
         gender: data.gender,
@@ -148,7 +147,7 @@ class CustomerRepository {
   };
 
   createFromCsv = async (
-    data: CustomerCsvRow,
+    data: TransformedCustomerCsvRow,
     companyId: number,
     tx?: Prisma.TransactionClient,
   ) => {

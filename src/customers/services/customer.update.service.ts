@@ -1,28 +1,32 @@
 import { customerRepository } from '../repositories/index.js';
-import type { TransformedUpdateCustomerBody } from '../schemas/customers.schema.js';
+import type { UpdateCustomerBody, TransformedUpdateCustomerData } from '../schemas/customers.schema.js';
 import createError from 'http-errors';
-import { mapAgeGroupToEnum, mapRegionToEnum } from '../utils/customer.mapper.js'; // Import mapping functions
+import { toAgeGroupEnum, toRegionEnum, mapAgeGroupToKorean, mapRegionToKorean } from '../utils/customer.mapper.js';
 
 export const customerUpdateService = {
   updateCustomer: async (
     id: number,
-    data: TransformedUpdateCustomerBody,
+    data: UpdateCustomerBody,
     companyId: number,
   ) => {
-    const transformedData = {
+    const transformedData: TransformedUpdateCustomerData = {
       ...data,
-      ageGroup: mapAgeGroupToEnum(data.ageGroup), // Use centralized mapping function
-      region: mapRegionToEnum(data.region), // Use centralized mapping function
+      ageGroup: data.ageGroup ? toAgeGroupEnum(data.ageGroup) : undefined,
+      region: data.region ? toRegionEnum(data.region) : undefined,
     };
     try {
       const result = await customerRepository.update(id, transformedData, companyId);
-      return result;
+      return {
+        ...result,
+        ageGroup: mapAgeGroupToKorean(result.ageGroup),
+        region: mapRegionToKorean(result.region),
+      };
     } catch (error) {
       if (error instanceof createError.HttpError) {
         throw error;
       }
       if (error instanceof Error) {
-        throw createError(409, error.message); // Use http-errors for duplicate errors
+        throw createError(409, error.message);
       }
       throw error;
     }

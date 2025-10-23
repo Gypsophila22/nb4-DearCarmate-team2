@@ -56,3 +56,29 @@ export function mapRegionToEnum(
 
   return null;
 }
+
+export function toAgeGroupEnum(value: string | undefined | null): AgeGroup | undefined {
+  if (!value) return undefined;
+  const upperCaseValue = value.toUpperCase();
+  if (Object.values(AgeGroup).includes(upperCaseValue as AgeGroup)) {
+    return upperCaseValue as AgeGroup;
+  }
+  const mappedFromKorean = mapAgeGroupToEnum(value);
+  if (mappedFromKorean) {
+    return mappedFromKorean;
+  }
+  return undefined;
+}
+
+export function toRegionEnum(value: string | undefined | null): Region | undefined {
+  if (!value) return undefined;
+  const upperCaseValue = value.toUpperCase();
+  if (Object.values(Region).includes(upperCaseValue as Region)) {
+    return upperCaseValue as Region;
+  }
+  const mappedFromKorean = mapRegionToEnum(value);
+  if (mappedFromKorean) {
+    return mappedFromKorean;
+  }
+  return undefined;
+}

@@ -2,8 +2,8 @@ import createError from 'http-errors';
 import csv from 'csv-parser';
 import { Readable } from 'stream';
 import { z } from 'zod';
-import { customerCsvRowSchema } from '../schemas/customers.schema.js';
-import { mapAgeGroupToEnum } from '../utils/customer.mapper.js';
+import { customerCsvRowSchema, type TransformedCustomerCsvRow } from '../schemas/customers.schema.js';
+import { toAgeGroupEnum, toRegionEnum } from '../utils/customer.mapper.js';
 
 export const customerParseService = {
   async parseAndValidateCsv(buffer: Buffer) {
@@ -24,9 +24,10 @@ export const customerParseService = {
           rowNumber++;
           const parsed = customerCsvRowSchema.safeParse(data);
           if (parsed.success) {
-            const transformedData = {
+            const transformedData: TransformedCustomerCsvRow = {
               ...parsed.data,
-              ageGroup: mapAgeGroupToEnum(parsed.data.ageGroup),
+              ageGroup: toAgeGroupEnum(parsed.data.ageGroup),
+              region: toRegionEnum(parsed.data.region),
             };
             results.push(transformedData);
           } else {

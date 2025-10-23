@@ -17,16 +17,16 @@ export const updateCustomer = async (
       throw createError(401, '인증된 사용자 정보가 없습니다.');
     }
 
-    const params = req.params as unknown as UpdateCustomerParams;
-    const body = req.body as UpdateCustomerBody;
+    const { id } = res.locals.params as UpdateCustomerParams;
+    const body = res.locals.body as UpdateCustomerBody;
 
-    const result = await customerUpdateService.updateCustomer(
-      params.id,
+    const updatedCustomer = await customerUpdateService.updateCustomer(
+      id,
       body,
       companyId,
     );
 
-    return res.status(200).json(result);
+    return res.status(200).json(updatedCustomer);
   } catch (error) {
     next(error);
   }
