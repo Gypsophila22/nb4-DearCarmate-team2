@@ -150,7 +150,7 @@ class ContractRepository {
         carModel: true,
       },
       orderBy: {
-        id: 'asc',
+        id: 'desc',
       },
     });
   };
@@ -179,7 +179,7 @@ class ContractRepository {
           orderBy: { date: 'desc' },
         },
       },
-      orderBy: { date: 'desc' }, // 최신순 정렬
+      orderBy: { id: 'desc' }, // 최신순 정렬
     });
   };
 

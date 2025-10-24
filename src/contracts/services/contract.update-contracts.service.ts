@@ -6,7 +6,7 @@ import type { UpdateContractInput } from '../repositories/types/contract.types.j
 
 // 계약 상태 변경
 
-export const updateContractsService = async ({
+export const contractUpdateService = async ({
   userId,
   contractId,
   data,

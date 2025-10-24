@@ -5,7 +5,7 @@ import type {
   GetListQuery,
 } from '../repositories/types/contract.types.js';
 
-export const getContractsListService = async ({
+export const contractGetListService = async ({
   searchBy,
   keyword,
 }: GetListQuery) => {
@@ -29,17 +29,15 @@ export const getContractsListService = async ({
       totalItemCount: data.length, // 해당 상태 계약 개수
       data: data.map((c) => ({
         id: c.id,
-        car: { id: c.car.id, model: c.car.carModel.model }, // 차량 정보
+        car: { id: c.car.id, carModel: { model: c.car.carModel.model } }, // 차량 정보
         customer: { id: c.customer.id, name: c.customer.name }, // 고객 정보
         user: { id: c.user.id, name: c.user.name }, // 담당자 정보
         meetings: c.meetings.map((m) => ({
-          date: m.date.toISOString().split('T')[0], // 미팅 날짜
-          alarms: m.alarms.map((a) => a.time.toISOString()), // 알람 시간
+          date: m.date, // Date 타입 그대로
+          alarms: m.alarms.map((a) => ({ time: a.time })), // 객체 형태로
         })),
         contractPrice: c.contractPrice, // 계약 금액
-        resolutionDate: c.resolutionDate // 계약 종료일
-          ? c.resolutionDate.toISOString()
-          : null,
+        resolutionDate: c.resolutionDate ?? null, // 계약 종료일
         status: c.status, // 계약 상태
       })),
     };

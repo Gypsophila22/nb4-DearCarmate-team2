@@ -1,7 +1,7 @@
 import createError from 'http-errors';
 import { contractRepository } from '../repositories/contract.repository.js';
 
-export const deleteContractsService = async ({
+export const contractDeleteService = async ({
   contractId,
   userId,
 }: {

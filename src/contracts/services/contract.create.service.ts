@@ -2,7 +2,7 @@ import createError from 'http-errors';
 import { contractRepository } from '../repositories/contract.repository.js';
 import type { CreateContractInput } from '../repositories/types/contract.types.js';
 
-export const createContractsService = async (data: CreateContractInput) => {
+export const contractCreateService = async (data: CreateContractInput) => {
   // 차량 존재 확인 및 보유중인지 상태 체크
   const car = await contractRepository.findCar(data.carId);
   if (!car) {

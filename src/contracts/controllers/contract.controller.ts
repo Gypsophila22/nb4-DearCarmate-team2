@@ -1,12 +1,11 @@
 import createError from 'http-errors';
 
-import contractService from '../services/index.js';
-
 import type { NextFunction, Request, Response } from 'express';
 import {
   ContractIdParamSchema,
   GetContractListQuerySchema,
 } from '../schemas/contract.schema.js';
+import contractService from '../services/index.js';
 
 class ContractController {
   create = async (req: Request, res: Response, next: NextFunction) => {

@@ -1,6 +1,6 @@
 import { contractRepository } from '../repositories/contract.repository.js';
 
-export const getCarsListForContractService = async () => {
+export const contractGetCarListService = async () => {
   // repository 함수 호출
   const cars = await contractRepository.getCarsList();
 
