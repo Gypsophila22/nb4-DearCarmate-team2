@@ -1,10 +1,6 @@
 import createError from 'http-errors';
 
 import type { NextFunction, Request, Response } from 'express';
-import {
-  ContractIdParamSchema,
-  GetContractListQuerySchema,
-} from '../schemas/contract.schema.js';
 import contractService from '../services/index.js';
 
 class ContractController {
@@ -30,9 +26,7 @@ class ContractController {
 
   delete = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const paramResult = ContractIdParamSchema.safeParse(req.params);
-      if (!paramResult.success) throw createError(400, '잘못된 계약 ID입니다');
-      const contractId = paramResult.data.contractId;
+      const contractId = Number(req.params.contractId);
 
       if (!req.user) throw createError(401, '로그인이 필요합니다.');
       const userId = req.user.id;
@@ -55,8 +49,20 @@ class ContractController {
 
   list = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const parsed = GetContractListQuerySchema.parse(req.query);
-      const { searchBy, keyword } = parsed;
+      // searchBy를 'customerName' | 'userName' 타입으로 좁힘
+      let searchBy: 'customerName' | 'userName' | undefined;
+      if (
+        req.query.searchBy === 'customerName' ||
+        req.query.searchBy === 'userName'
+      ) {
+        searchBy = req.query.searchBy;
+      } else {
+        searchBy = undefined; // 없으면 undefined로 처리
+      }
+
+      // keyword는 string인지 체크
+      const keyword =
+        typeof req.query.keyword === 'string' ? req.query.keyword : undefined;
 
       const result = await contractService.getList({ searchBy, keyword });
 
@@ -88,10 +94,8 @@ class ContractController {
   update = async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!req.user) throw createError(401, '로그인이 필요합니다.');
-      const paramResult = ContractIdParamSchema.safeParse(req.params);
-      if (!paramResult.success) throw createError(400, '잘못된 요청입니다');
 
-      const contractId = paramResult.data.contractId;
+      const contractId = Number(req.params.contractId);
 
       // 계약 업데이트 서비스 호출
       const result = await contractService.update({
