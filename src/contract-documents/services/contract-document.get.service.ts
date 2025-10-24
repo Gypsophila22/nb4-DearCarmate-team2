@@ -29,7 +29,7 @@ export async function getDocumentsService({
 }: GetContractDocumentsArgs) {
   // 회사
   const baseWhere: Prisma.ContractsWhereInput = {
-    user: { companyId: actor.companyId },
+    customer: { companyId: actor.companyId },
   };
 
   // searchBy는 contractName만 허용

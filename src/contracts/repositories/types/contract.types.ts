@@ -21,7 +21,7 @@ export interface Contract {
 
 export interface ContractForList {
   id: number;
-  car: { id: number; carModel: { model: string } };
+  car: { id: number; model: string };
   customer: { id: number; name: string };
   user: { id: number; name: string };
   meetings: {

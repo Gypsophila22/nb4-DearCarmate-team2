@@ -205,7 +205,7 @@ class ContractRepository {
         user: { select: { id: true, name: true } }, // 담당자
         meetings: {
           include: { alarms: true },
-          orderBy: { date: 'desc' },
+          orderBy: { date: 'asc' },
         },
       },
       orderBy: { id: 'desc' }, // 최신순 정렬

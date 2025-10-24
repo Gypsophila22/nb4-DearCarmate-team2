@@ -3,7 +3,7 @@ import createError from 'http-errors';
 import prisma from '../../lib/prisma.js';
 import { sendContractDocsLinkedEmail } from '../../contract-documents/services/contract-document.send-email.service.js';
 import type { UpdateContractInput } from '../repositories/types/contract.types.js';
-import { CarStatus, ContractsStatus } from '@prisma/client';
+import { CarStatus, ContractsStatus, Prisma } from '@prisma/client';
 
 // 상태 매핑 헬퍼
 function carStatusFor(status: ContractsStatus): CarStatus {
@@ -34,7 +34,7 @@ export const contractUpdateService = async ({
   if (!contract) {
     throw createError(404, '존재하지 않는 계약입니다');
   }
-  if (contract.userId !== userId) {
+  if (!(contract.userId === userId || contract.userId === null)) {
     throw createError(403, '담당자만 수정이 가능합니다');
   }
   if (data.carId) {
@@ -52,33 +52,39 @@ export const contractUpdateService = async ({
   if (!before) throw createError(404, '계약을 찾을 수 없습니다.');
 
   // 계약 정보 업데이트 (undefined인 필드를 data 객체에서 제외)
-  await contractRepository.update({
-    contractId,
-    data: {
-      ...(data.status && { status: data.status }),
-      ...(data.contractPrice !== undefined && {
-        contractPrice: { set: data.contractPrice },
+  const updateData: Prisma.ContractsUpdateInput = {
+    ...(data.status && { status: data.status }),
+    ...(data.contractPrice !== undefined && {
+      contractPrice: { set: data.contractPrice },
+    }),
+    ...(data.resolutionDate !== undefined && {
+      resolutionDate: data.resolutionDate
+        ? new Date(data.resolutionDate)
+        : null,
+    }),
+    ...(data.userId !== undefined &&
+      (data.userId === null
+        ? { user: { disconnect: true } }
+        : { user: { connect: { id: data.userId } } })),
+    ...(data.customerId !== undefined && {
+      customer: { connect: { id: data.customerId } },
+    }),
+    ...(data.carId !== undefined &&
+      data.carId !== null && {
+        car: { connect: { id: data.carId } },
       }),
-      ...(data.resolutionDate !== undefined && {
-        resolutionDate: data.resolutionDate
-          ? new Date(data.resolutionDate)
-          : null,
-      }),
-      ...(data.userId && { user: { connect: { id: data.userId } } }),
-      ...(data.customerId && {
-        customer: { connect: { id: data.customerId } },
-      }),
-      ...(data.carId !== undefined &&
-        data.carId !== null && {
-          car: { connect: { id: data.carId } },
-        }),
-    },
-  });
+  };
+
+  if (Object.keys(updateData).length > 0) {
+    await contractRepository.update({ contractId, data: updateData });
+  }
+
   const after = await prisma.contracts.findUnique({
     where: { id: contractId },
     select: { carId: true, status: true },
   });
   if (!after) throw createError(404, '계약을 찾을 수 없습니다.');
+
   // 1. carId가 바뀌었으면, 이전 차량을 진행중 > 보유중으로 되돌리기
   if (before.carId !== null && after.carId !== before.carId) {
     await prisma.cars.updateMany({
@@ -187,13 +193,12 @@ export const contractUpdateService = async ({
       : null,
     contractPrice: contractResponse.contractPrice,
     meetings: contractResponse.meetings.map((m) => ({
-      date: m.date.toISOString().split('T')[0], // YYYY-MM-DD
+      date: m.date.toISOString(), // YYYY-MM-DD
       alarms: m.alarms.map((a) => a.time.toISOString()),
     })),
-    user: {
-      id: contractResponse.user.id,
-      name: contractResponse.user.name,
-    },
+    user: contractResponse.user
+      ? { id: contractResponse.user.id, name: contractResponse.user.name }
+      : { id: 0, name: '담당자 없음' },
     customer: {
       id: contractResponse.customer.id,
       name: contractResponse.customer.name,
