@@ -1,5 +1,5 @@
+import type { Prisma } from '@prisma/client';
 import prisma from '../../lib/prisma.js';
-import createHttpError from 'http-errors';
 
 export const companyRepository = {
   // 회사 수정
@@ -91,24 +91,37 @@ export const companyRepository = {
   ) {
     const skip = (page - 1) * pageSize;
 
-    let where = {};
+    const base: Prisma.UsersWhereInput = { isAdmin: false };
+    const kw = keyword?.trim();
+    const ci = (v: string) => ({ contains: v, mode: 'insensitive' as const });
+    let where: Prisma.UsersWhereInput = base;
 
     // 검색 조건 처리
-    if (keyword) {
+    if (kw) {
       switch (searchBy) {
         case 'companyName':
           where = {
-            company: { companyName: { contains: keyword } },
+            ...base,
+            company: { companyName: ci(kw) },
           };
           break;
         case 'name':
-          where = { name: { contains: keyword } };
+          where = { name: ci(kw) };
           break;
         case 'email':
-          where = { email: { contains: keyword } };
+          where = { email: ci(kw) };
           break;
         default:
-          where = {};
+          where = {
+            ...base,
+            OR: [
+              { name: ci(kw) },
+              { email: ci(kw) },
+              { employeeNumber: ci(kw) },
+              { phoneNumber: ci(kw) },
+              { company: { companyName: ci(kw) } },
+            ],
+          };
       }
     }
 
