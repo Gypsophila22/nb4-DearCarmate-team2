@@ -17,6 +17,10 @@ import type {
   UpdateCustomerBody,
   DeleteCustomerParams,
 } from '../schemas/customer.schema.js';
+import type {
+  BulkUploadResponse,
+  CustomerCsvValidationError,
+} from '../services/customer.upload.service.js';
 
 class CustomerController {
   async createCustomer(req: Request, res: Response, next: NextFunction) {
@@ -125,7 +129,11 @@ class CustomerController {
   }
 
   // New method
-  async uploadCustomers(req: Request, res: Response, next: NextFunction) {
+  async uploadCustomers(
+    req: Request,
+    res: Response<BulkUploadResponse>,
+    next: NextFunction,
+  ) {
     try {
       const companyId = req.user?.companyId;
       if (!companyId) {
@@ -143,26 +151,41 @@ class CustomerController {
       }
 
       const csvBuffer = req.file.buffer; // Buffer로 가져옴
+      const fileName = req.file.originalname;
 
       // CSV 파싱, 유효성 검사
-      const { results: validCustomers, errors: validationErrors } =
+      const { results: validCustomers, errors: parseValidationErrors } =
         await customerParseService.parseAndValidateCsv(csvBuffer);
+
+      const mappedValidationErrors: CustomerCsvValidationError[] =
+        parseValidationErrors.map((err) => ({
+          row: err.row,
+          data: err.data,
+          errors: err.errors.map((issue) => ({
+            message: issue.message,
+            path: issue.path,
+            code: issue.code,
+          })),
+        }));
 
       const dbProcessResults = await customerUploadService.processCustomerCsv(
         validCustomers,
         companyId,
+        fileName,
       );
 
-      res.status(200).json({
+      const totalRecords = validCustomers.length + parseValidationErrors.length;
+      const failedRecords =
+        mappedValidationErrors.length + dbProcessResults.databaseErrors.length;
+
+      return res.status(200).json({
         message: 'CSV 파일 업로드 요청을 받았습니다.',
-        fileName: req.file.originalname,
-        totalRecords: validCustomers.length + validationErrors.length,
-        processedSuccessfully: validCustomers.length,
-        failedRecords: validationErrors.length,
-        validationErrorsCount: validationErrors.length,
-        validationErrorsSample: validationErrors.slice(0, 5), // Send first 5 errors
-        databaseErrorsCount: dbProcessResults.errors.length,
-        databaseErrorsSample: dbProcessResults.errors.slice(0, 5), // Send first 5 errors
+        fileName,
+        totalRecords,
+        processedSuccessfully: dbProcessResults.processedSuccessfully,
+        failedRecords,
+        validationErrors: mappedValidationErrors,
+        databaseErrors: dbProcessResults.databaseErrors,
       });
     } catch (error) {
       next(error);
