@@ -1,6 +1,6 @@
 import createError from 'http-errors';
 import { contractRepository } from '../repositories/contract.repository.js';
-
+import prisma from '../../lib/prisma.js';
 export const contractDeleteService = async ({
   contractId,
   userId,
@@ -17,8 +17,13 @@ export const contractDeleteService = async ({
     throw createError(403, '담당자만 수정이 가능합니다');
   }
 
-  // TODO: 차량 상태에 따라 차량 상태 변경 (계약 완료 상태면 그대로, 계약 진행중이면 다시 보유중으로)
-
-  // 계약 삭제 레포지토리 호출
-  await contractRepository.delete(contractId);
+  await prisma.$transaction(async (tx) => {
+    // 차량이 "계약 진행 중"일 때만 "보유 중"으로 되돌림
+    await contractRepository.revertCarToPossessionIfProceedingTx(
+      tx,
+      contract.carId,
+    );
+    // FK(onDelete: Cascade) 설정되어 있으면 하위(미팅/알람/문서) 정리도 함께 처리됨
+    await contractRepository.deleteTx(tx, contract.id);
+  });
 };

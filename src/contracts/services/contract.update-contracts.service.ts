@@ -3,6 +3,20 @@ import createError from 'http-errors';
 import prisma from '../../lib/prisma.js';
 import { sendContractDocsLinkedEmail } from '../../contract-documents/services/contract-document.send-email.service.js';
 import type { UpdateContractInput } from '../repositories/types/contract.types.js';
+import { CarStatus, ContractsStatus } from '@prisma/client';
+
+// 상태 매핑 헬퍼
+function carStatusFor(status: ContractsStatus): CarStatus {
+  switch (status) {
+    case ContractsStatus.contractSuccessful:
+      return CarStatus.contractCompleted; // 계약 성공 → 차량 '계약 완료'
+    case ContractsStatus.contractFailed:
+      return CarStatus.possession; // 계약 실패 → 차량 '보유중'
+    default:
+      // carInspection / priceNegotiation / contractDraft 등 진행중 단계
+      return CarStatus.contractProceeding; // 진행중 → 차량 '계약 진행 중'
+  }
+}
 
 // 계약 상태 변경
 
@@ -31,11 +45,11 @@ export const contractUpdateService = async ({
     }
   }
 
-  //TODO: 계약 업데이트에 따라서 차량 상태 변경하기
-  // 차량 계약 진행 중 상태에서 계약 삭제, 실패 (계약 진행 중 -> 보유중)
-  // 차량 확인, 가격 협의, 계약서 작성 중 (계약 진행 중)
-  // 계약 완료 상태에서 계약 삭제 시 변화 없음
-  // 계약 성공 (계약 완료)
+  const before = await prisma.contracts.findUnique({
+    where: { id: contractId },
+    select: { carId: true, status: true },
+  });
+  if (!before) throw createError(404, '계약을 찾을 수 없습니다.');
 
   // 계약 정보 업데이트 (undefined인 필드를 data 객체에서 제외)
   await contractRepository.update({
@@ -60,6 +74,31 @@ export const contractUpdateService = async ({
         }),
     },
   });
+  const after = await prisma.contracts.findUnique({
+    where: { id: contractId },
+    select: { carId: true, status: true },
+  });
+  if (!after) throw createError(404, '계약을 찾을 수 없습니다.');
+  // 1. carId가 바뀌었으면, 이전 차량을 진행중 > 보유중으로 되돌리기
+  if (before.carId !== null && after.carId !== before.carId) {
+    await prisma.cars.updateMany({
+      where: { id: before.carId, status: CarStatus.contractProceeding },
+      data: { status: CarStatus.possession },
+    });
+  }
+  // 2. 현재 계약 상태에 맞춰 (새) 차량 상태 설정
+  const targetCarStatus = carStatusFor(after.status as ContractsStatus);
+  if (targetCarStatus === CarStatus.possession) {
+    await prisma.cars.updateMany({
+      where: { id: after.carId, status: CarStatus.contractProceeding },
+      data: { status: CarStatus.possession },
+    });
+  } else {
+    await prisma.cars.updateMany({
+      where: { id: after.carId },
+      data: { status: targetCarStatus },
+    });
+  }
 
   // 미팅 정보 업데이트
   if (data.meetings) {
