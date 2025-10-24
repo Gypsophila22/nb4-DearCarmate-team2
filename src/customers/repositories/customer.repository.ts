@@ -5,7 +5,7 @@ import type {
   TransformedCreateCustomerData,
   TransformedUpdateCustomerData,
   TransformedCustomerCsvRow,
-} from '../schemas/customers.schema.js';
+} from '../schemas/customer.schema.js';
 
 class CustomerRepository {
   findMany = async (

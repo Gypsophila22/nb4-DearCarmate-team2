@@ -1,5 +1,8 @@
 import { customerRepository } from '../repositories/index.js';
-import { mapAgeGroupToKorean, mapRegionToKorean } from '../utils/customer.mapper.js';
+import {
+  mapAgeGroupToKorean,
+  mapRegionToKorean,
+} from '../utils/customer.mapper.js';
 
 export const customerGetService = {
   getCustomers: async (

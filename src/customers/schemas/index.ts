@@ -1,3 +1,3 @@
-import { customerValidation } from './customers.schema.js';
+import { customerValidation } from './customer.schema.js';
 
 export { customerValidation };

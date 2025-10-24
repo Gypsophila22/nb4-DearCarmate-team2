@@ -1,7 +1,15 @@
 import { customerRepository } from '../repositories/index.js';
-import type { UpdateCustomerBody, TransformedUpdateCustomerData } from '../schemas/customers.schema.js';
+import type {
+  UpdateCustomerBody,
+  TransformedUpdateCustomerData,
+} from '../schemas/customer.schema.js';
 import createError from 'http-errors';
-import { toAgeGroupEnum, toRegionEnum, mapAgeGroupToKorean, mapRegionToKorean } from '../utils/customer.mapper.js';
+import {
+  toAgeGroupEnum,
+  toRegionEnum,
+  mapAgeGroupToKorean,
+  mapRegionToKorean,
+} from '../utils/customer.mapper.js';
 
 export const customerUpdateService = {
   updateCustomer: async (
@@ -15,7 +23,11 @@ export const customerUpdateService = {
       region: data.region ? toRegionEnum(data.region) : undefined,
     };
     try {
-      const result = await customerRepository.update(id, transformedData, companyId);
+      const result = await customerRepository.update(
+        id,
+        transformedData,
+        companyId,
+      );
       return {
         ...result,
         ageGroup: mapAgeGroupToKorean(result.ageGroup),
@@ -32,4 +44,3 @@ export const customerUpdateService = {
     }
   },
 };
-

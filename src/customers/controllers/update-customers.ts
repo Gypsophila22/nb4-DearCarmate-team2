@@ -4,7 +4,7 @@ import { customerUpdateService } from '../services/customer.update.service.js';
 import type {
   UpdateCustomerParams,
   UpdateCustomerBody,
-} from '../schemas/customers.schema.js';
+} from '../schemas/customer.schema.js';
 
 export const updateCustomer = async (
   req: Request,

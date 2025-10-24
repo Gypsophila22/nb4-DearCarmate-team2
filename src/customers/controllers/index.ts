@@ -1,8 +1,8 @@
-import { createCustomer } from './postCustomers.js';
-import { getCustomers } from './getCustomers.js';
-import { updateCustomer } from './updateCustomers.js';
-import { deleteCustomer } from './deleteCustomers.js';
-import { getCustomerById } from './getCustomerById.js';
+import { createCustomer } from './post-customers.js';
+import { getCustomers } from './get-customers.js';
+import { updateCustomer } from './update-customers.js';
+import { deleteCustomer } from './delete-customers.js';
+import { getCustomerById } from './get-customer-by-id.js';
 
 export {
   createCustomer,

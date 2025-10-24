@@ -4,8 +4,6 @@ import prisma from '../../lib/prisma.js';
 import { ContractsStatus } from '@prisma/client';
 import { sendContractDocsLinkedEmail } from '../../contract-documents/services/contract-document.send-email.service.js';
 
-
-
 // 계약 상태 변경
 interface UpdateContractInput {
   contractId: number;

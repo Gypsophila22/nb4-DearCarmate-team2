@@ -131,17 +131,26 @@ export type DeleteCustomerParams = z.infer<typeof deleteCustomerSchema>;
 export type GetCustomerByIdParams = z.infer<typeof getCustomerByIdSchema>;
 export type CustomerCsvRow = z.infer<typeof customerCsvRowSchema>;
 
-export type TransformedCreateCustomerData = Omit<CreateCustomerBody, 'ageGroup' | 'region'> & {
+export type TransformedCreateCustomerData = Omit<
+  CreateCustomerBody,
+  'ageGroup' | 'region'
+> & {
   ageGroup?: AgeGroup;
   region?: Region;
 };
 
-export type TransformedUpdateCustomerData = Omit<UpdateCustomerBody, 'ageGroup' | 'region'> & {
+export type TransformedUpdateCustomerData = Omit<
+  UpdateCustomerBody,
+  'ageGroup' | 'region'
+> & {
   ageGroup?: AgeGroup;
   region?: Region;
 };
 
-export type TransformedCustomerCsvRow = Omit<CustomerCsvRow, 'ageGroup' | 'region'> & {
+export type TransformedCustomerCsvRow = Omit<
+  CustomerCsvRow,
+  'ageGroup' | 'region'
+> & {
   ageGroup?: AgeGroup;
   region?: Region;
 };

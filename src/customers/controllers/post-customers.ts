@@ -1,9 +1,9 @@
+import type { CreateCustomerBody } from '../schemas/customer.schema.js';
 import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
-import { customerGetByIdService } from '../services/customer.getById.service.js';
-import type { GetCustomerByIdParams } from '../schemas/customers.schema.js';
+import { customerCreateService } from '../services/customer.create.service.js';
 
-export const getCustomerById = async (
+export const createCustomer = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -14,14 +14,14 @@ export const getCustomerById = async (
       throw createError(401, '인증된 사용자 정보가 없습니다.');
     }
 
-    const params = res.locals.params as GetCustomerByIdParams;
+    const body = res.locals.body as CreateCustomerBody;
 
-    const customer = await customerGetByIdService.getCustomerById(
-      params.id,
+    const newCustomer = await customerCreateService.createCustomer(
+      body,
       companyId,
     );
 
-    return res.status(200).json(customer);
+    return res.status(201).json(newCustomer);
   } catch (error) {
     next(error);
   }

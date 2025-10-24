@@ -1,5 +1,8 @@
 import { customerRepository } from '../repositories/index.js';
-import type { CustomerCsvRow, TransformedCustomerCsvRow } from '../schemas/customers.schema.js';
+import type {
+  CustomerCsvRow,
+  TransformedCustomerCsvRow,
+} from '../schemas/customer.schema.js';
 import prisma from '../../lib/prisma.js';
 import { toAgeGroupEnum, toRegionEnum } from '../utils/customer.mapper.js';
 import { Prisma } from '@prisma/client';
@@ -43,7 +46,11 @@ export const customerUploadService = {
             );
             results.updated++;
           } else {
-            await customerRepository.createFromCsv(transformedCustomerData, companyId, tx);
+            await customerRepository.createFromCsv(
+              transformedCustomerData,
+              companyId,
+              tx,
+            );
             results.created++;
           }
         } catch (error: unknown) {
@@ -51,8 +58,7 @@ export const customerUploadService = {
           let errorMessage: string;
           if (error instanceof Error) {
             errorMessage = error.message;
-          }
-          else {
+          } else {
             errorMessage = String(error);
           }
           results.errors.push({ data: customerData, error: errorMessage });

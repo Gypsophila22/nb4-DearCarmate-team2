@@ -2,7 +2,10 @@ import createError from 'http-errors';
 import csv from 'csv-parser';
 import { Readable } from 'stream';
 import { z } from 'zod';
-import { customerCsvRowSchema, type TransformedCustomerCsvRow } from '../schemas/customers.schema.js';
+import {
+  customerCsvRowSchema,
+  type TransformedCustomerCsvRow,
+} from '../schemas/customer.schema.js';
 import { toAgeGroupEnum, toRegionEnum } from '../utils/customer.mapper.js';
 
 export const customerParseService = {

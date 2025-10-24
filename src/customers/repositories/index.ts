@@ -1,3 +1,3 @@
-import { customerRepository } from './customers.repository.js';
+import { customerRepository } from './customer.repository.js';
 
 export { customerRepository };

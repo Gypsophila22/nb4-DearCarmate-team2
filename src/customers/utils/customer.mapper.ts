@@ -57,7 +57,9 @@ export function mapRegionToEnum(
   return null;
 }
 
-export function toAgeGroupEnum(value: string | undefined | null): AgeGroup | undefined {
+export function toAgeGroupEnum(
+  value: string | undefined | null,
+): AgeGroup | undefined {
   if (!value) return undefined;
   const upperCaseValue = value.toUpperCase();
   if (Object.values(AgeGroup).includes(upperCaseValue as AgeGroup)) {
@@ -70,7 +72,9 @@ export function toAgeGroupEnum(value: string | undefined | null): AgeGroup | und
   return undefined;
 }
 
-export function toRegionEnum(value: string | undefined | null): Region | undefined {
+export function toRegionEnum(
+  value: string | undefined | null,
+): Region | undefined {
   if (!value) return undefined;
   const upperCaseValue = value.toUpperCase();
   if (Object.values(Region).includes(upperCaseValue as Region)) {
