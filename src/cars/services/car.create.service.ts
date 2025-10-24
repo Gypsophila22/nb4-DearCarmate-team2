@@ -3,22 +3,12 @@ import createError from 'http-errors';
 import { CarStatus, CarType } from '@prisma/client';
 
 import { carRepository } from '../repositories/car.repository.js';
+import type { CreateCar } from '../repositories/types/car.types.js';
 
 /**
  * 차량 생성 Service
  */
-export const createCarsService = async (data: {
-  carNumber: string;
-  manufacturer: string;
-  model: string;
-  manufacturingYear: number;
-  mileage: number;
-  price: number;
-  accidentCount: number;
-  explanation: string;
-  accidentDetails: string;
-  status: CarStatus;
-}) => {
+export const createCarsService = async (data: CreateCar) => {
   // 차량 모델 조회
   let carModel = await carRepository.findByManufacturerAndModel({
     ...data,

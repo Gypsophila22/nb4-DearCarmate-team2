@@ -3,21 +3,9 @@ import createError from 'http-errors';
 import { CarType } from '@prisma/client';
 
 import { carRepository } from '../repositories/car.repository.js';
+import type { UpdateCar } from '../repositories/types/car.types.js';
 
-export const carUpdateService = async (
-  carId: number,
-  data: {
-    carNumber?: string;
-    manufacturer?: string;
-    model?: string;
-    manufacturingYear?: number;
-    mileage?: number;
-    price?: number;
-    accidentCount?: number;
-    explanation?: string;
-    accidentDetails?: string;
-  },
-) => {
+export const carUpdateService = async (carId: number, data: UpdateCar) => {
   // 차량 정보 조회
   const car = await carRepository.getCarByIdWithModel(carId);
   if (!car) {

@@ -1,25 +1,12 @@
 import { carRepository } from '../repositories/car.repository.js';
 
-import type { CarStatus } from '@prisma/client';
-import type { CarSearchFilter } from '../repositories/types/car.types.js';
+import type { CarFilter, GetList } from '../repositories/types/car.types.js';
 
 /**
  * 차량 목록 조회 Service
  */
 
-export type CarFilter = {
-  search: CarSearchFilter; // 검색 조건
-  page: number; // 현재 페이지 번호
-  pageSize: number; // 페이지당 아이템 수
-};
-
-export const carGetListService = async (data: {
-  page: number;
-  pageSize: number;
-  searchBy?: 'carNumber' | 'model';
-  keyword?: string;
-  status?: CarStatus;
-}) => {
+export const carGetListService = async (data: GetList) => {
   const page = Number(data.page);
   const pageSize = Number(data.pageSize);
 

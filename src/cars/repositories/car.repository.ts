@@ -2,9 +2,12 @@ import { CarType, Prisma } from '@prisma/client';
 
 import type { Cars } from '@prisma/client';
 type CarsCreateManyInput = Prisma.CarsCreateManyInput;
-import type { CarFilter } from '../services/car.get-list.service.js';
 import prisma from '../../lib/prisma.js';
-import type { UniqueModel, UpdateCarData } from './types/car.types.js';
+import type {
+  CarFilter,
+  UniqueModel,
+  UpdateCarDataForRepository,
+} from './types/car.types.js';
 
 class CarRepository {
   findModelWithManufacturer = async () => {
@@ -136,7 +139,7 @@ class CarRepository {
     updateData,
   }: {
     carId: number;
-    updateData: UpdateCarData;
+    updateData: UpdateCarDataForRepository;
   }) => {
     return prisma.cars.update({
       where: { id: carId },
