@@ -159,8 +159,10 @@ class CustomerController {
         totalRecords: validCustomers.length + validationErrors.length,
         processedSuccessfully: validCustomers.length,
         failedRecords: validationErrors.length,
-        validationErrors: validationErrors,
-        databaseErrors: dbProcessResults.errors,
+        validationErrorsCount: validationErrors.length,
+        validationErrorsSample: validationErrors.slice(0, 5), // Send first 5 errors
+        databaseErrorsCount: dbProcessResults.errors.length,
+        databaseErrorsSample: dbProcessResults.errors.slice(0, 5), // Send first 5 errors
       });
     } catch (error) {
       next(error);

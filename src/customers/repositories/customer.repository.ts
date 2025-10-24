@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../../lib/prisma.js';
-import createError from 'http-errors';
+
 import type {
   TransformedCreateCustomerData,
   TransformedUpdateCustomerData,
@@ -58,31 +58,14 @@ class CustomerRepository {
   };
 
   create = async (data: TransformedCreateCustomerData, companyId: number) => {
-    try {
-      return await prisma.customers.create({
-        data: {
-          ...data,
-          company: {
-            connect: { id: companyId },
-          },
+    return await prisma.customers.create({
+      data: {
+        ...data,
+        company: {
+          connect: { id: companyId },
         },
-      });
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        const target = error.meta?.target as string | undefined;
-        let message = '중복된 고객 정보입니다.';
-        if (target?.includes('email')) {
-          message = '이미 등록된 이메일입니다.';
-        } else if (target?.includes('phoneNumber')) {
-          message = '이미 등록된 연락처입니다.';
-        }
-        throw createError(409, message);
-      }
-      throw error;
-    }
+      },
+    });
   };
 
   update = async (
@@ -90,30 +73,13 @@ class CustomerRepository {
     data: TransformedUpdateCustomerData,
     companyId: number,
   ) => {
-    try {
-      return await prisma.customers.update({
-        where: {
-          id,
-          companyId,
-        },
-        data,
-      });
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        const target = error.meta?.target as string | undefined;
-        let message = '중복된 고객 정보입니다.';
-        if (target?.includes('email')) {
-          message = '이미 등록된 이메일입니다.';
-        } else if (target?.includes('phoneNumber')) {
-          message = '이미 등록된 연락처입니다.';
-        }
-        throw createError(409, message);
-      }
-      throw error;
-    }
+    return await prisma.customers.update({
+      where: {
+        id,
+        companyId,
+      },
+      data,
+    });
   };
 
   findByEmail = async (email: string, tx?: Prisma.TransactionClient) => {
@@ -151,37 +117,20 @@ class CustomerRepository {
     companyId: number,
     tx?: Prisma.TransactionClient,
   ) => {
-    try {
-      return await (tx || prisma).customers.create({
-        data: {
-          name: data.name,
-          gender: data.gender,
-          phoneNumber: data.phoneNumber,
-          ageGroup: data.ageGroup,
-          email: data.email,
-          memo: data.memo,
-          region: data.region,
-          company: {
-            connect: { id: companyId },
-          },
+    return await (tx || prisma).customers.create({
+      data: {
+        name: data.name,
+        gender: data.gender,
+        phoneNumber: data.phoneNumber,
+        ageGroup: data.ageGroup,
+        email: data.email,
+        memo: data.memo,
+        region: data.region,
+        company: {
+          connect: { id: companyId },
         },
-      });
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        const target = error.meta?.target as string | undefined;
-        let message = '중복된 고객 정보입니다.';
-        if (target?.includes('email')) {
-          message = '이미 등록된 이메일입니다.';
-        } else if (target?.includes('phoneNumber')) {
-          message = '이미 등록된 연락처입니다.';
-        }
-        throw createError(409, message);
-      }
-      throw error;
-    }
+      },
+    });
   };
 
   delete = async (id: number, companyId: number) => {

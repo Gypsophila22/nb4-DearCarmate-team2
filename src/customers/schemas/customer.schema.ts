@@ -39,7 +39,7 @@ const ageGroupSchema = z
   ])
   .optional();
 
-export const getCustomersSchema = z
+const getCustomersSchema = z
   .object({
     page: z
       .string()
@@ -54,7 +54,7 @@ export const getCustomersSchema = z
   })
   .strict();
 
-export const createCustomerSchema = z
+const createCustomerSchema = z
   .object({
     name: z.string().min(1, { message: '고객명은 필수입니다.' }),
     gender: z.nativeEnum(Gender),
@@ -69,12 +69,12 @@ export const createCustomerSchema = z
   })
   .strict();
 
-export const updateCustomerParamsSchema = z
+const updateCustomerParamsSchema = z
   .object({
     id: z.coerce.number(),
   })
   .strict();
-export const updateCustomerBodySchema = z.object({
+const updateCustomerBodySchema = z.object({
   name: z.string().min(1, { message: '고객명은 필수입니다.' }).optional(),
   gender: z.nativeEnum(Gender).optional(),
   phoneNumber: z
@@ -90,13 +90,13 @@ export const updateCustomerBodySchema = z.object({
   memo: z.string().optional(),
 });
 
-export const deleteCustomerSchema = z
+const deleteCustomerSchema = z
   .object({
     id: z.coerce.number(),
   })
   .strict();
 
-export const getCustomerByIdSchema = z
+const getCustomerByIdSchema = z
   .object({
     id: z.coerce.number(),
   })
