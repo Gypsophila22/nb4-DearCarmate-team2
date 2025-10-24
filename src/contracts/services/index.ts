@@ -1,7 +1,7 @@
 import { contractCreateService } from './contract.create.service.js';
 import { contractDeleteService } from './contract.delete.service.js';
 import { contractGetCarListService } from './contract.get-car-list.service.js';
-import { contractGetListService } from './contract.get-contract-list.service.js';
+import { contractGetListService } from './contract.get-list.service.js';
 import { contractGetCustomerListService } from './contract.get-customer-list.service.js';
 import { contractGetUserListService } from './contract.get-user-list.service.js';
 import { contractUpdateService } from './contract.update-contracts.service.js';
