@@ -1,8 +1,9 @@
 import createError from 'http-errors';
 
-import { CarIdParam, GetCarsListQuery } from '../schemas/car.schema.js';
+import { CarIdParam } from '../schemas/car.schema.js';
 import carService from '../services/index.js';
-
+import type { GetList } from '../repositories/types/car.types.js';
+import { CarStatus } from '@prisma/client';
 import type { NextFunction, Request, Response } from 'express';
 class CarController {
   create = async (
@@ -111,7 +112,21 @@ class CarController {
 
   getCarsList = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const parsed = GetCarsListQuery.parse(req.query);
+      const parsed: GetList = {
+        page: Number(req.query.page) || 1,
+        pageSize: Number(req.query.pageSize) || 10,
+        searchBy:
+          req.query.searchBy === 'carNumber' || req.query.searchBy === 'model'
+            ? req.query.searchBy
+            : undefined,
+        keyword:
+          typeof req.query.keyword === 'string' ? req.query.keyword : undefined,
+        status:
+          typeof req.query.status === 'string' && req.query.status
+            ? (req.query.status as CarStatus)
+            : undefined,
+      };
+
       const { cars, totalItemCount } = await carService.list(parsed); // 차량 목록 조회 서비스 실행
 
       const currentPage = req.query['page'];

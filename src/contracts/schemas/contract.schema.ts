@@ -11,7 +11,7 @@ export const ContractIdParamSchema = z
   .strict();
 
 // 계약 생성 바디
-export const ContractCreateBodySchema = z.object({
+const ContractCreateBodySchema = z.object({
   carId: z.coerce.number(), // 차량 ID
   customerId: z.coerce.number(), // 고객 ID
   meetings: z.array(
@@ -22,8 +22,13 @@ export const ContractCreateBodySchema = z.object({
   ),
 });
 
+export const GetContractListQuerySchema = z.object({
+  searchBy: z.enum(['customerName', 'userName']).optional(),
+  keyword: z.string().optional(),
+});
+
 // 계약 수정 바디
-export const ContractUpdateBodySchema = z
+const ContractUpdateBodySchema = z
   .object({
     status: z
       .enum([
@@ -87,6 +92,15 @@ class ContractSchema {
   delete(req: Request, _res: Response, next: NextFunction) {
     const result = ContractIdParamSchema.safeParse(req.params);
 
+    if (!result.success) {
+      return next(createError(400, '잘못된 요청입니다'));
+    } else {
+      return next();
+    }
+  }
+
+  list(req: Request, _res: Response, next: NextFunction) {
+    const result = GetContractListQuerySchema.safeParse(req.query);
     if (!result.success) {
       return next(createError(400, '잘못된 요청입니다'));
     } else {
