@@ -34,7 +34,8 @@ export const userDeleteService = {
     if (!user) throw createError(404, '존재하지 않는 유저입니다.');
 
     try {
-      await userRepository.deleteById(targetUserId);
+      const { count } = await userRepository.deleteNonAdminById(targetUserId);
+      if (count === 0) throw createError(403, '어드민은 삭제할 수 없습니다.');
     } catch (e: unknown) {
       mapPrismaDeleteError(e);
     }

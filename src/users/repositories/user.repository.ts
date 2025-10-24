@@ -79,6 +79,12 @@ class UserRepository {
   deleteById(id: number) {
     return prisma.users.delete({ where: { id } });
   }
+
+  deleteNonAdminById(id: number) {
+    return prisma.users.deleteMany({
+      where: { id, isAdmin: false },
+    });
+  }
 }
 
 export const userRepository = new UserRepository();
