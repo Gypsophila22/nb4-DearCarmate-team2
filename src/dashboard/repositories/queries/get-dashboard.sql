@@ -5,17 +5,19 @@ SELECT
     SUM(
         --저번 달 합산
         CASE
-            WHEN "date" >= $1::date
-            AND "date" < $2::date
-            THEN "contractPrice"
+            WHEN con."status" = 'contractSuccessful'::"ContractsStatus"
+						AND con."resolutionDate" >= $1::timestamptz
+            AND con."resolutionDate" < $2::timestamptz
+            THEN con."contractPrice"
             ELSE 0
         END
     ) AS "lastMonthSales",
 	SUM(
         CASE
-            WHEN "date" >= $2::date
-            AND "date" < $3::date
-            THEN "contractPrice"
+            WHEN con."status" = 'contractSuccessful'::"ContractsStatus"
+						AND con."resolutionDate" >= $2::timestamptz
+            AND con."resolutionDate" < $3::timestamptz
+            THEN con."contractPrice"
             ELSE 0
         END
     ) AS "monthlySales",
