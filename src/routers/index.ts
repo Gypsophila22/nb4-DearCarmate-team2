@@ -6,6 +6,7 @@ import contractRouter from './contract.route.js';
 import customersRouter from './customer.route.js';
 import imageRouter from './image.route.js';
 import userRouter from './user.route.js';
+import dashboardRouter from './dashborad.route.js';
 
 const routers = {
   authRouter,
