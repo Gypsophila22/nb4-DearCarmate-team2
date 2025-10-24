@@ -1,4 +1,3 @@
-import createError from 'http-errors';
 import type { Dates } from '../repositories/types/dashboard.types.js';
 import { dashboardRepository } from '../repositories/dashboard.get.repository.js';
 import { CarType } from '@prisma/client';
