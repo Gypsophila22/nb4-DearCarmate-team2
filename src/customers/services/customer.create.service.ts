@@ -1,7 +1,5 @@
 import { customerRepository } from '../repositories/customer.repository.js';
-import { customerValidation } from '../schemas/customer.schema.js';
-import { z } from 'zod';
-import { AgeGroup, Region } from '@prisma/client';
+import { AgeGroup, Gender, Region } from '@prisma/client';
 
 import {
   toAgeGroupEnum,
@@ -10,9 +8,16 @@ import {
   mapRegionToKorean,
 } from '../utils/customer.mapper.js';
 
-type CreateCustomerBody = z.infer<
-  ReturnType<typeof customerValidation.getCreateCustomerSchema>
->;
+type CreateCustomerBody = {
+  name: string;
+  gender: Gender;
+  phoneNumber: string;
+  ageGroup?: AgeGroup;
+  region?: Region;
+  email?: string;
+  memo?: string;
+};
+
 type TransformedCreateCustomerData = Omit<
   CreateCustomerBody,
   'ageGroup' | 'region'

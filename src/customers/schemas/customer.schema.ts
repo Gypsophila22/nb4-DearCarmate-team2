@@ -102,7 +102,7 @@ const getCustomerByIdSchema = z
   })
   .strict();
 
-const customerCsvRowSchema = z
+export const customerCsvRowSchema = z
   .object({
     name: z.string().min(1, '고객명은 필수입니다.'),
     email: z.string().email('유효하지 않은 이메일 형식입니다.').optional(),
@@ -172,38 +172,6 @@ class CustomerValidation {
       return next();
     }
     return next(createError(400, '잘못된 입력값입니다.'));
-  }
-
-  getAgeGroupSchema() {
-    return ageGroupSchema;
-  }
-
-  getGetCustomersSchema() {
-    return getCustomersSchema;
-  }
-
-  getCreateCustomerSchema() {
-    return createCustomerSchema;
-  }
-
-  getUpdateCustomerParamsSchema() {
-    return updateCustomerParamsSchema;
-  }
-
-  getUpdateCustomerBodySchema() {
-    return updateCustomerBodySchema;
-  }
-
-  getDeleteCustomerSchema() {
-    return deleteCustomerSchema;
-  }
-
-  getGetCustomerByIdSchema() {
-    return getCustomerByIdSchema;
-  }
-
-  getCustomerCsvRowSchema() {
-    return customerCsvRowSchema;
   }
 }
 

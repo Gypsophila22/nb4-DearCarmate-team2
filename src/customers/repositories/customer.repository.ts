@@ -1,11 +1,16 @@
 import { Prisma, AgeGroup, Gender, Region } from '@prisma/client';
 import prisma from '../../lib/prisma.js';
-import { customerValidation } from '../schemas/customer.schema.js';
-import { z } from 'zod';
 
-type CreateCustomerBody = z.infer<
-  ReturnType<typeof customerValidation.getCreateCustomerSchema>
->;
+type CreateCustomerBody = {
+  name: string;
+  gender: Gender;
+  phoneNumber: string;
+  ageGroup?: AgeGroup;
+  region?: Region;
+  email?: string;
+  memo?: string;
+};
+
 type TransformedCreateCustomerData = Omit<
   CreateCustomerBody,
   'ageGroup' | 'region'
@@ -14,9 +19,16 @@ type TransformedCreateCustomerData = Omit<
   region?: Region;
 };
 
-type UpdateCustomerBody = z.infer<
-  ReturnType<typeof customerValidation.getUpdateCustomerBodySchema>
->;
+type UpdateCustomerBody = {
+  name?: string;
+  gender?: Gender;
+  phoneNumber?: string;
+  ageGroup?: AgeGroup;
+  region?: Region;
+  email?: string;
+  memo?: string;
+};
+
 type TransformedUpdateCustomerData = Omit<
   UpdateCustomerBody,
   'ageGroup' | 'region'
@@ -25,9 +37,16 @@ type TransformedUpdateCustomerData = Omit<
   region?: Region;
 };
 
-type CustomerCsvRow = z.infer<
-  ReturnType<typeof customerValidation.getCustomerCsvRowSchema>
->;
+type CustomerCsvRow = {
+  name: string;
+  email?: string;
+  gender: Gender;
+  phoneNumber: string;
+  region?: Region;
+  ageGroup?: AgeGroup;
+  memo?: string;
+};
+
 type TransformedCustomerCsvRow = Omit<CustomerCsvRow, 'ageGroup' | 'region'> & {
   ageGroup?: AgeGroup;
   region?: Region;

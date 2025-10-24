@@ -2,13 +2,20 @@ import createError from 'http-errors';
 import csv from 'csv-parser';
 import { Readable } from 'stream';
 import { z } from 'zod';
-import { customerValidation } from '../schemas/customer.schema.js';
+import { customerCsvRowSchema } from '../schemas/customer.schema.js';
 import { toAgeGroupEnum, toRegionEnum } from '../utils/customer.mapper.js';
 import { AgeGroup, Gender, Region } from '@prisma/client';
 
-type CustomerCsvRow = z.infer<
-  ReturnType<typeof customerValidation.getCustomerCsvRowSchema>
->;
+type CustomerCsvRow = {
+  name: string;
+  email?: string;
+  gender: Gender;
+  phoneNumber: string;
+  region?: Region;
+  ageGroup?: AgeGroup;
+  memo?: string;
+};
+
 type TransformedCustomerCsvRow = Omit<CustomerCsvRow, 'ageGroup' | 'region'> & {
   ageGroup?: AgeGroup;
   region?: Region;
@@ -16,7 +23,6 @@ type TransformedCustomerCsvRow = Omit<CustomerCsvRow, 'ageGroup' | 'region'> & {
 
 export const customerParseService = {
   async parseAndValidateCsv(buffer: Buffer) {
-    const customerCsvRowSchema = customerValidation.getCustomerCsvRowSchema();
     const results: CustomerCsvRow[] = [];
     const errors: {
       row: number;

@@ -1,13 +1,20 @@
 import { customerRepository } from '../repositories/customer.repository.js';
-import { customerValidation } from '../schemas/customer.schema.js';
 import prisma from '../../lib/prisma.js';
 import { toAgeGroupEnum, toRegionEnum } from '../utils/customer.mapper.js';
 import { Prisma, AgeGroup, Gender, Region } from '@prisma/client';
 import { z } from 'zod';
+import { customerCsvRowSchema } from '../schemas/customer.schema.js';
 
-type CustomerCsvRow = z.infer<
-  ReturnType<typeof customerValidation.getCustomerCsvRowSchema>
->;
+type CustomerCsvRow = {
+  name: string;
+  email?: string;
+  gender: Gender;
+  phoneNumber: string;
+  region?: Region;
+  ageGroup?: AgeGroup;
+  memo?: string;
+};
+
 type TransformedCustomerCsvRow = Omit<CustomerCsvRow, 'ageGroup' | 'region'> & {
   ageGroup?: AgeGroup;
   region?: Region;
@@ -40,7 +47,6 @@ export const customerUploadService = {
     companyId: number,
     fileName: string,
   ): Promise<BulkUploadResponse> {
-    const customerCsvRowSchema = customerValidation.getCustomerCsvRowSchema();
     const totalRecords = customers.length;
     let processedSuccessfully = 0;
     const validationErrors: CustomerCsvValidationError[] = [];

@@ -9,27 +9,46 @@ import {
   customerUploadService,
   customerParseService,
 } from '../services/index.js';
-import { customerValidation } from '../schemas/customer.schema.js';
-import { z } from 'zod';
+import { AgeGroup, Gender, Region } from '@prisma/client';
 
-type CreateCustomerBody = z.infer<
-  ReturnType<typeof customerValidation.getCreateCustomerSchema>
->;
-type GetCustomersQuery = z.infer<
-  ReturnType<typeof customerValidation.getGetCustomersSchema>
->;
-type GetCustomerByIdParams = z.infer<
-  ReturnType<typeof customerValidation.getGetCustomerByIdSchema>
->;
-type UpdateCustomerParams = z.infer<
-  ReturnType<typeof customerValidation.getUpdateCustomerParamsSchema>
->;
-type UpdateCustomerBody = z.infer<
-  ReturnType<typeof customerValidation.getUpdateCustomerBodySchema>
->;
-type DeleteCustomerParams = z.infer<
-  ReturnType<typeof customerValidation.getDeleteCustomerSchema>
->;
+type GetCustomersQuery = {
+  page?: number;
+  pageSize?: number;
+  searchBy?: 'name' | 'email';
+  keyword?: string;
+};
+
+type CreateCustomerBody = {
+  name: string;
+  gender: Gender;
+  phoneNumber: string;
+  ageGroup?: AgeGroup;
+  region?: Region;
+  email?: string;
+  memo?: string;
+};
+
+type UpdateCustomerParams = {
+  id: number;
+};
+
+type UpdateCustomerBody = {
+  name?: string;
+  gender?: Gender;
+  phoneNumber?: string;
+  ageGroup?: AgeGroup;
+  region?: Region;
+  email?: string;
+  memo?: string;
+};
+
+type DeleteCustomerParams = {
+  id: number;
+};
+
+type GetCustomerByIdParams = {
+  id: number;
+};
 
 import type {
   BulkUploadResponse,
@@ -142,7 +161,6 @@ class CustomerController {
     }
   }
 
-  // New method
   async uploadCustomers(
     req: Request,
     res: Response<BulkUploadResponse>,
