@@ -1,37 +1,22 @@
 import { customerRepository } from '../repositories/customer.repository.js';
+import createError from 'http-errors';
 import {
   mapAgeGroupToKorean,
   mapRegionToKorean,
 } from '../utils/customer.mapper.js';
 
-export const customerGetService = {
-  getCustomers: async (
-    companyId: number,
-    page: number,
-    pageSize: number,
-    searchBy?: 'name' | 'email',
-    keyword?: string,
-  ) => {
-    const { customers, totalCustomers } = await customerRepository.findMany(
-      companyId,
-      page,
-      pageSize,
-      searchBy,
-      keyword,
-    );
+export const customerGetByIdService = {
+  getCustomerById: async (id: number, companyId: number) => {
+    const customer = await customerRepository.findById(id, companyId);
 
-    const totalPages = Math.ceil(totalCustomers / pageSize);
+    if (!customer) {
+      throw createError(404, '고객을 찾을 수 없습니다.');
+    }
 
-    const mappedCustomers = customers.map((customer) => ({
+    return {
       ...customer,
       ageGroup: mapAgeGroupToKorean(customer.ageGroup),
       region: mapRegionToKorean(customer.region),
-    }));
-
-    return {
-      data: mappedCustomers,
-      currentPage: page,
-      totalPages,
     };
   },
 };

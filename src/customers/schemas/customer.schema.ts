@@ -102,7 +102,7 @@ const getCustomerByIdSchema = z
   })
   .strict();
 
-export const customerCsvRowSchema = z
+const customerCsvRowSchema = z
   .object({
     name: z.string().min(1, '고객명은 필수입니다.'),
     email: z.string().email('유효하지 않은 이메일 형식입니다.').optional(),
@@ -173,38 +173,38 @@ class CustomerValidation {
     }
     return next(createError(400, '잘못된 입력값입니다.'));
   }
+
+  getAgeGroupSchema() {
+    return ageGroupSchema;
+  }
+
+  getGetCustomersSchema() {
+    return getCustomersSchema;
+  }
+
+  getCreateCustomerSchema() {
+    return createCustomerSchema;
+  }
+
+  getUpdateCustomerParamsSchema() {
+    return updateCustomerParamsSchema;
+  }
+
+  getUpdateCustomerBodySchema() {
+    return updateCustomerBodySchema;
+  }
+
+  getDeleteCustomerSchema() {
+    return deleteCustomerSchema;
+  }
+
+  getGetCustomerByIdSchema() {
+    return getCustomerByIdSchema;
+  }
+
+  getCustomerCsvRowSchema() {
+    return customerCsvRowSchema;
+  }
 }
 
 export const customerValidation = new CustomerValidation();
-
-export type GetCustomersQuery = z.infer<typeof getCustomersSchema>;
-export type CreateCustomerBody = z.infer<typeof createCustomerSchema>;
-export type UpdateCustomerParams = z.infer<typeof updateCustomerParamsSchema>;
-export type UpdateCustomerBody = z.infer<typeof updateCustomerBodySchema>;
-export type DeleteCustomerParams = z.infer<typeof deleteCustomerSchema>;
-export type GetCustomerByIdParams = z.infer<typeof getCustomerByIdSchema>;
-export type CustomerCsvRow = z.infer<typeof customerCsvRowSchema>;
-
-export type TransformedCreateCustomerData = Omit<
-  CreateCustomerBody,
-  'ageGroup' | 'region'
-> & {
-  ageGroup?: AgeGroup;
-  region?: Region;
-};
-
-export type TransformedUpdateCustomerData = Omit<
-  UpdateCustomerBody,
-  'ageGroup' | 'region'
-> & {
-  ageGroup?: AgeGroup;
-  region?: Region;
-};
-
-export type TransformedCustomerCsvRow = Omit<
-  CustomerCsvRow,
-  'ageGroup' | 'region'
-> & {
-  ageGroup?: AgeGroup;
-  region?: Region;
-};

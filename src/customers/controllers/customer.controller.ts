@@ -9,14 +9,28 @@ import {
   customerUploadService,
   customerParseService,
 } from '../services/index.js';
-import type {
-  CreateCustomerBody,
-  GetCustomersQuery,
-  GetCustomerByIdParams,
-  UpdateCustomerParams,
-  UpdateCustomerBody,
-  DeleteCustomerParams,
-} from '../schemas/customer.schema.js';
+import { customerValidation } from '../schemas/customer.schema.js';
+import { z } from 'zod';
+
+type CreateCustomerBody = z.infer<
+  ReturnType<typeof customerValidation.getCreateCustomerSchema>
+>;
+type GetCustomersQuery = z.infer<
+  ReturnType<typeof customerValidation.getGetCustomersSchema>
+>;
+type GetCustomerByIdParams = z.infer<
+  ReturnType<typeof customerValidation.getGetCustomerByIdSchema>
+>;
+type UpdateCustomerParams = z.infer<
+  ReturnType<typeof customerValidation.getUpdateCustomerParamsSchema>
+>;
+type UpdateCustomerBody = z.infer<
+  ReturnType<typeof customerValidation.getUpdateCustomerBodySchema>
+>;
+type DeleteCustomerParams = z.infer<
+  ReturnType<typeof customerValidation.getDeleteCustomerSchema>
+>;
+
 import type {
   BulkUploadResponse,
   CustomerCsvValidationError,

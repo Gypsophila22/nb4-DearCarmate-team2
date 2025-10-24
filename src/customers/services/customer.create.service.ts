@@ -1,8 +1,7 @@
 import { customerRepository } from '../repositories/customer.repository.js';
-import type {
-  CreateCustomerBody,
-  TransformedCreateCustomerData,
-} from '../schemas/customer.schema.js';
+import { customerValidation } from '../schemas/customer.schema.js';
+import { z } from 'zod';
+import { AgeGroup, Region } from '@prisma/client';
 
 import {
   toAgeGroupEnum,
@@ -10,6 +9,17 @@ import {
   mapAgeGroupToKorean,
   mapRegionToKorean,
 } from '../utils/customer.mapper.js';
+
+type CreateCustomerBody = z.infer<
+  ReturnType<typeof customerValidation.getCreateCustomerSchema>
+>;
+type TransformedCreateCustomerData = Omit<
+  CreateCustomerBody,
+  'ageGroup' | 'region'
+> & {
+  ageGroup?: AgeGroup;
+  region?: Region;
+};
 
 export const customerCreateService = {
   createCustomer: async (data: CreateCustomerBody, companyId: number) => {

@@ -1,11 +1,37 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, AgeGroup, Gender, Region } from '@prisma/client';
 import prisma from '../../lib/prisma.js';
+import { customerValidation } from '../schemas/customer.schema.js';
+import { z } from 'zod';
 
-import type {
-  TransformedCreateCustomerData,
-  TransformedUpdateCustomerData,
-  TransformedCustomerCsvRow,
-} from '../schemas/customer.schema.js';
+type CreateCustomerBody = z.infer<
+  ReturnType<typeof customerValidation.getCreateCustomerSchema>
+>;
+type TransformedCreateCustomerData = Omit<
+  CreateCustomerBody,
+  'ageGroup' | 'region'
+> & {
+  ageGroup?: AgeGroup;
+  region?: Region;
+};
+
+type UpdateCustomerBody = z.infer<
+  ReturnType<typeof customerValidation.getUpdateCustomerBodySchema>
+>;
+type TransformedUpdateCustomerData = Omit<
+  UpdateCustomerBody,
+  'ageGroup' | 'region'
+> & {
+  ageGroup?: AgeGroup;
+  region?: Region;
+};
+
+type CustomerCsvRow = z.infer<
+  ReturnType<typeof customerValidation.getCustomerCsvRowSchema>
+>;
+type TransformedCustomerCsvRow = Omit<CustomerCsvRow, 'ageGroup' | 'region'> & {
+  ageGroup?: AgeGroup;
+  region?: Region;
+};
 
 class CustomerRepository {
   findMany = async (

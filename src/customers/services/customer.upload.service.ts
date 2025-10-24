@@ -1,13 +1,17 @@
 import { customerRepository } from '../repositories/customer.repository.js';
-import { customerCsvRowSchema } from '../schemas/customer.schema.js';
-import type {
-  CustomerCsvRow,
-  TransformedCustomerCsvRow,
-} from '../schemas/customer.schema.js';
+import { customerValidation } from '../schemas/customer.schema.js';
 import prisma from '../../lib/prisma.js';
 import { toAgeGroupEnum, toRegionEnum } from '../utils/customer.mapper.js';
-import { Prisma } from '@prisma/client';
+import { Prisma, AgeGroup, Gender, Region } from '@prisma/client';
 import { z } from 'zod';
+
+type CustomerCsvRow = z.infer<
+  ReturnType<typeof customerValidation.getCustomerCsvRowSchema>
+>;
+type TransformedCustomerCsvRow = Omit<CustomerCsvRow, 'ageGroup' | 'region'> & {
+  ageGroup?: AgeGroup;
+  region?: Region;
+};
 
 export type CustomerCsvValidationError = {
   row: number;
@@ -36,6 +40,7 @@ export const customerUploadService = {
     companyId: number,
     fileName: string,
   ): Promise<BulkUploadResponse> {
+    const customerCsvRowSchema = customerValidation.getCustomerCsvRowSchema();
     const totalRecords = customers.length;
     let processedSuccessfully = 0;
     const validationErrors: CustomerCsvValidationError[] = [];
@@ -82,16 +87,15 @@ export const customerUploadService = {
           }
 
           if (existingCustomer) {
-            // 변경사항 비교
-            const hasChanges = (
+            const hasChanges =
               existingCustomer.name !== transformedCustomerData.name ||
               existingCustomer.gender !== transformedCustomerData.gender ||
-              existingCustomer.phoneNumber !== transformedCustomerData.phoneNumber ||
+              existingCustomer.phoneNumber !==
+                transformedCustomerData.phoneNumber ||
               existingCustomer.ageGroup !== transformedCustomerData.ageGroup ||
               existingCustomer.region !== transformedCustomerData.region ||
               existingCustomer.email !== transformedCustomerData.email ||
-              existingCustomer.memo !== transformedCustomerData.memo
-            );
+              existingCustomer.memo !== transformedCustomerData.memo;
 
             if (hasChanges) {
               await customerRepository.updateFromCsv(
@@ -101,7 +105,6 @@ export const customerUploadService = {
               );
               processedSuccessfully++;
             } else {
-              // 중복 확인
               databaseErrors.push({
                 data: customerData,
                 error: '중복된 기록은 변경사항이 기록되지 않습니다.',
