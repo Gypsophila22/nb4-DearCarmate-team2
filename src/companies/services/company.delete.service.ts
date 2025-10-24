@@ -1,4 +1,3 @@
-// src/companies/services/company.delete.service.ts
 import { companyRepository } from '../repositories/company.repository.js';
 import createHttpError from 'http-errors';
 

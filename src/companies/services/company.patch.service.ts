@@ -1,4 +1,3 @@
-// src/companies/services/company.patch.service.ts
 import { companyRepository } from '../repositories/company.repository.js';
 import createHttpError from 'http-errors';
 

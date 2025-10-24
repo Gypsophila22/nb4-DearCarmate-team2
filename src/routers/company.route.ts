@@ -1,4 +1,3 @@
-// src/companies/routes/company.route.ts
 import { Router } from 'express';
 import passports from '../lib/passport/index.js';
 import companyController from '../companies/controllers/index.js';

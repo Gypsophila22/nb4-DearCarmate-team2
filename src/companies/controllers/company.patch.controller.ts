@@ -1,4 +1,3 @@
-// src/companies/controllers/company.patch.controller.ts
 import type { Request, Response, NextFunction } from 'express';
 import createHttpError from 'http-errors';
 import companyService from '../services/index.js';
