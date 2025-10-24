@@ -155,6 +155,35 @@ class ContractRepository {
     });
   };
 
+  // 계약 삭제를 위한 최소 정보 조회 (담당자, 차량 상태 포함)
+  findByIdForDelete = async (contractId: number) => {
+    return prisma.contracts.findUnique({
+      where: { id: contractId },
+      select: {
+        id: true,
+        userId: true,
+        carId: true,
+        status: true, // (필요 시 계약 상태도 참고)
+        car: { select: { id: true, status: true } }, // 현재 차량 상태
+      },
+    });
+  };
+
+  //트랜잭션 내: 차량 상태가 진행중일 때만 보유중으로 되돌리기
+  revertCarToPossessionIfProceedingTx = async (
+    tx: Prisma.TransactionClient,
+    carId: number,
+  ) => {
+    return tx.cars.updateMany({
+      where: { id: carId, status: CarStatus.contractProceeding },
+      data: { status: CarStatus.possession },
+    });
+  };
+
+  //트랜잭션 내: 계약 삭제
+  deleteTx = async (tx: Prisma.TransactionClient, contractId: number) => {
+    return tx.contracts.delete({ where: { id: contractId } });
+  };
   findByStatus = async ({ status, searchBy, keyword }: FindQuery) => {
     // 계약 조회
     return prisma.contracts.findMany({
