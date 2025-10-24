@@ -1,11 +1,10 @@
 import { CarType, Prisma } from '@prisma/client';
 
-import prisma from '../lib/prisma.js';
-
 import type { Cars, CarStatus } from '@prisma/client';
 type CarsCreateManyInput = Prisma.CarsCreateManyInput;
 type UniqueModel = { manufacturer: string; model: string };
-import type { CarFilter } from './services/car.get-list.service.js';
+import type { CarFilter } from '../services/car.get-list.service.js';
+import prisma from '../../lib/prisma.js';
 
 interface UpdateCarData {
   carNumber?: string;

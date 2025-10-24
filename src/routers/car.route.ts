@@ -1,7 +1,8 @@
 import express from 'express';
 
-import { carController } from '../cars/car.controller.js';
-import { carSchema } from '../cars/car.schema.js';
+import { carSchema } from '../cars/schemas/car.schema.js';
+import { carController } from '../cars/controllers/car.controller.js';
+
 import { uploadCsvMiddleware } from '../cars/upload-csv.middleware.js';
 import passports from '../lib/passport/index.js';
 

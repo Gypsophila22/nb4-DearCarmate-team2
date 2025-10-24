@@ -2,7 +2,7 @@ import createError from 'http-errors';
 
 import { CarStatus, CarType } from '@prisma/client';
 
-import { carRepository } from '../car.repository.js';
+import { carRepository } from '../repositories/car.repository.js';
 
 /**
  * 차량 생성 Service

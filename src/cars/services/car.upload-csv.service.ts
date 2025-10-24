@@ -7,8 +7,8 @@ import { ZodError } from 'zod';
 import { CarStatus, CarType } from '@prisma/client';
 
 import prisma from '../../lib/prisma.js';
-import { carRepository } from '../car.repository.js';
-import { CsvUploadCreateCar } from '../car.schema.js';
+import { carRepository } from '../repositories/car.repository.js';
+import { CsvUploadCreateCar } from '../schemas/car.schema.js';
 
 import type { CarModel } from '@prisma/client';
 /**

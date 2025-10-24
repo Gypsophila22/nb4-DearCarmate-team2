@@ -1,4 +1,4 @@
-import { carRepository } from '../car.repository.js';
+import { carRepository } from '../repositories/car.repository.js';
 
 export const carGetModelService = async () => {
   // DB에서 모든 차량 모델과 제조사 조회(CarModel 테이블))

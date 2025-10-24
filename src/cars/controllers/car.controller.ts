@@ -1,7 +1,7 @@
 import createError from 'http-errors';
 
-import { CarIdParam, GetCarsListQuery } from './car.schema.js';
-import carService from './services/index.js';
+import { CarIdParam, GetCarsListQuery } from '../schemas/car.schema.js';
+import carService from '../services/index.js';
 
 import type { NextFunction, Request, Response } from 'express';
 class CarController {

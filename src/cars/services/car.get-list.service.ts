@@ -1,4 +1,4 @@
-import { carRepository } from '../car.repository.js';
+import { carRepository } from '../repositories/car.repository.js';
 
 import type { CarStatus } from '@prisma/client';
 

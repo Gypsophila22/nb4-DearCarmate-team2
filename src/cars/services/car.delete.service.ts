@@ -1,6 +1,6 @@
 import createError from 'http-errors';
 
-import { carRepository } from '../car.repository.js';
+import { carRepository } from '../repositories/car.repository.js';
 
 /**
  * 차량 삭제
