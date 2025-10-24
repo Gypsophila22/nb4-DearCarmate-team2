@@ -1,4 +1,3 @@
-// src/companies/controllers/company.get.controller.ts
 import type { Request, Response, NextFunction } from 'express';
 import createHttpError from 'http-errors';
 import companyService from '../services/index.js';
@@ -6,7 +5,7 @@ import companyService from '../services/index.js';
 // 1️⃣ 쿼리 파라미터 타입 정의
 type SearchBy = 'companyName' | 'companyCode';
 
-interface GetCompanyQuery {
+export interface GetCompanyQuery {
   page?: string;
   pageSize?: string;
   searchBy?: SearchBy;

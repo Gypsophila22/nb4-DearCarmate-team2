@@ -1,4 +1,3 @@
-// src/companies/controllers/company.get-user.controller.ts
 import type { Request, Response, NextFunction } from 'express';
 import companyService from '../services/index.js';
 import createHttpError from 'http-errors';
@@ -6,7 +5,7 @@ import createHttpError from 'http-errors';
 // 1️⃣ 쿼리 타입을 명확히 정의
 type SearchBy = 'companyName' | 'name' | 'email';
 
-interface GetCompanyUsersQuery {
+export interface GetCompanyUsersQuery {
   page?: string;
   pageSize?: string;
   searchBy?: SearchBy;

@@ -1,4 +1,3 @@
-// src/companies/controllers/company.post.controller.ts
 import type { Request, Response, NextFunction } from 'express';
 import companyService from '../services/index.js';
 import createHttpError from 'http-errors';
