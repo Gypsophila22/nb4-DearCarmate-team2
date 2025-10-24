@@ -40,7 +40,7 @@ class ContractDocumentRepository {
 
   findDraftableContracts(companyId: number) {
     return prisma.contracts.findMany({
-      where: { user: { companyId } },
+      where: { customer: { companyId } },
       orderBy: { date: 'desc' },
       select: {
         id: true,

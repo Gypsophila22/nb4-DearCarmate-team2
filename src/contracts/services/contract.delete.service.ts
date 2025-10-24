@@ -13,7 +13,7 @@ export const contractDeleteService = async ({
   if (!contract) {
     throw createError(404, '존재하지 않는 계약입니다');
   }
-  if (contract.userId !== userId) {
+  if (!(contract.userId === userId || contract.userId === null)) {
     throw createError(403, '담당자만 수정이 가능합니다');
   }
 
