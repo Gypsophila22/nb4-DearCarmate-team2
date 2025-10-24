@@ -5,7 +5,7 @@ export const carGetModelService = async () => {
   const models = await carRepository.findModelWithManufacturer();
 
   // 제조사별로 모델 그룹화
-  const grouped = models.reduce(
+  const grouped = models.reduce<{ manufacturer: string; model: string[] }[]>(
     (acc, curr) => {
       // 기존 그룹에 제조사가 존재하는지 확인
       const existing = acc.find(
@@ -20,7 +20,7 @@ export const carGetModelService = async () => {
       }
       return acc;
     },
-    [] as { manufacturer: string; model: string[] }[],
+    [],
   );
 
   // 데이터 반환
