@@ -1,9 +1,12 @@
 import createError from 'http-errors';
 
-import contractService from './services/index.js';
+import contractService from '../services/index.js';
 
 import type { NextFunction, Request, Response } from 'express';
-import { ContractIdParamSchema } from './contract.schema.js';
+import {
+  ContractIdParamSchema,
+  GetContractListQuerySchema,
+} from '../schemas/contract.schema.js';
 
 class ContractController {
   create = async (req: Request, res: Response, next: NextFunction) => {
@@ -30,11 +33,12 @@ class ContractController {
     try {
       const paramResult = ContractIdParamSchema.safeParse(req.params);
       if (!paramResult.success) throw createError(400, '잘못된 계약 ID입니다');
-      const { contractId } = paramResult.data;
+      const contractId = paramResult.data.contractId;
 
       if (!req.user) throw createError(401, '로그인이 필요합니다.');
+      const userId = req.user.id;
 
-      await contractService.delete(contractId, req.user.id);
+      await contractService.delete({ contractId, userId });
       return res.status(200).json({ message: '계약 삭제 성공' });
     } catch (err) {
       next(err);
@@ -52,13 +56,10 @@ class ContractController {
 
   list = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { searchBy, keyword } = req.query as {
-        searchBy?: 'customerName' | 'userName'; // 고객 이름 | 담당자 이름 (검색 기준)
-        keyword?: string; // 검색어
-      };
+      const parsed = GetContractListQuerySchema.parse(req.query);
+      const { searchBy, keyword } = parsed;
 
-      // 계약 목록 조회 서비스 호출 TODO: 쿼리 검증 추가
-      const result = await contractService.getList(searchBy, keyword);
+      const result = await contractService.getList({ searchBy, keyword });
 
       res.status(200).json(result);
     } catch (err) {
@@ -89,15 +90,15 @@ class ContractController {
     try {
       if (!req.user) throw createError(401, '로그인이 필요합니다.');
       const paramResult = ContractIdParamSchema.safeParse(req.params);
-      if (!paramResult.success)
-        throw createError(404, '존재하지 않는 계약입니다');
+      if (!paramResult.success) throw createError(400, '잘못된 요청입니다');
 
-      const contractId = Number(paramResult.data.contractId);
+      const contractId = paramResult.data.contractId;
 
       // 계약 업데이트 서비스 호출
-      const result = await contractService.update(req.user.id, {
-        ...req.body,
-        contractId,
+      const result = await contractService.update({
+        userId: req.user.id,
+        contractId: contractId,
+        data: req.body,
       });
 
       // 결과 반환

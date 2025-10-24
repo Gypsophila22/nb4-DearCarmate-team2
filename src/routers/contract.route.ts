@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { contractSchema } from '../contracts/contract.schema.js';
-import { contractController } from '../contracts/contract.controller.js';
+import { contractSchema } from '../contracts/schemas/contract.schema.js';
+import { contractController } from '../contracts/controllers/contract.controller.js';
 import passports from '../lib/passport/index.js';
 
 const contractRouter = express.Router();
@@ -9,7 +9,7 @@ const contractRouter = express.Router();
 contractRouter
   .route('/')
   .post(passports.jwtAuth, contractSchema.create, contractController.create) // 계약 등록
-  .get(passports.jwtAuth, contractController.list); // 계약 목록 조회
+  .get(passports.jwtAuth, contractSchema.list, contractController.list); // 계약 목록 조회
 
 contractRouter
   .route('/:contractId')

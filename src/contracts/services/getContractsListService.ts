@@ -1,42 +1,29 @@
-import type { ContractsStatus } from '@prisma/client';
-import { contractRepository } from '../contract.repository.js';
+import { ContractsStatus } from '@prisma/client';
+import { contractRepository } from '../repositories/contract.repository.js';
+import type {
+  ContractForList,
+  GetListQuery,
+} from '../repositories/types/contract.types.js';
 
-interface Contract {
-  id: number;
-  car: { id: number; carModel: { model: string } };
-  customer: { id: number; name: string };
-  user: { id: number; name: string };
-  meetings: {
-    date: Date;
-    alarms: { time: Date }[];
-  }[];
-  contractPrice: number;
-  resolutionDate: Date | null;
-  status: ContractsStatus;
-}
-export const getContractsListService = async (
-  searchBy?: 'customerName' | 'userName',
-  keyword?: string,
-) => {
-  const statuses: ContractsStatus[] = [
-    'carInspection',
-    'priceNegotiation',
-    'contractDraft',
-    'contractSuccessful',
-    'contractFailed',
-  ];
-
-  // 상태별 계약 목록과 총 아이템 수 (TODO: any 지금 수정하는게 골치아파서 나중에 수정하겠습니다...)
-  const result: Record<string, { totalItemCount: number; data: Contract[] }> =
-    {};
+export const getContractsListService = async ({
+  searchBy,
+  keyword,
+}: GetListQuery) => {
+  const result: Record<
+    string,
+    {
+      totalItemCount: number;
+      data: ContractForList[];
+    }
+  > = {};
 
   // 각 상태별 계약 조회
-  for (const status of statuses) {
-    const data: Contract[] = await contractRepository.findByStatus(
+  for (const status of Object.values(ContractsStatus)) {
+    const data: ContractForList[] = await contractRepository.findByStatus({
       status,
       searchBy, // 검색 기준: 'customerName' | 'userName'
       keyword, // 검색 키워드
-    );
+    });
 
     result[status] = {
       totalItemCount: data.length, // 해당 상태 계약 개수

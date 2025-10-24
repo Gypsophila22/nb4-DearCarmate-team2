@@ -6,17 +6,7 @@ import { getCustomersListForContractService } from './getCustomersListForContrac
 import { getUsersListForContractService } from './getUsersListForContractService.js';
 import { updateContractsService } from './updateContractsService.js';
 
-type ContractService = {
-  create: typeof createContractsService;
-  getList: typeof getContractsListService;
-  update: typeof updateContractsService;
-  delete: typeof deleteContractsService;
-  getCarsListForContract: typeof getCarsListForContractService;
-  getUsersListForContract: typeof getUsersListForContractService;
-  getCustomersListForContract: typeof getCustomersListForContractService;
-};
-
-const contractService: ContractService = {
+const contractService = {
   create: createContractsService,
   update: updateContractsService,
   getList: getContractsListService,

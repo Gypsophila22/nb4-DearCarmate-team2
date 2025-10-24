@@ -1,19 +1,27 @@
 import { CarStatus, ContractsStatus, Prisma } from '@prisma/client';
-import prisma from '../lib/prisma.js';
-
-import createError from 'http-errors';
+import prisma from '../../lib/prisma.js';
+import type {
+  CreateContractForRepository,
+  FindQuery,
+} from './types/contract.types.js';
 
 class ContractRepository {
   /**
    * 차량으로 이미 존재하는 계약 조회
    */
   contractFindExisting = async (carId: number) => {
-    const existingContract = await prisma.contracts.findUnique({
+    return prisma.contracts.findUnique({
       where: { carId },
     });
-
-    return existingContract;
   };
+
+  // 계약 존재 확인
+  contractFindById = async (contractId: number) => {
+    return prisma.contracts.findUnique({
+      where: { id: contractId },
+    });
+  };
+
   // 차량 정보 조회
   findCarById = async (carId: number) => {
     const car = await prisma.cars.findUnique({
@@ -25,7 +33,6 @@ class ContractRepository {
         carModel: { select: { model: true } }, // 차량 이름
       },
     });
-    if (!car) throw createError(404, '차량을 찾을 수 없습니다');
     return {
       id: car.id,
       price: car.price,
@@ -33,14 +40,13 @@ class ContractRepository {
       model: car.carModel.model,
     };
   };
+
   // 고객 정보 조회
   findCustomerById = async (customerId: number) => {
-    const customer = await prisma.customers.findUnique({
+    return prisma.customers.findUnique({
       where: { id: customerId },
       select: { id: true, name: true },
     });
-    if (!customer) throw createError(404, '고객을 찾을 수 없습니다');
-    return customer;
   };
 
   // 미팅 및 알람 생성
@@ -82,12 +88,7 @@ class ContractRepository {
   };
 
   // 계약 생성
-  create = async (data: {
-    carId: number; // 차량
-    customerId: number; // 고객
-    contractPrice: number; // 계약 가격
-    userId: number; // 계약 담당자
-  }) => {
+  create = async (data: CreateContractForRepository) => {
     return prisma.contracts.create({
       data: {
         carId: data.carId, // 차량
@@ -99,52 +100,49 @@ class ContractRepository {
       },
     });
   };
+
+  // 계약 삭제
   delete = async (contractId: number) => {
-    // 계약 삭제
-    await prisma.contracts.delete({
+    return prisma.contracts.delete({
       where: { id: contractId },
     });
   };
+
   findCar = async (carId: number) => {
-    const car = await prisma.cars.findUnique({
+    return prisma.cars.findUnique({
       where: { id: carId },
       include: {
         carModel: true, // carModel 관계 포함
       },
     });
-
-    return car;
   };
 
   findContractsRepository = async (contractId: number) => {
-    const contract = await prisma.contracts.findUnique({
+    return prisma.contracts.findUnique({
       where: { id: contractId },
       include: {
         user: true,
       },
     });
-    return contract;
   };
 
   findCustomer = async (customerId: number) => {
-    const customer = await prisma.customers.findUnique({
+    return prisma.customers.findUnique({
       where: { id: customerId },
       select: { id: true, name: true },
     });
-    return customer;
   };
 
   findUser = async (userId: number) => {
-    const user = await prisma.users.findUnique({
+    return prisma.users.findUnique({
       where: { id: userId },
       select: { id: true, name: true },
     });
-    return user;
   };
 
   // 연결 계약이 없는 차량만 조회
   getCarsList = async () => {
-    const cars = await prisma.cars.findMany({
+    return prisma.cars.findMany({
       where: {
         contract: null,
       },
@@ -155,15 +153,9 @@ class ContractRepository {
         id: 'asc',
       },
     });
-
-    return cars;
   };
 
-  findByStatus = async (
-    status: ContractsStatus,
-    searchBy?: 'customerName' | 'userName',
-    keyword?: string,
-  ) => {
+  findByStatus = async ({ status, searchBy, keyword }: FindQuery) => {
     // 계약 조회
     return prisma.contracts.findMany({
       where: {
@@ -182,7 +174,10 @@ class ContractRepository {
         car: { select: { id: true, carModel: { select: { model: true } } } }, // 차량
         customer: { select: { id: true, name: true } }, // 고객
         user: { select: { id: true, name: true } }, // 담당자
-        meetings: { include: { alarms: true } }, // 미팅 및 알람 정보
+        meetings: {
+          include: { alarms: true },
+          orderBy: { date: 'desc' },
+        },
       },
       orderBy: { date: 'desc' }, // 최신순 정렬
     });
@@ -190,7 +185,7 @@ class ContractRepository {
 
   getCustomers = async () => {
     const customers = await prisma.customers.findMany({
-      orderBy: { id: 'asc' },
+      orderBy: { id: 'desc' },
     });
 
     return customers;
@@ -202,7 +197,7 @@ class ContractRepository {
    */
   getUsers = async () => {
     const users = await prisma.users.findMany({
-      orderBy: { id: 'asc' },
+      orderBy: { id: 'desc' },
     });
     return users;
   };
@@ -228,12 +223,18 @@ class ContractRepository {
   };
 
   // 계약 수정
-  update = async (contractId: number, data: Prisma.ContractsUpdateInput) => {
+  update = async ({
+    contractId,
+    data,
+  }: {
+    contractId: number;
+    data: Prisma.ContractsUpdateInput;
+  }) => {
     const { car, ...rest } = data;
 
     const updateData: Prisma.ContractsUpdateInput = {
       ...rest,
-      ...(car ? { car } : {}), // car가 있을 때만 포함
+      ...(car ? { car } : {}),
     };
 
     return prisma.contracts.update({
@@ -265,12 +266,6 @@ class ContractRepository {
     // 미팅 생성 + 알람 생성 병렬 처리
     const meetingPromises = meetings.map(async (m) => {
       const meetingDate = new Date(m.date);
-      if (isNaN(meetingDate.getTime())) {
-        throw createError(
-          400,
-          `유효하지 않은 미팅입니다. 입력된 값: ${m.date}`,
-        );
-      }
 
       const meeting = await prisma.meetings.create({
         data: { date: meetingDate, contractId },
@@ -278,13 +273,6 @@ class ContractRepository {
 
       const alarmPromises = (m.alarms || []).map((alarmTime) => {
         const alarmDate = new Date(alarmTime);
-        if (isNaN(alarmDate.getTime())) {
-          throw createError(
-            400,
-            `유효하지 않은 알람입니다. 입력된 값: ${m.date}`,
-          );
-        }
-
         return prisma.alarms.create({
           data: { time: alarmDate, meetingId: meeting.id },
         });
