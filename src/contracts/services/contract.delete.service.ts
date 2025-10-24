@@ -1,6 +1,6 @@
 import createError from 'http-errors';
 import { contractRepository } from '../repositories/contract.repository.js';
-
+import prisma from '../../lib/prisma.js';
 export const contractDeleteService = async ({
   contractId,
   userId,
