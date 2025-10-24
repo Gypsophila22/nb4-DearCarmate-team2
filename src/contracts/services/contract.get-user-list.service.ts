@@ -1,8 +1,8 @@
-import contractRepository from '../repositories/index.js';
+import { contractRepository } from '../repositories/contract.repository.js';
 
-export const getUsersListForContractService = async () => {
+export const contractGetUserListService = async () => {
   // repository 함수 호출
-  const users = await contractRepository.getUsersListForContract();
+  const users = await contractRepository.getUsers();
   // '이름(이메일)' 형태로 변환
 
   const result = users.map((c) => ({

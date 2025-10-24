@@ -1,28 +1,36 @@
-import contractRepository from '../repositories/index.js';
+import { contractRepository } from '../repositories/contract.repository.js';
 import createError from 'http-errors';
 import prisma from '../../lib/prisma.js';
-import { ContractsStatus } from '@prisma/client';
 import { sendContractDocsLinkedEmail } from '../../contract-documents/services/contract-document.send-email.service.js';
+import type { UpdateContractInput } from '../repositories/types/contract.types.js';
+import { CarStatus, ContractsStatus } from '@prisma/client';
 
-// 계약 상태 변경
-interface UpdateContractInput {
-  contractId: number;
-  status?: ContractsStatus; // 계약 상태
-  resolutionDate?: string; // 계약 종료일
-  contractPrice?: number; // 계약 가격
-  meetings?: { id?: number; date: string; alarms: string[] }[]; // 일정
-  contractDocuments?: { id?: number; fileName?: string }[]; // 계약서
-  userId?: number; // 담당자
-  customerId?: number; // 고객
-  carId?: number; // 차량
+// 상태 매핑 헬퍼
+function carStatusFor(status: ContractsStatus): CarStatus {
+  switch (status) {
+    case ContractsStatus.contractSuccessful:
+      return CarStatus.contractCompleted; // 계약 성공 → 차량 '계약 완료'
+    case ContractsStatus.contractFailed:
+      return CarStatus.possession; // 계약 실패 → 차량 '보유중'
+    default:
+      // carInspection / priceNegotiation / contractDraft 등 진행중 단계
+      return CarStatus.contractProceeding; // 진행중 → 차량 '계약 진행 중'
+  }
 }
 
-export const updateContractsService = async (
-  userId: number,
-  data: UpdateContractInput,
-) => {
+// 계약 상태 변경
+
+export const contractUpdateService = async ({
+  userId,
+  contractId,
+  data,
+}: {
+  userId: number;
+  contractId: number;
+  data: UpdateContractInput;
+}) => {
   // 계약 존재 여부 확인
-  const contract = await contractRepository.findContract(data.contractId);
+  const contract = await contractRepository.contractFindById(contractId);
   if (!contract) {
     throw createError(404, '존재하지 않는 계약입니다');
   }
@@ -37,26 +45,60 @@ export const updateContractsService = async (
     }
   }
 
-  // 계약 정보 업데이트 (undefined인 필드를 data 객체에서 제외)
-  await contractRepository.update.updateContract(data.contractId, {
-    ...(data.status && { status: data.status }),
-    ...(data.contractPrice !== undefined && {
-      contractPrice: { set: data.contractPrice },
-    }),
-    ...(data.resolutionDate !== undefined && {
-      resolutionDate: data.resolutionDate
-        ? new Date(data.resolutionDate)
-        : null,
-    }),
-    ...(data.userId && { user: { connect: { id: data.userId } } }),
-    ...(data.customerId && {
-      customer: { connect: { id: data.customerId } },
-    }),
-    ...(data.carId !== undefined &&
-      data.carId !== null && {
-        car: { connect: { id: data.carId } },
-      }),
+  const before = await prisma.contracts.findUnique({
+    where: { id: contractId },
+    select: { carId: true, status: true },
   });
+  if (!before) throw createError(404, '계약을 찾을 수 없습니다.');
+
+  // 계약 정보 업데이트 (undefined인 필드를 data 객체에서 제외)
+  await contractRepository.update({
+    contractId,
+    data: {
+      ...(data.status && { status: data.status }),
+      ...(data.contractPrice !== undefined && {
+        contractPrice: { set: data.contractPrice },
+      }),
+      ...(data.resolutionDate !== undefined && {
+        resolutionDate: data.resolutionDate
+          ? new Date(data.resolutionDate)
+          : null,
+      }),
+      ...(data.userId && { user: { connect: { id: data.userId } } }),
+      ...(data.customerId && {
+        customer: { connect: { id: data.customerId } },
+      }),
+      ...(data.carId !== undefined &&
+        data.carId !== null && {
+          car: { connect: { id: data.carId } },
+        }),
+    },
+  });
+  const after = await prisma.contracts.findUnique({
+    where: { id: contractId },
+    select: { carId: true, status: true },
+  });
+  if (!after) throw createError(404, '계약을 찾을 수 없습니다.');
+  // 1. carId가 바뀌었으면, 이전 차량을 진행중 > 보유중으로 되돌리기
+  if (before.carId !== null && after.carId !== before.carId) {
+    await prisma.cars.updateMany({
+      where: { id: before.carId, status: CarStatus.contractProceeding },
+      data: { status: CarStatus.possession },
+    });
+  }
+  // 2. 현재 계약 상태에 맞춰 (새) 차량 상태 설정
+  const targetCarStatus = carStatusFor(after.status as ContractsStatus);
+  if (targetCarStatus === CarStatus.possession) {
+    await prisma.cars.updateMany({
+      where: { id: after.carId, status: CarStatus.contractProceeding },
+      data: { status: CarStatus.possession },
+    });
+  } else {
+    await prisma.cars.updateMany({
+      where: { id: after.carId },
+      data: { status: targetCarStatus },
+    });
+  }
 
   // 미팅 정보 업데이트
   if (data.meetings) {
@@ -64,18 +106,15 @@ export const updateContractsService = async (
       await prisma.alarms.deleteMany({
         where: {
           meeting: {
-            contractId: data.contractId,
+            contractId: contractId,
           },
         },
       });
       await prisma.meetings.deleteMany({
-        where: { contractId: data.contractId },
+        where: { contractId: contractId },
       });
     } else {
-      await contractRepository.update.updateMeetings(
-        data.contractId,
-        data.meetings,
-      );
+      await contractRepository.updateMeetings(contractId, data.meetings);
     }
   }
 
@@ -95,7 +134,7 @@ export const updateContractsService = async (
     if (data.contractDocuments.length === 0) {
       // 빈 배열이면 이 계약의 모든 문서 연결 해제
       await prisma.contractDocuments.updateMany({
-        where: { contractId: data.contractId },
+        where: { contractId: contractId },
         data: { contractId: null },
       });
     } else {
@@ -105,8 +144,8 @@ export const updateContractsService = async (
       );
 
       if (validDocs.length > 0) {
-        await contractRepository.update.updateContractDocuments(
-          data.contractId,
+        await contractRepository.updateContractDocuments(
+          contractId,
           validDocs.map((doc) => ({
             id: doc.id,
             originalName: doc.fileName,
@@ -120,7 +159,7 @@ export const updateContractsService = async (
           .filter((row) => {
             const was = beforeMap.get(row.id) ?? null; // 이전 contractId
             const now = row.contractId ?? null; // 현재 contractId
-            return was === null && now === data.contractId; // 이번 PATCH로 null → 이 계약 id
+            return was === null && now === contractId; // 이번 PATCH로 null → 이 계약 id
           })
           .map((r) => r.id);
         if (newlyLinked.length > 0) {
@@ -133,9 +172,8 @@ export const updateContractsService = async (
   }
 
   // 최종 조회
-  const contractResponse = await contractRepository.update.findByIdForResponse(
-    data.contractId,
-  );
+  const contractResponse =
+    await contractRepository.findByIdForResponse(contractId);
 
   if (!contractResponse) {
     throw createError(404, '계약을 찾을 수 없습니다.');

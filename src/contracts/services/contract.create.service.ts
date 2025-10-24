@@ -1,15 +1,8 @@
 import createError from 'http-errors';
+import { contractRepository } from '../repositories/contract.repository.js';
+import type { CreateContractInput } from '../repositories/types/contract.types.js';
 
-import contractRepository from '../repositories/index.js';
-
-interface CreateContractInput {
-  carId: number;
-  customerId: number; // 고객
-  meetings: { date: string; alarms: string[] }[]; // 미팅 일정
-  userId: number; // 계약 담당자
-}
-
-export const createContractsService = async (data: CreateContractInput) => {
+export const contractCreateService = async (data: CreateContractInput) => {
   // 차량 존재 확인 및 보유중인지 상태 체크
   const car = await contractRepository.findCar(data.carId);
   if (!car) {
@@ -35,7 +28,7 @@ export const createContractsService = async (data: CreateContractInput) => {
   }
 
   // 계약 생성
-  const contract = await contractRepository.create.createContract({
+  const contract = await contractRepository.create({
     carId: data.carId,
     customerId: data.customerId,
     contractPrice: car.price,
@@ -43,13 +36,13 @@ export const createContractsService = async (data: CreateContractInput) => {
   });
 
   // 미팅 및 알람 생성
-  const meetings = await contractRepository.create.createMeetingsAndAlarms(
+  const meetings = await contractRepository.createMeetingsAndAlarms(
     contract.id,
     data.meetings,
   );
 
   // 차량 상태를 '계약 진행 중'으로 변경
-  await contractRepository.create.updateCarStatus(data.carId);
+  await contractRepository.updateCarStatus(data.carId);
 
   return {
     id: contract.id,

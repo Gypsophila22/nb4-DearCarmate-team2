@@ -1,29 +1,19 @@
-import { createContractsService } from './createContractsService.js';
-import { deleteContractsService } from './deleteContractsService.js';
-import { getCarsListForContractService } from './getCarsListForContractService.js';
-import { getContractsListService } from './getContractsListService.js';
-import { getCustomersListForContractService } from './getCustomersListForContractService.js';
-import { getUsersListForContractService } from './getUsersListForContractService.js';
-import { updateContractsService } from './updateContractsService.js';
+import { contractCreateService } from './contract.create.service.js';
+import { contractDeleteService } from './contract.delete.service.js';
+import { contractGetCarListService } from './contract.get-car-list.service.js';
+import { contractGetListService } from './contract.get-list.service.js';
+import { contractGetCustomerListService } from './contract.get-customer-list.service.js';
+import { contractGetUserListService } from './contract.get-user-list.service.js';
+import { contractUpdateService } from './contract.update-contracts.service.js';
 
-type ContractService = {
-  create: typeof createContractsService;
-  getList: typeof getContractsListService;
-  update: typeof updateContractsService;
-  delete: typeof deleteContractsService;
-  getCarsListForContract: typeof getCarsListForContractService;
-  getUsersListForContract: typeof getUsersListForContractService;
-  getCustomersListForContract: typeof getCustomersListForContractService;
-};
-
-const contractService: ContractService = {
-  create: createContractsService,
-  update: updateContractsService,
-  getList: getContractsListService,
-  delete: deleteContractsService,
-  getCarsListForContract: getCarsListForContractService,
-  getUsersListForContract: getUsersListForContractService,
-  getCustomersListForContract: getCustomersListForContractService,
+const contractService = {
+  create: contractCreateService,
+  update: contractUpdateService,
+  getList: contractGetListService,
+  delete: contractDeleteService,
+  getCarsListForContract: contractGetCarListService,
+  getUsersListForContract: contractGetUserListService,
+  getCustomersListForContract: contractGetCustomerListService,
 };
 
 Object.freeze(contractService);
