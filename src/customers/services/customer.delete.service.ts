@@ -1,4 +1,4 @@
-import { customerRepository } from '../repositories/index.js';
+import { customerRepository } from '../repositories/customer.repository.js';
 import createError from 'http-errors';
 
 export const customerDeleteService = {

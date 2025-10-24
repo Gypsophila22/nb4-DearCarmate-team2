@@ -1,5 +1,5 @@
 import { AgeGroup, Region } from '@prisma/client';
-import { ageGroupMap, regionMap } from '../enums/customer.enums.js';
+import { ageGroupMap, regionMap } from '../../enums/customer.enums.js';
 
 export function mapAgeGroupToKorean(
   ageGroup: AgeGroup | null | undefined,
