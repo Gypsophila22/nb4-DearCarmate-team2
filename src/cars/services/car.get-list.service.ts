@@ -1,17 +1,11 @@
 import { carRepository } from '../repositories/car.repository.js';
 
 import type { CarStatus } from '@prisma/client';
+import type { CarSearchFilter } from '../repositories/types/car.types.js';
 
 /**
  * 차량 목록 조회 Service
  */
-type CarSearchFilter = {
-  status?: CarStatus;
-  carNumber?: { contains: string; mode: 'insensitive' }; // 대소문자 구분 없이
-  carModel?: {
-    model?: { contains: string; mode: 'insensitive' }; // 대소문자 구분 없이
-  };
-};
 
 export type CarFilter = {
   search: CarSearchFilter; // 검색 조건
