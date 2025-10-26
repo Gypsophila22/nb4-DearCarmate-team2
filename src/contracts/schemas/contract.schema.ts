@@ -1,5 +1,5 @@
 import createError from 'http-errors';
-import { z } from 'zod';
+import { z, ZodError } from 'zod';
 
 import type { Request, Response, NextFunction } from 'express';
 
@@ -68,7 +68,13 @@ class ContractSchema {
     const result = ContractCreateBodySchema.safeParse(req.body);
 
     if (!result.success) {
-      return next(createError(400, '잘못된 요청입니다'));
+      const zodError = result.error as ZodError<
+        z.infer<typeof ContractCreateBodySchema>
+      >;
+      const errorDetails = zodError.issues
+        .map((e) => `${e.path.join('.')}: ${e.message}`)
+        .join(', ');
+      return next(createError(400, `잘못된 요청입니다: ${errorDetails}`));
     } else {
       req.body = result.data;
       return next();
@@ -80,8 +86,16 @@ class ContractSchema {
     const paramResult = ContractIdParamSchema.safeParse(req.params);
     const bodyResult = ContractUpdateBodySchema.safeParse(req.body);
 
-    if (!paramResult.success || !bodyResult.success) {
+    if (!paramResult.success) {
       return next(createError(400, '잘못된 요청입니다'));
+    } else if (!bodyResult.success) {
+      const zodError = bodyResult.error as ZodError<
+        z.infer<typeof ContractUpdateBodySchema>
+      >;
+      const errorDetails = zodError.issues
+        .map((e) => `${e.path.join('.')}: ${e.message}`)
+        .join(', ');
+      return next(createError(400, `잘못된 요청입니다: ${errorDetails}`));
     } else {
       req.body = bodyResult.data;
       return next();
@@ -102,7 +116,13 @@ class ContractSchema {
   list(req: Request, _res: Response, next: NextFunction) {
     const result = GetContractListQuerySchema.safeParse(req.query);
     if (!result.success) {
-      return next(createError(400, '잘못된 요청입니다'));
+      const zodError = result.error as ZodError<
+        z.infer<typeof GetContractListQuerySchema>
+      >;
+      const errorDetails = zodError.issues
+        .map((e) => `${e.path.join('.')}: ${e.message}`)
+        .join(', ');
+      return next(createError(400, `잘못된 요청입니다: ${errorDetails}`));
     } else {
       return next();
     }

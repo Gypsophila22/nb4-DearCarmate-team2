@@ -1,5 +1,5 @@
 import { CarStatus } from '@prisma/client';
-import { z } from 'zod';
+import { z, ZodError } from 'zod';
 
 import type { NextFunction, Request, Response } from 'express';
 import createError from 'http-errors';
@@ -90,7 +90,12 @@ class CarSchema {
     const result = CreateCars.safeParse(req.body);
 
     if (!result.success) {
-      return next(createError(400, '잘못된 요청입니다'));
+      // safeParse 실패 시 result.error가 ZodError 객체
+      const zodError = result.error as ZodError<z.infer<typeof CreateCars>>;
+      const errorDetails = zodError.issues
+        .map((e) => `${e.path.join('.')}: ${e.message}`)
+        .join(', ');
+      return next(createError(400, `잘못된 요청입니다: ${errorDetails}`));
     } else {
       req.body = result.data;
       return next();
@@ -101,8 +106,16 @@ class CarSchema {
     const paramResult = CarIdParam.safeParse(req.params);
     const bodyResult = UpdateCarBody.safeParse(req.body);
 
-    if (!paramResult.success || !bodyResult.success) {
+    if (!paramResult.success) {
       return next(createError(400, '잘못된 요청입니다'));
+    } else if (!bodyResult.success) {
+      const zodError = bodyResult.error as ZodError<
+        z.infer<typeof UpdateCarBody>
+      >;
+      const errorDetails = zodError.issues
+        .map((e) => `${e.path.join('.')}: ${e.message}`)
+        .join(', ');
+      return next(createError(400, `잘못된 요청입니다: ${errorDetails}`));
     } else {
       req.body = bodyResult.data;
       return next();
@@ -123,7 +136,13 @@ class CarSchema {
   getList(req: Request, _res: Response, next: NextFunction) {
     const result = GetCarsListQuery.safeParse(req.query);
     if (!result.success) {
-      return next(createError(400, '잘못된 요청입니다'));
+      const zodError = result.error as ZodError<
+        z.infer<typeof GetCarsListQuery>
+      >;
+      const errorDetails = zodError.issues
+        .map((e) => `${e.path.join('.')}: ${e.message}`)
+        .join(', ');
+      return next(createError(400, `잘못된 요청입니다: ${errorDetails}`));
     } else {
       return next();
     }
