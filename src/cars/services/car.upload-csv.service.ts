@@ -47,9 +47,7 @@ export const carUploadCsvService = async (csvBuffer: Buffer) => {
         const parsed = CsvUploadCreateCar.safeParse({ ...data }); // 한 줄씩 데이터 검증
 
         if (!parsed.success) {
-          const error = parsed.error.issues
-            .map((e) => `${e.path.join('.')}: ${e.message}`)
-            .join(', ');
+          const error = parsed.error.issues.map((e) => e.message);
           return reject(
             createError(400, `CSV ${rowIndex}번째 줄 잘못된 데이터: ${error}`),
           );

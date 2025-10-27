@@ -109,9 +109,7 @@ class CarSchema {
     const result = CreateCars.safeParse(req.body);
 
     if (!result.success) {
-      const error = result.error.issues
-        .map((e) => `${e.path.join('.')}: ${e.message}`)
-        .join(', ');
+      const error = result.error.issues.map((e) => e.message);
       return next(createError(400, `잘못된 요청입니다: ${error}`));
     } else {
       req.body = result.data;
@@ -126,9 +124,7 @@ class CarSchema {
     if (!paramResult.success) {
       return next(createError(400, '잘못된 요청입니다'));
     } else if (!bodyResult.success) {
-      const error = bodyResult.error.issues
-        .map((e) => `${e.path.join('.')}: ${e.message}`)
-        .join(', ');
+      const error = bodyResult.error.issues.map((e) => e.message);
       return next(createError(400, `잘못된 요청입니다: ${error}`));
     } else {
       req.body = bodyResult.data;
@@ -150,9 +146,7 @@ class CarSchema {
   getList(req: Request, _res: Response, next: NextFunction) {
     const result = GetCarsListQuery.safeParse(req.query);
     if (!result.success) {
-      const error = result.error.issues
-        .map((e) => `${e.path.join('.')}: ${e.message}`)
-        .join(', ');
+      const error = result.error.issues.map((e) => e.message);
       return next(createError(400, `잘못된 요청입니다: ${error}`));
     } else {
       return next();
