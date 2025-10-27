@@ -61,7 +61,7 @@ export async function getDocumentsService({
       contractName: buildContractName(c.car?.carModel?.model, c.customer?.name),
       resolutionDate: c.resolutionDate,
       documentCount: c._count.documents,
-      userName: c.user?.name ?? '',
+      userName: c.user?.name ?? '-',
       carNumber: c.car?.carNumber ?? '',
       documents: c.documents.map((d) => ({
         id: d.id,
