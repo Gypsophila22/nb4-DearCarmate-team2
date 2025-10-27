@@ -41,7 +41,7 @@ function getGrowthRate(
   }
 
   // 일반 케이스: (current - last) / last * 100
-  return ((now - last) / last) * 100;
+  return (now - last) / last;
 }
 
 export const dashboardGetService = {
