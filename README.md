@@ -277,13 +277,15 @@ CORS_ORIGIN="https://app.example.com"
 
 ---
 
-## 📈 ERD (예시)
+## 📈 ERD
 
 ```
 Companies ───< Users ───< Contracts ───< ContractDocuments
                      │              │
                      │              └──< Customers
                      └──< Cars
+Contracts ───< Meetings ───< Alarms
+CarModel ───< Cars
 ```
 
 ---
