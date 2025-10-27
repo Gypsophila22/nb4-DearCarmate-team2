@@ -2,7 +2,6 @@ import csv from 'csv-parser';
 import createError from 'http-errors';
 import { Readable } from 'stream';
 import { z } from 'zod';
-import { ZodError } from 'zod';
 
 import { CarStatus, CarType } from '@prisma/client';
 
@@ -48,17 +47,11 @@ export const carUploadCsvService = async (csvBuffer: Buffer) => {
         const parsed = CsvUploadCreateCar.safeParse({ ...data }); // 한 줄씩 데이터 검증
 
         if (!parsed.success) {
-          const zodError = parsed.error as ZodError<
-            z.infer<typeof CsvUploadCreateCar>
-          >;
-          const errorDetails = zodError.issues
+          const error = parsed.error.issues
             .map((e) => `${e.path.join('.')}: ${e.message}`)
             .join(', ');
           return reject(
-            createError(
-              400,
-              `CSV ${rowIndex}번째 줄 잘못된 데이터: ${errorDetails}`,
-            ),
+            createError(400, `CSV ${rowIndex}번째 줄 잘못된 데이터: ${error}`),
           );
         } else {
           records.push(parsed.data);

@@ -1,29 +1,48 @@
 import { CarStatus } from '@prisma/client';
-import { z, ZodError } from 'zod';
+import { z } from 'zod';
 
 import type { NextFunction, Request, Response } from 'express';
 import createError from 'http-errors';
 const Cars = z
   .object({
     id: z.coerce.number().int().nonnegative(), // 차량 고유 ID
-    carNumber: z.string().min(1).max(20), // 차량 번호
+    carNumber: z
+      .string()
+      .min(1, { message: '차량 번호를 입력해주세요.' })
+      .max(20, { message: '차량 번호는 20자 이하로 입력해주세요.' }), // 차량 번호
     manufacturingYear: z
+      .number()
+      .int({ message: '제조년도는 정수여야 합니다.' })
+      .nonnegative({ message: '제조년도는 0 이상이어야 합니다.' })
+      .lte(new Date().getFullYear(), {
+        message: '제조년도는 올해보다 클 수 없습니다.',
+      }), // 제조년도 (현재 연도 이하)
+    mileage: z
+      .number()
+      .int({ message: '주행거리는 정수여야 합니다.' })
+      .nonnegative({ message: '주행거리는 0 이상이어야 합니다.' })
+      .lte(1_000_000, { message: '주행거리는 1,000,000km 이하만 가능합니다.' }), // 주행거리
+    price: z
       .number()
       .int()
       .nonnegative()
-      .lte(new Date().getFullYear()), // 제조년도 (현재 연도 이하)
-    mileage: z.number().int().nonnegative().lte(1_000_000), // 주행거리
-    price: z.number().int().nonnegative().lte(1_000_000_000), // 가격
-    accidentCount: z.number().int().nonnegative().lte(100), // 사고 횟수
+      .lte(1_000_000_000, { message: '가격은 10억 이하만 가능합니다.' }), // 가격
+    accidentCount: z
+      .number()
+      .int()
+      .nonnegative()
+      .lte(100, { message: '사고 횟수는 100 이하만 가능합니다.' }), // 사고 횟수
     explanation: z.string().default(''), // 차량 설명
     accidentDetails: z.string().default(''), // 사고 상세
     status: z.enum(['possession', 'carProceeding', 'carCompleted']), // 계약 상태 (보유 중 | 계약 진행 중 | 계약 완료)
     modelId: z.number().int().nonnegative(), // 모델 ID
     carModel: z.object({
       id: z.number().int().nonnegative(), // 모델 고유 ID
-      model: z.string().min(1), // 차종
+      model: z
+        .string()
+        .min(1, { message: '차종 이름은 1자 이상이어야 합니다.' }), // 차종
       type: z.enum(['SUV', '세단', '경차']), // 차종 타입
-      manufacturer: z.string().min(1), // 제조사
+      manufacturer: z.string().min(1, { message: '제조사명을 입력해주세요.' }), // 제조사
     }),
   })
   .strict();
@@ -90,12 +109,10 @@ class CarSchema {
     const result = CreateCars.safeParse(req.body);
 
     if (!result.success) {
-      // safeParse 실패 시 result.error가 ZodError 객체
-      const zodError = result.error as ZodError<z.infer<typeof CreateCars>>;
-      const errorDetails = zodError.issues
+      const error = result.error.issues
         .map((e) => `${e.path.join('.')}: ${e.message}`)
         .join(', ');
-      return next(createError(400, `잘못된 요청입니다: ${errorDetails}`));
+      return next(createError(400, `잘못된 요청입니다: ${error}`));
     } else {
       req.body = result.data;
       return next();
@@ -109,13 +126,10 @@ class CarSchema {
     if (!paramResult.success) {
       return next(createError(400, '잘못된 요청입니다'));
     } else if (!bodyResult.success) {
-      const zodError = bodyResult.error as ZodError<
-        z.infer<typeof UpdateCarBody>
-      >;
-      const errorDetails = zodError.issues
+      const error = bodyResult.error.issues
         .map((e) => `${e.path.join('.')}: ${e.message}`)
         .join(', ');
-      return next(createError(400, `잘못된 요청입니다: ${errorDetails}`));
+      return next(createError(400, `잘못된 요청입니다: ${error}`));
     } else {
       req.body = bodyResult.data;
       return next();
@@ -136,13 +150,10 @@ class CarSchema {
   getList(req: Request, _res: Response, next: NextFunction) {
     const result = GetCarsListQuery.safeParse(req.query);
     if (!result.success) {
-      const zodError = result.error as ZodError<
-        z.infer<typeof GetCarsListQuery>
-      >;
-      const errorDetails = zodError.issues
+      const error = result.error.issues
         .map((e) => `${e.path.join('.')}: ${e.message}`)
         .join(', ');
-      return next(createError(400, `잘못된 요청입니다: ${errorDetails}`));
+      return next(createError(400, `잘못된 요청입니다: ${error}`));
     } else {
       return next();
     }

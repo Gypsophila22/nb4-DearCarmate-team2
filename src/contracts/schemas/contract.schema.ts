@@ -1,5 +1,5 @@
 import createError from 'http-errors';
-import { z, ZodError } from 'zod';
+import { z } from 'zod';
 
 import type { Request, Response, NextFunction } from 'express';
 
@@ -16,8 +16,14 @@ const ContractCreateBodySchema = z.object({
   customerId: z.coerce.number(), // 고객 ID
   meetings: z.array(
     z.object({
-      date: z.coerce.date(),
-      alarms: z.array(z.coerce.date()),
+      date: z.coerce.date({
+        message: '미팅 날짜는 올바른 날짜 형식이어야 합니다.',
+      }),
+      alarms: z.array(
+        z.coerce.date({
+          message: '알람 시간은 올바른 날짜 형식이어야 합니다.',
+        }),
+      ),
     }),
   ),
 });
@@ -68,13 +74,10 @@ class ContractSchema {
     const result = ContractCreateBodySchema.safeParse(req.body);
 
     if (!result.success) {
-      const zodError = result.error as ZodError<
-        z.infer<typeof ContractCreateBodySchema>
-      >;
-      const errorDetails = zodError.issues
+      const error = result.error.issues
         .map((e) => `${e.path.join('.')}: ${e.message}`)
         .join(', ');
-      return next(createError(400, `잘못된 요청입니다: ${errorDetails}`));
+      return next(createError(400, `잘못된 요청입니다: ${error}`));
     } else {
       req.body = result.data;
       return next();
@@ -89,13 +92,10 @@ class ContractSchema {
     if (!paramResult.success) {
       return next(createError(400, '잘못된 요청입니다'));
     } else if (!bodyResult.success) {
-      const zodError = bodyResult.error as ZodError<
-        z.infer<typeof ContractUpdateBodySchema>
-      >;
-      const errorDetails = zodError.issues
+      const error = bodyResult.error.issues
         .map((e) => `${e.path.join('.')}: ${e.message}`)
         .join(', ');
-      return next(createError(400, `잘못된 요청입니다: ${errorDetails}`));
+      return next(createError(400, `잘못된 요청입니다: ${error}`));
     } else {
       req.body = bodyResult.data;
       return next();
@@ -116,13 +116,10 @@ class ContractSchema {
   list(req: Request, _res: Response, next: NextFunction) {
     const result = GetContractListQuerySchema.safeParse(req.query);
     if (!result.success) {
-      const zodError = result.error as ZodError<
-        z.infer<typeof GetContractListQuerySchema>
-      >;
-      const errorDetails = zodError.issues
+      const error = result.error.issues
         .map((e) => `${e.path.join('.')}: ${e.message}`)
         .join(', ');
-      return next(createError(400, `잘못된 요청입니다: ${errorDetails}`));
+      return next(createError(400, `잘못된 요청입니다: ${error}`));
     } else {
       return next();
     }
