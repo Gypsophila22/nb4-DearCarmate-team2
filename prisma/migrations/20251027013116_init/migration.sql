@@ -82,6 +82,8 @@ CREATE TABLE "Customers" (
     "memo" TEXT,
     "contractCount" INTEGER NOT NULL DEFAULT 0,
     "companyId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Customers_pkey" PRIMARY KEY ("id")
 );
@@ -149,6 +151,12 @@ CREATE UNIQUE INDEX "Cars_carNumber_key" ON "Cars"("carNumber");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "CarModel_manufacturer_model_key" ON "CarModel"("manufacturer", "model");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Customers_companyId_name_phoneNumber_key" ON "Customers"("companyId", "name", "phoneNumber");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Customers_companyId_email_key" ON "Customers"("companyId", "email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Contracts_carId_key" ON "Contracts"("carId");

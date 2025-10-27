@@ -12,7 +12,6 @@ export default function errorHandler(
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     let message = '데이터베이스 요청 오류입니다.';
     let status = 400;
-
     switch (err.code) {
       // Unique constraint
       case 'P2002': {
