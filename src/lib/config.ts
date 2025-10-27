@@ -1,12 +1,11 @@
-import { z } from 'zod';
 import * as dotenv from 'dotenv';
+import { z } from 'zod';
 import path from 'path';
 
 dotenv.config({
   path: path.resolve(process.cwd(), '.env'),
   override: false,
 });
-
 const EnvSchema = z.object({
   NODE_ENV: z
     .enum(['development', 'test', 'production'])
@@ -26,14 +25,16 @@ const EnvSchema = z.object({
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
 
   // Mail
-  EMAIL_SERVICE: z.string(),
-  EMAIL_USER: z.email(),
-  EMAIL_PASS: z.string().min(1),
-  MAIL_FROM: z.email().optional(),
+  // EMAIL_SERVICE: z.string(),
+  // EMAIL_USER: z.email(),
+  // EMAIL_PASS: z.string().min(1),
+  // MAIL_FROM: z.email().optional(),
+
+  EMAIL_PROVIDER: z.literal('resend'),
+  RESEND_API_KEY: z.string().startsWith('re_'),
 
   // 기타 필요한 것들...
 });
-
 const parsed = EnvSchema.safeParse(process.env);
 
 if (!parsed.success) {
