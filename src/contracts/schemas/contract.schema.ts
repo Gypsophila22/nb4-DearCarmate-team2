@@ -16,8 +16,14 @@ const ContractCreateBodySchema = z.object({
   customerId: z.coerce.number(), // 고객 ID
   meetings: z.array(
     z.object({
-      date: z.coerce.date(),
-      alarms: z.array(z.coerce.date()),
+      date: z.coerce.date({
+        message: '미팅 날짜는 올바른 날짜 형식이어야 합니다.',
+      }),
+      alarms: z.array(
+        z.coerce.date({
+          message: '알람 시간은 올바른 날짜 형식이어야 합니다.',
+        }),
+      ),
     }),
   ),
 });
@@ -68,7 +74,8 @@ class ContractSchema {
     const result = ContractCreateBodySchema.safeParse(req.body);
 
     if (!result.success) {
-      return next(createError(400, '잘못된 요청입니다'));
+      const error = result.error.issues.map((e) => e.message);
+      return next(createError(400, `잘못된 요청입니다: ${error}`));
     } else {
       req.body = result.data;
       return next();
@@ -80,8 +87,11 @@ class ContractSchema {
     const paramResult = ContractIdParamSchema.safeParse(req.params);
     const bodyResult = ContractUpdateBodySchema.safeParse(req.body);
 
-    if (!paramResult.success || !bodyResult.success) {
+    if (!paramResult.success) {
       return next(createError(400, '잘못된 요청입니다'));
+    } else if (!bodyResult.success) {
+      const error = bodyResult.error.issues.map((e) => e.message);
+      return next(createError(400, `잘못된 요청입니다: ${error}`));
     } else {
       req.body = bodyResult.data;
       return next();
@@ -102,7 +112,8 @@ class ContractSchema {
   list(req: Request, _res: Response, next: NextFunction) {
     const result = GetContractListQuerySchema.safeParse(req.query);
     if (!result.success) {
-      return next(createError(400, '잘못된 요청입니다'));
+      const error = result.error.issues.map((e) => e.message);
+      return next(createError(400, `잘못된 요청입니다: ${error}`));
     } else {
       return next();
     }
