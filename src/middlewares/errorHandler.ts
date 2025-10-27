@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
 import type { Request, Response, NextFunction } from 'express';
 import { isHttpError } from 'http-errors';
+import multer from 'multer';
 
 export default function errorHandler(
   err: unknown,
@@ -9,6 +10,30 @@ export default function errorHandler(
   next: NextFunction,
 ) {
   void next;
+  if (err instanceof multer.MulterError) {
+    let status = 400;
+    let message = '파일 업로드 중 오류가 발생했습니다.';
+
+    switch (err.code) {
+      case 'LIMIT_FILE_SIZE':
+        status = 413;
+        message = '파일 최대 크기는 10MB입니다.';
+        break;
+      case 'LIMIT_UNEXPECTED_FILE':
+        status = 400;
+        message = '허용되지 않은 파일 필드가 포함되었습니다.';
+        break;
+      case 'LIMIT_FILE_COUNT':
+        status = 400;
+        message = '업로드 가능한 파일 개수를 초과했습니다.';
+        break;
+    }
+
+    console.error(`[${status}] MulterError ${err.code}: ${message}`);
+    return res
+      .status(status)
+      .json({ message, code: status, name: 'MulterError' });
+  }
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     let message = '데이터베이스 요청 오류입니다.';
     let status = 400;

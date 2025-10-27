@@ -21,7 +21,7 @@ export async function postUpload(
       await fs.unlink(req.file.path).catch(() => {});
       return next(createError(400, '빈 파일은 업로드할 수 없습니다.'));
     }
-
+    console.log('지나감');
     const imageUrl = buildImageUrl(req, req.file.filename);
     return res.status(201).json({ imageUrl });
   } catch (err) {
