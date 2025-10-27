@@ -13,7 +13,8 @@ export const customerGetByIdService = {
       throw createError(404, '고객을 찾을 수 없습니다.');
     }
 
-    const contractCount = await customerRepository.getContractCountForCustomer(id);
+    const contractCount =
+      await customerRepository.getContractCountForCustomer(id);
 
     return {
       ...customer,
