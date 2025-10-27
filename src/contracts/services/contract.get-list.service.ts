@@ -5,6 +5,21 @@ import type {
   GetListQuery,
 } from '../repositories/types/contract.types.js';
 
+// 정렬 헬퍼
+const sortFutureFirstBy = <T>(arr: T[], getDate: (x: T) => Date) => {
+  const now = Date.now();
+  return arr.slice().sort((a, b) => {
+    const an = +getDate(a),
+      bn = +getDate(b);
+    const aPast = an < now,
+      bPast = bn < now;
+    if (aPast !== bPast) return aPast ? 1 : -1; // 미래 먼저, 과거 뒤로
+    return an - bn; // 가까운 순
+  });
+};
+const sortAscBy = <T>(arr: T[], getDate: (x: T) => Date) =>
+  arr.slice().sort((a, b) => +getDate(a) - +getDate(b));
+
 export const contractGetListService = async ({
   searchBy,
   keyword,
@@ -19,22 +34,26 @@ export const contractGetListService = async ({
 
   // 각 상태별 계약 조회
   for (const status of Object.values(ContractsStatus)) {
-    const data: ContractForList[] = await contractRepository.findByStatus({
+    const rows = await contractRepository.findByStatus({
       status,
       searchBy, // 검색 기준: 'customerName' | 'userName'
       keyword, // 검색 키워드
     });
 
     result[status] = {
-      totalItemCount: data.length, // 해당 상태 계약 개수
-      data: data.map((c) => ({
+      totalItemCount: rows.length, // 해당 상태 계약 개수
+      data: rows.map((c) => ({
         id: c.id,
-        car: { id: c.car.id, carModel: { model: c.car.carModel.model } }, // 차량 정보
+        car: { id: c.car.id, model: c.car.carModel.model }, // 차량 정보
         customer: { id: c.customer.id, name: c.customer.name }, // 고객 정보
-        user: { id: c.user.id, name: c.user.name }, // 담당자 정보
-        meetings: c.meetings.map((m) => ({
-          date: m.date, // Date 타입 그대로
-          alarms: m.alarms.map((a) => ({ time: a.time })), // 객체 형태로
+        user: c.user
+          ? { id: c.user.id, name: c.user.name }
+          : { id: 0, name: '담당자 없음' },
+        meetings: sortFutureFirstBy(c.meetings, (m) => m.date).map((m) => ({
+          date: m.date,
+          alarms: sortAscBy(m.alarms, (a) => a.time).map((a) => ({
+            time: a.time,
+          })),
         })),
         contractPrice: c.contractPrice, // 계약 금액
         resolutionDate: c.resolutionDate ?? null, // 계약 종료일
