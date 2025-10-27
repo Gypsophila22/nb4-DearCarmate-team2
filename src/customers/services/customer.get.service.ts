@@ -24,6 +24,7 @@ export const customerGetService = {
 
     const mappedCustomers = customers.map((customer) => ({
       ...customer,
+      contractCount: customer._count?.contract || 0,
       ageGroup: mapAgeGroupToKorean(customer.ageGroup),
       region: mapRegionToKorean(customer.region),
     }));

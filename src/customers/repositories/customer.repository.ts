@@ -84,6 +84,13 @@ class CustomerRepository {
         take: pageSize,
         skip: skip,
         orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+        include: {
+          _count: {
+            select: {
+              contract: true,
+            },
+          },
+        },
       }),
       prisma.customers.count({
         where,
@@ -183,6 +190,15 @@ class CustomerRepository {
       where: {
         id,
         companyId,
+      },
+    });
+  };
+
+  // 고객의 현재 계약 횟수를 가져옴
+  getContractCountForCustomer = async (customerId: number) => {
+    return prisma.contracts.count({
+      where: {
+        customerId: customerId,
       },
     });
   };

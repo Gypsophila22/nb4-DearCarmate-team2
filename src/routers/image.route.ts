@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { upload } from '../lib/images.js';
-import { postUpload } from '../controllers/images/image.upload.js';
+import { postUpload } from '../users/controllers/image.upload.controller.js';
 
 const MULTER_IMAGE_PATH = 'file';
 const router = Router();
