@@ -234,7 +234,7 @@ npm start
 
 - `npm run build`는 TypeScript 컴파일만 수행합니다. (Prisma generate/migrate는 **수동** 실행)
 - `npm start`는 `dist/app.js`를 실행합니다. `tsconfig.json`의 `outDir`이 `dist`로 설정되어 있어야 합니다.
-- 시드 실행은 `npx tsx prisma/seed.ts` 또는 `npm run prisma:seed`(동일)로 가능합니다.
+- 시드 실행은 `npx tsx prisma/seed.ts` 또는 `npx prisma db seed`(동일)로 가능합니다.
 
 ---
 
