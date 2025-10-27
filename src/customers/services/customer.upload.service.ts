@@ -1,131 +1,151 @@
+import { customerRepository } from '../repositories/customer.repository.js';
 import prisma from '../../lib/prisma.js';
-import { AgeGroup, Gender, Region } from '@prisma/client';
+import { toAgeGroupEnum, toRegionEnum } from '../utils/customer.mapper.js';
+import { Prisma, AgeGroup, Gender, Region } from '@prisma/client';
+import { z } from 'zod';
+import { customerCsvRowSchema } from '../schemas/customer.schema.js';
 
-interface CustomerUploadData {
+type CustomerCsvRow = {
   name: string;
+  email?: string;
   gender: Gender;
   phoneNumber: string;
-  ageGroup?: string;
-  region?: string;
-  email?: string;
+  region?: Region;
+  ageGroup?: AgeGroup;
   memo?: string;
-}
-
-const ageGroupMap: { [key: string]: AgeGroup } = {
-  '10대': AgeGroup.GENERATION_10,
-  '20대': AgeGroup.GENERATION_20,
-  '30대': AgeGroup.GENERATION_30,
-  '40대': AgeGroup.GENERATION_40,
-  '50대': AgeGroup.GENERATION_50,
-  '60대': AgeGroup.GENERATION_60,
-  '70대': AgeGroup.GENERATION_70,
-  '80대': AgeGroup.GENERATION_80,
-  '10-20': AgeGroup.GENERATION_10,
-  '20-30': AgeGroup.GENERATION_20,
-  '30-40': AgeGroup.GENERATION_30,
-  '40-50': AgeGroup.GENERATION_40,
-  '50-60': AgeGroup.GENERATION_50,
-  '60-70': AgeGroup.GENERATION_60,
-  '70-80': AgeGroup.GENERATION_70,
-  '80대 이상': AgeGroup.GENERATION_80,
 };
 
-const regionMap: { [key: string]: Region } = {
-  서울: Region.서울,
-  경기: Region.경기,
-  인천: Region.인천,
-  강원: Region.강원,
-  충북: Region.충북,
-  충남: Region.충남,
-  세종: Region.세종,
-  대전: Region.대전,
-  전북: Region.전북,
-  전남: Region.전남,
-  광주: Region.광주,
-  경북: Region.경북,
-  경남: Region.경남,
-  대구: Region.대구,
-  울산: Region.울산,
-  부산: Region.부산,
-  제주: Region.제주,
+type TransformedCustomerCsvRow = Omit<CustomerCsvRow, 'ageGroup' | 'region'> & {
+  ageGroup?: AgeGroup;
+  region?: Region;
+};
+
+export type CustomerCsvValidationError = {
+  row: number;
+  data: Record<string, string>;
+  errors: { message: string; path: PropertyKey[]; code: z.ZodIssue['code'] }[];
+};
+
+export type CustomerDatabaseError = {
+  data: CustomerCsvRow;
+  error: string;
+};
+
+export type BulkUploadResponse = {
+  message: string;
+  fileName: string;
+  totalRecords: number;
+  processedSuccessfully: number;
+  failedRecords: number;
+  validationErrors: CustomerCsvValidationError[];
+  databaseErrors: CustomerDatabaseError[];
 };
 
 export const customerUploadService = {
-  async processCustomerCsv(customers: CustomerUploadData[], companyId: number) {
-    const results = {
-      created: 0,
-      updated: 0,
-      failed: 0,
-      errors: [] as { data: CustomerUploadData; error: string }[],
-    };
+  async processCustomerCsv(
+    customers: CustomerCsvRow[],
+    companyId: number,
+    fileName: string,
+  ): Promise<BulkUploadResponse> {
+    const totalRecords = customers.length;
+    let processedSuccessfully = 0;
+    const validationErrors: CustomerCsvValidationError[] = [];
+    const databaseErrors: CustomerDatabaseError[] = [];
+    const validCustomersForDb: CustomerCsvRow[] = [];
 
-    await prisma.$transaction(async (tx) => {
-      for (const customerData of customers) {
+    customers.forEach((customerData, index) => {
+      const validationResult = customerCsvRowSchema.safeParse(customerData);
+      if (!validationResult.success) {
+        validationErrors.push({
+          row: index + 1,
+          data: customerData,
+          errors: validationResult.error.issues.map((issue) => ({
+            message: issue.message,
+            path: issue.path,
+            code: issue.code,
+          })),
+        });
+      } else {
+        validCustomersForDb.push(customerData);
+      }
+    });
+
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      for (const customerData of validCustomersForDb) {
+        const transformedCustomerData: TransformedCustomerCsvRow = {
+          ...customerData,
+          ageGroup: toAgeGroupEnum(customerData.ageGroup),
+          region: toRegionEnum(customerData.region),
+        };
+
         try {
-          const mappedData = {
-            ...customerData,
-            ageGroup: customerData.ageGroup
-              ? ageGroupMap[customerData.ageGroup]
-              : undefined,
-            region: customerData.region
-              ? regionMap[customerData.region]
-              : undefined,
-          };
-
           let existingCustomer;
-          if (mappedData.email) {
-            existingCustomer = await tx.customers.findFirst({
-              where: { email: mappedData.email, companyId },
-            });
-          } else if (mappedData.phoneNumber) {
-            existingCustomer = await tx.customers.findFirst({
-              where: { phoneNumber: mappedData.phoneNumber, companyId },
-            });
+          if (transformedCustomerData.email) {
+            existingCustomer = await customerRepository.findByEmail(
+              transformedCustomerData.email,
+              tx,
+            );
+          } else if (transformedCustomerData.phoneNumber) {
+            existingCustomer = await customerRepository.findByPhoneNumber(
+              transformedCustomerData.phoneNumber,
+              tx,
+            );
           }
 
           if (existingCustomer) {
-            // 기존 고객이 있으면 업데이트
-            await tx.customers.update({
-              where: { id: existingCustomer.id },
-              data: {
-                name: mappedData.name,
-                gender: mappedData.gender,
-                phoneNumber: mappedData.phoneNumber,
-                ageGroup: mappedData.ageGroup,
-                region: mappedData.region,
-                email: mappedData.email,
-                memo: mappedData.memo,
-                companyId: companyId,
-              },
-            });
-            results.updated++;
+            const hasChanges =
+              existingCustomer.name !== transformedCustomerData.name ||
+              existingCustomer.gender !== transformedCustomerData.gender ||
+              existingCustomer.phoneNumber !==
+                transformedCustomerData.phoneNumber ||
+              existingCustomer.ageGroup !== transformedCustomerData.ageGroup ||
+              existingCustomer.region !== transformedCustomerData.region ||
+              existingCustomer.email !== transformedCustomerData.email ||
+              existingCustomer.memo !== transformedCustomerData.memo;
+
+            if (hasChanges) {
+              await customerRepository.updateFromCsv(
+                existingCustomer.id,
+                transformedCustomerData,
+                tx,
+              );
+              processedSuccessfully++;
+            } else {
+              databaseErrors.push({
+                data: customerData,
+                error: '중복된 기록은 변경사항이 기록되지 않습니다.',
+              });
+            }
           } else {
-            // 새 고객 생성
-            await tx.customers.create({
-              data: {
-                name: mappedData.name,
-                gender: mappedData.gender,
-                phoneNumber: mappedData.phoneNumber,
-                ageGroup: mappedData.ageGroup,
-                region: mappedData.region,
-                email: mappedData.email,
-                memo: mappedData.memo,
-                companyId: companyId,
-              },
-            });
-            results.created++;
+            await customerRepository.createFromCsv(
+              transformedCustomerData,
+              companyId,
+              tx,
+            );
+            processedSuccessfully++;
           }
         } catch (error: unknown) {
-          results.failed++;
-          results.errors.push({
-            data: customerData,
-            error: error instanceof Error ? error.message : 'Unknown error',
-          });
+          let errorMessage: string;
+          if (error instanceof Error) {
+            errorMessage = error.message;
+          } else {
+            errorMessage = String(error);
+          }
+          databaseErrors.push({ data: customerData, error: errorMessage });
         }
       }
     });
 
-    console.log('Customer CSV upload results:', results);
-    return results;
+    const failedRecords = validationErrors.length + databaseErrors.length;
+
+    return {
+      message: '업로드가 성공적으로 완료되었습니다.',
+      fileName,
+      totalRecords,
+      processedSuccessfully,
+      failedRecords,
+      validationErrors,
+      databaseErrors,
+    };
   },
 };
