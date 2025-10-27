@@ -40,7 +40,7 @@ class ContractDocumentRepository {
 
   findDraftableContracts(companyId: number) {
     return prisma.contracts.findMany({
-      where: { user: { companyId } },
+      where: { customer: { companyId } },
       orderBy: { date: 'desc' },
       select: {
         id: true,
@@ -73,7 +73,9 @@ class ContractDocumentRepository {
       include: {
         _count: { select: { documents: true } }, // ContractDocuments 역관계 카운트
         user: { select: { name: true } }, // 담당자
-        car: { select: { carNumber: true } }, // 차량번호
+        car: {
+          select: { carNumber: true, carModel: { select: { model: true } } },
+        }, // 차량번호
         documents: {
           select: { id: true, originalName: true }, // 파일명
           orderBy: { createdAt: 'desc' },

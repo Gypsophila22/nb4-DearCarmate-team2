@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import { CarStatus, ContractsStatus, Prisma } from '@prisma/client';
 import prisma from '../src/lib/prisma.js';
+import { CarStatus, ContractsStatus, Prisma } from '@prisma/client';
 
 async function main() {
   // CarModel 테이블에 차종(모델) 데이터 추가
@@ -309,68 +309,18 @@ async function main() {
   };
 
   // 2) 차량 원본 정의
-  const carsSeedRaw = [
-    {
-      carNumber: '12가 3456',
-      manufacturer: '현대',
-      model: '투싼',
-      manufacturingYear: 2021,
-      mileage: 32000,
-      price: 1950,
-      accidentCount: 0,
-      explanation: '무사고, 1인 소유',
-      accidentDetails: '',
-      status: CarStatus.possession,
-    },
-    {
-      carNumber: '34나 7890',
-      manufacturer: '기아',
-      model: 'K5',
-      manufacturingYear: 2020,
-      mileage: 45000,
-      price: 1850,
-      accidentCount: 1,
-      explanation: '경미 사고 1회(후범퍼 교체)',
-      accidentDetails: '후범퍼 단순 교체',
-      status: CarStatus.possession,
-    },
-    {
-      carNumber: '56다 1122',
-      manufacturer: '현대',
-      model: '그랜저',
-      manufacturingYear: 2019,
-      mileage: 68000,
-      price: 2150,
-      accidentCount: 0,
-      explanation: '정비이력 양호',
-      accidentDetails: '',
-      status: CarStatus.possession,
-    },
-    {
-      carNumber: '78라 3344',
-      manufacturer: '기아',
-      model: '모닝',
-      manufacturingYear: 2022,
-      mileage: 18000,
-      price: 950,
-      accidentCount: 0,
-      explanation: '세컨드카, 주행거리 짧음',
-      accidentDetails: '',
-      status: CarStatus.possession,
-    },
-    {
-      carNumber: '90마 5566',
-      manufacturer: '현대',
-      model: '베뉴',
-      manufacturingYear: 2021,
-      mileage: 24000,
-      price: 1650,
-      accidentCount: 0,
-      explanation: '경정비 완료',
-      accidentDetails: '',
-      status: CarStatus.possession,
-    },
-  ] as const;
+  const carsSeedRaw = Array.from({ length: 20 }, (_, i) => ({
+    carNumber: `${i + 1}가 ${1000 + i}`,
+    manufacturer: i % 2 === 0 ? '현대' : '기아',
+    model: i % 2 === 0 ? '투싼' : 'K5',
+    manufacturingYear: 2020 + (i % 3),
+    mileage: 10000 + i * 1000,
+    price: 1500 + i * 50,
+    accidentCount: 0,
+    explanation: '무사고',
+    accidentDetails: '',
+    status: CarStatus.possession,
+  }));
 
   // 3) CarsCreateManyInput로 매핑
   const carsToCreate: Prisma.CarsCreateManyInput[] = [];
@@ -397,78 +347,94 @@ async function main() {
     await prisma.cars.createMany({ data: carsToCreate, skipDuplicates: true });
   }
 
-  // 4) 계약 5건: 참조 로드(명시 타입 + 길이 체크)
-  const createdCars = await prisma.cars.findMany({
-    where: { carNumber: { in: carsSeedRaw.map((c) => c.carNumber) } },
-    orderBy: { id: 'asc' },
-  });
-  const usersForCompany = await prisma.users.findMany({
+  // 대시보드용 계약 시드데이터 추가 (10월 10개, 9월 10개 -> 월별 매출액 성장 확인용)
+  const allCars = await prisma.cars.findMany({ include: { carModel: true } });
+  const allUsers = await prisma.users.findMany({
     where: { companyId: company.id },
-    orderBy: { id: 'asc' },
   });
-  const someCustomers = await prisma.customers.findMany({
+  const allCustomers = await prisma.customers.findMany({
     where: { companyId: company.id },
-    orderBy: { id: 'asc' },
   });
 
-  if (!createdCars.length || !usersForCompany.length || !someCustomers.length) {
-    console.warn('[seed] 계약 생성 생략: 참조 데이터 부족');
-  } else {
-    const admin = usersForCompany.find((u) => u.isAdmin) ?? usersForCompany[0];
+  const statuses: ContractsStatus[] = [
+    ContractsStatus.contractDraft,
+    ContractsStatus.priceNegotiation,
+    ContractsStatus.carInspection,
+    ContractsStatus.contractSuccessful,
+    ContractsStatus.contractFailed,
+  ];
 
-    // 만들 수 있는 최소 개수만큼만 생성(최대 5건)
-    const n = Math.min(
-      5,
-      createdCars.length,
-      someCustomers.length,
-      usersForCompany.length,
-    );
+  // 날짜 계산
+  const today = new Date();
+  const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
 
-    const statuses: ContractsStatus[] = [
-      ContractsStatus.carInspection,
-      ContractsStatus.priceNegotiation,
-      ContractsStatus.contractDraft,
-      ContractsStatus.contractSuccessful,
-      ContractsStatus.contractFailed,
-    ];
+  // 이번달 10개: cars[0~9]
+  // 저번달 10개: cars[10~19]
+  const createContract = (
+    carIndex: number,
+    customerIndex: number,
+    userIndex: number,
+    date: Date,
+    status: ContractsStatus,
+    price: number,
+  ) => ({
+    carId: allCars[carIndex].id,
+    customerId: allCustomers[customerIndex % allCustomers.length].id,
+    userId: allUsers[userIndex % allUsers.length].id,
+    contractPrice: price,
+    status,
+    date,
+    resolutionDate: new Date(date.getTime() + 5 * 86400000),
+  });
 
-    const today = new Date();
-    const addDays = (d: number) => new Date(today.getTime() + d * 86400000);
-
-    const contractsToCreate: Prisma.ContractsCreateManyInput[] = [];
-    for (let i = 0; i < n; i++) {
-      const car = createdCars[i];
-      const customer = someCustomers[i];
-      const user = usersForCompany[i] ?? admin;
-
-      // 모든 키가 확실히 존재할 때만 push (undefined 제거)
-      if (car?.id && customer?.id && user?.id) {
-        contractsToCreate.push({
-          carId: car.id,
-          customerId: customer.id,
-          userId: user.id,
-          contractPrice: [1900, 1800, 2100, 900, 1600][i] ?? 1500,
-          status: statuses[i] ?? ContractsStatus.carInspection,
-          date: addDays([-3, -2, -1, -10, -8][i] ?? -1),
-          resolutionDate: addDays([7, 5, 3, -2, -1][i] ?? 7),
-        });
-      }
-    }
-
-    if (contractsToCreate.length) {
-      await prisma.contracts.createMany({
-        data: contractsToCreate,
-        skipDuplicates: true,
-      });
-
-      // 계약된 차량 상태 업데이트
-      const progressingIds = contractsToCreate.slice(0, 2).map((c) => c.carId);
-      await prisma.cars.updateMany({
-        where: { id: { in: progressingIds } },
-        data: { status: CarStatus.contractProceeding },
-      });
-    }
+  // 이번달 계약 10개: cars[0~9]
+  const thisMonthContracts: Prisma.ContractsCreateManyInput[] = [];
+  for (let i = 0; i < 10; i++) {
+    const status =
+      i % 2 === 0
+        ? ContractsStatus.contractSuccessful
+        : ContractsStatus.contractDraft;
+    const price = 1000 + i * 100;
+    thisMonthContracts.push(createContract(i, i, i, today, status, price));
   }
+
+  // 저번달 계약 10개: cars[10~19]
+  const lastMonthContracts: Prisma.ContractsCreateManyInput[] = [];
+  for (let i = 0; i < 10; i++) {
+    const status =
+      i % 2 === 0
+        ? ContractsStatus.contractSuccessful
+        : ContractsStatus.contractDraft;
+    const price = 900 + i * 100;
+    lastMonthContracts.push(
+      createContract(i + 10, i, i, lastMonth, status, price),
+    );
+  }
+
+  // DB 삽입
+  await prisma.contracts.createMany({
+    data: [...thisMonthContracts, ...lastMonthContracts],
+    skipDuplicates: true,
+  });
+
+  // 차량 상태 업데이트 (진행중/성사된 상태 반영)
+  const progressingCarIds = thisMonthContracts
+    .filter((c) => c.status !== ContractsStatus.contractSuccessful)
+    .map((c) => c.carId);
+  await prisma.cars.updateMany({
+    where: { id: { in: progressingCarIds } },
+    data: { status: CarStatus.contractProceeding },
+  });
+
+  const completedCarIds = thisMonthContracts
+    .filter((c) => c.status === ContractsStatus.contractSuccessful)
+    .map((c) => c.carId);
+  await prisma.cars.updateMany({
+    where: { id: { in: completedCarIds } },
+    data: { status: CarStatus.possession },
+  });
+
+  console.log('✅ 이번달/저번달 계약 시드 20개 생성 완료');
 
   console.log('✅ Seeding 완료');
 }

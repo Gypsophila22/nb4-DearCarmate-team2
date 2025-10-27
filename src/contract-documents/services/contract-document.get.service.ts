@@ -11,6 +11,15 @@ type GetContractDocumentsArgs = {
   keyword?: string;
 };
 
+function buildContractName(
+  model?: string | null,
+  customerName?: string | null,
+) {
+  const left = model ?? '';
+  const right = customerName ? `${customerName} 고객님` : '';
+  return [left, right].filter(Boolean).join(' - ');
+}
+
 export async function getDocumentsService({
   actor,
   page,
@@ -20,7 +29,7 @@ export async function getDocumentsService({
 }: GetContractDocumentsArgs) {
   // 회사
   const baseWhere: Prisma.ContractsWhereInput = {
-    user: { companyId: actor.companyId },
+    customer: { companyId: actor.companyId },
   };
 
   // searchBy는 contractName만 허용
@@ -49,7 +58,7 @@ export async function getDocumentsService({
     totalItemCount,
     data: contracts.map((c) => ({
       id: c.id,
-      contractName: c.customer?.name ?? '',
+      contractName: buildContractName(c.car?.carModel?.model, c.customer?.name),
       resolutionDate: c.resolutionDate,
       documentCount: c._count.documents,
       userName: c.user?.name ?? '',

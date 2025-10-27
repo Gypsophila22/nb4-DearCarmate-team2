@@ -55,7 +55,7 @@ export async function downloadDocumentService(args: {
 
   const full = absPathOrDefault(doc.path, doc.storedName);
   if (!existsSync(full))
-    throw createError(410, '파일이 존재하지 않습니다(삭제되었을 수 있음)');
+    throw createError(410, '파일이 존재하지 않습니다(삭제되었을 수 있음2)');
 
   const filename = doc.originalName || doc.storedName;
   const type =

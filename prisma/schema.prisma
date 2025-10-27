@@ -44,7 +44,7 @@ model Companies {
 
 model Cars {
   id                Int        @id @unique @default(autoincrement())
-  carNumber         String
+  carNumber         String     @unique
   manufacturingYear Int
   mileage           Int
   price             Int
@@ -94,6 +94,11 @@ model Customers {
 
   company   Companies @relation(fields: [companyId], references: [id])
   companyId Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+
+  @@unique([companyId, name, phoneNumber])
+  @@unique([companyId, email])
 }
 
 enum Gender {
@@ -147,12 +152,12 @@ model Contracts {
   status         ContractsStatus // 계약 상태
   resolutionDate DateTime? // 계약 종료일
   carId          Int                 @unique
-  car            Cars                @relation(fields: [carId], references: [id]) // 차량
+  car            Cars                @relation(fields: [carId], references: [id], onDelete: Cascade) // 차량
   customerId     Int
   customer       Customers           @relation(fields: [customerId], references: [id]) // 고객
   meetings       Meetings[] // 미팅 일정
-  userId         Int // 담당자
-  user           Users               @relation(fields: [userId], references: [id])
+  userId         Int? // 담당자
+  user           Users?              @relation(fields: [userId], references: [id], onDelete: SetNull)
   documents      ContractDocuments[] // 계약서
 }
 
@@ -175,7 +180,7 @@ model ContractDocuments {
   id           Int      @id @default(autoincrement())
   companyId    Int
   contractId   Int? // ← nullable (임시 업로드 허용)
-  uploaderId   Int
+  uploaderId   Int?
   originalName String
   storedName   String
   mimeType     String
@@ -186,7 +191,7 @@ model ContractDocuments {
 
   company  Companies  @relation(fields: [companyId], references: [id])
   contract Contracts? @relation(fields: [contractId], references: [id])
-  uploader Users      @relation(fields: [uploaderId], references: [id])
+  uploader Users?     @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
 
   @@index([companyId])
   @@index([contractId])
