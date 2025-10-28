@@ -3,7 +3,7 @@ import createError from 'http-errors';
 import { Prisma } from '@prisma/client';
 
 import { userRepository } from '../repositories/user.repository.js';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 
 function mapPrismaDeleteError(e: unknown) {
   if (e instanceof Prisma.PrismaClientKnownRequestError) {
