@@ -70,16 +70,26 @@ export const customerUploadService = {
       }
     });
 
-    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      for (const customerData of validCustomersForDb) {
-        const transformedCustomerData: TransformedCustomerCsvRow = {
-          ...customerData,
-          ageGroup: toAgeGroupEnum(customerData.ageGroup),
-          region: toRegionEnum(customerData.region),
-        };
+    for (const customerData of validCustomersForDb) {
+      try {
+        await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+          const transformedCustomerData: TransformedCustomerCsvRow = {
+            ...customerData,
+            ageGroup: toAgeGroupEnum(customerData.ageGroup),
+            region: toRegionEnum(customerData.region),
+          };
 
-        try {
-          let existingCustomer;
+          let existingCustomer:
+            | (CustomerCsvRow & {
+                id: number;
+                contractCount: number;
+                createdAt: Date;
+                updatedAt: Date;
+                companyId: number;
+              })
+            | null
+            | undefined;
+
           if (transformedCustomerData.email) {
             existingCustomer = await customerRepository.findByEmail(
               transformedCustomerData.email,
@@ -124,17 +134,13 @@ export const customerUploadService = {
             );
             processedSuccessfully++;
           }
-        } catch (error: unknown) {
-          let errorMessage: string;
-          if (error instanceof Error) {
-            errorMessage = error.message;
-          } else {
-            errorMessage = String(error);
-          }
-          databaseErrors.push({ data: customerData, error: errorMessage });
-        }
+        });
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        databaseErrors.push({ data: customerData, error: errorMessage });
       }
-    });
+    }
 
     const failedRecords = validationErrors.length + databaseErrors.length;
 
