@@ -3,6 +3,7 @@ import createError from 'http-errors';
 import { Prisma } from '@prisma/client';
 
 import { userRepository } from '../repositories/user.repository.js';
+import bcrypt from 'bcryptjs';
 
 function mapPrismaDeleteError(e: unknown) {
   if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -16,10 +17,11 @@ function mapPrismaDeleteError(e: unknown) {
 
 export const userDeleteService = {
   /** 본인 삭제 */
-  async deleteMe(userId: number) {
-    const user = await userRepository.findById(userId);
+  async deleteMe(userId: number, password: string) {
+    const user = await userRepository.findByIdWithPassword(userId);
     if (!user) throw createError(404, '존재하지 않는 유저입니다.');
-
+    const ok = await bcrypt.compare(password, user.password);
+    if (!ok) throw createError(400, '비밀번호가 맞지 않습니다.');
     try {
       await userRepository.deleteById(user.id);
     } catch (e: unknown) {

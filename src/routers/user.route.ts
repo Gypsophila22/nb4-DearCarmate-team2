@@ -12,7 +12,11 @@ router
   .route('/me')
   .get(passports.jwtAuth, userController.getMe)
   .patch(passports.jwtAuth, userSchema.userPatch, userController.patchUser)
-  .delete(passports.jwtAuth, userController.deleteMe);
+  .delete(
+    passports.jwtAuth,
+    userSchema.userDeleteMeBody,
+    userController.deleteMe,
+  );
 
 router.delete(
   '/:id',

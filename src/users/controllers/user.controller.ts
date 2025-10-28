@@ -23,7 +23,8 @@ class UserController {
   async deleteMe(req: Request, res: Response, next: NextFunction) {
     try {
       if (!req.user) throw createError(401, '로그인이 필요합니다.');
-      const result = await userDeleteService.deleteMe(req.user.id);
+      const { password } = req.body;
+      const result = await userDeleteService.deleteMe(req.user.id, password);
       return res.json(result);
     } catch (e) {
       next(e);

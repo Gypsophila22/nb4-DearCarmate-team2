@@ -76,6 +76,18 @@ class UserRepository {
     });
   }
 
+  findByIdWithPassword(id: number) {
+    return prisma.users.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        password: true,
+        isAdmin: true,
+      },
+    });
+  }
+
   deleteById(id: number) {
     return prisma.users.delete({ where: { id } });
   }

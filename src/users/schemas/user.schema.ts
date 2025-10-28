@@ -8,6 +8,10 @@ export const userDeleteParamSchema = z
   })
   .strict();
 
+const userDeleteMeBodySchema = z.object({
+  password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다.'),
+});
+
 const userPatchSchema = z
   .object({
     employeeNumber: z.string().min(1).optional(),
@@ -128,6 +132,16 @@ class UserSchema {
 
   userDeleteParam(req: Request, res: Response, next: NextFunction) {
     const result = userDeleteParamSchema.safeParse(req.params);
+
+    if (result.success) {
+      return next();
+    } else {
+      return next(createError(400, `잘못된 입력값입니다.`));
+    }
+  }
+
+  userDeleteMeBody(req: Request, res: Response, next: NextFunction) {
+    const result = userDeleteMeBodySchema.safeParse(req.body);
 
     if (result.success) {
       return next();
