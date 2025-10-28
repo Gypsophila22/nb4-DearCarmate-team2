@@ -262,12 +262,11 @@ ACCESS_TOKEN_SECRET="changeme_access_secret"
 REFRESH_TOKEN_SECRET="changeme_refresh_secret"
 
 # ========================
-# email 발송 관련
+# email 발송 관련(렌더 오류로 resend로 변경)
 # ========================
-EMAIL_SERVICE=gmail
-EMAIL_USER=your@gmail.com
-EMAIL_PASS=<앱 비밀번호>   # 2FA 켠 뒤 발급
-MAIL_FROM=your@gmail.com
+EMAIL_PROVIDER=resend
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxx
+MAIL_FROM=onboarding@resend.dev
 
 # ========================
 # CORS
