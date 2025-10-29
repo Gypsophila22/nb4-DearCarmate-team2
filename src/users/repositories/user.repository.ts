@@ -71,7 +71,7 @@ class UserRepository {
         phoneNumber: true,
         imageUrl: true,
         isAdmin: true,
-        company: { select: { companyCode: true } },
+        company: { select: { companyName: true } },
       },
     });
   }
